@@ -162,20 +162,35 @@ export const loginUser = CatchAsyncError(
 export const logoutUser = CatchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            res.cookie("access_token", "", { maxAge: 1 });
-            res.cookie("refresh_token", "", { maxAge: 1 });
-            const userId = req.user?._id as string // Ensure userId is a string
-            redis.del(userId); // Await the deletion operation
-            
+            // Clear cookies
+
+            // Ensure req.user is set and userId is retrieved correctly
+            const userId = req.user?._id as string;
+
+            if (!userId) {
+                return next(new ErrorHandler("User not found or not authenticated", 400));
+            }
+
+            // Delete user session from Redis
+            const result = await redis.del(userId); // Await the deletion operation
+
+            console.log(`Redis delete result for user ${userId}:`, result);
+
+            if (result === 0) {
+                console.warn(`User ${userId} session not found in Redis`);
+            }
+
             res.status(200).json({
                 success: true,
                 message: "Logged out successfully",
             });
         } catch (error: any) {
+            console.error("Error during logout:", error);
             return next(new ErrorHandler(error.message, 400));
         }
     }
 );
+
 
 export const updateAccessToken = CatchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
