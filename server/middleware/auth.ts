@@ -27,16 +27,14 @@ export const isAuthenticated = CatchAsyncError(
                 return next(error);
             }
         } else {
-            const user = await redis.get(decoded.id);
+            const user = await redis.get(decoded._id);
 
             if (!user) {
                 return next(
                     new ErrorHandler("Please login to access this resource", 400)
                 );
             }
-
             req.user = JSON.parse(user);
-
             next();
         }
     }

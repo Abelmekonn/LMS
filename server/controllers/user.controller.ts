@@ -164,10 +164,9 @@ export const logoutUser = CatchAsyncError(
         try {
             res.cookie("access_token", "", { maxAge: 1 });
             res.cookie("refresh_token", "", { maxAge: 1 });
-            const userId = req.user?._id ? req.user._id.toString() : ""; // Ensure userId is a string
-            if (userId) {
-                await redis.del(userId); // Await the deletion operation
-            }
+            const userId = req.user?._id as string // Ensure userId is a string
+            redis.del(userId); // Await the deletion operation
+            
             res.status(200).json({
                 success: true,
                 message: "Logged out successfully",
@@ -181,7 +180,7 @@ export const logoutUser = CatchAsyncError(
 export const updateAccessToken = CatchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const refresh_token = req.headers["refresh-token"] as string;
+            const refresh_token = req.headers["refresh_token"] as string;
             const decoded = jwt.verify(
                 refresh_token,
                 process.env.REFRESH_TOKEN as string
