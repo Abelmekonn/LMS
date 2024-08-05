@@ -36,14 +36,13 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
     };
 
     res.status(statusCode)
-    .cookie('access_token', accessToken, accessTokenOptions) // Correctly set the access token cookie
-    .cookie('refresh_token', refreshToken, refreshTokenOptions) // Correctly set the refresh token cookie
-    .json({
-        success: true,
-        user,
-        accessToken,
-        refreshToken,
-    });
-
+        .cookie('refresh_token', refreshToken, refreshTokenOptions)
+        .cookie('access_token', accessToken, accessTokenOptions)
+        .json({
+            success: true,
+            user,
+            accessToken,
+            refreshToken,
+        });
 };
 
