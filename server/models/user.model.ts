@@ -75,15 +75,17 @@ userSchema.pre<IUser>("save", async function (next) {
 
 // sign access token
 userSchema.methods.SignAccessToken = function () {
+    const accessTokenExpire = parseInt(process.env.ACCESS_TOKEN_EXPIRE || "5", 10); // in minutes
     return jwt.sign({ id: this._id }, process.env.ACCESS_TOKEN || "", {
-        expiresIn: process.env.ACCESS_TOKEN_EXPIRE
+        expiresIn: accessTokenExpire * 60 // Convert minutes to seconds
     });
 };
 
 // sign refresh token
 userSchema.methods.SignRefreshToken = function () {
+    const refreshTokenExpire = parseInt(process.env.REFRESH_TOKEN_EXPIRE || "59", 10); // in days
     return jwt.sign({ id: this._id }, process.env.REFRESH_TOKEN || "", {
-        expiresIn: process.env.REFRESH_TOKEN_EXPIRE
+        expiresIn: refreshTokenExpire * 24 * 60 * 60 // Convert days to seconds
     });
 };
 
