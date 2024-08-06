@@ -166,6 +166,7 @@ export const logoutUser = CatchAsyncError(
 
             // Ensure req.user is set and userId is retrieved correctly
             const userId = req.user?._id as string;
+            
 
             if (!userId) {
                 return next(new ErrorHandler("User not found or not authenticated", 400));

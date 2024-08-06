@@ -16,10 +16,11 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
     const refreshToken = user.SignRefreshToken();
 
     const userId = user._id as string;
-    redis.set(userId, JSON.stringify(user), 'EX', parseInt(process.env.REFRESH_TOKEN_EXPIRE || "1200", 10) * 60);
+    redis.set(userId, JSON.stringify(user) as any);
 
-    const accessTokenExpire = parseInt(process.env.ACCESS_TOKEN_EXPIRE || "300", 10) * 1000;
     const refreshTokenExpire = parseInt(process.env.REFRESH_TOKEN_EXPIRE || "1200", 10) * 1000;
+    const accessTokenExpire = parseInt(process.env.ACCESS_TOKEN_EXPIRE || "300", 10) * 1000;
+
 
     const accessTokenOptions: ITokenOptions = {
         maxAge: accessTokenExpire,
@@ -34,15 +35,14 @@ export const sendToken = (user: IUser, statusCode: number, res: Response) => {
         sameSite: "none",
         secure: process.env.NODE_ENV === 'production',
     };
-
+    res.cookie('refresh_token', refreshToken, refreshTokenOptions)
+    res.cookie('access_token', accessToken, accessTokenOptions)
     res.status(statusCode)
-        .cookie('refresh_token', refreshToken, refreshTokenOptions)
-        .cookie('access_token', accessToken, accessTokenOptions)
         .json({
             success: true,
             user,
-            accessToken,
             refreshToken,
+            accessToken,
         });
 };
 
