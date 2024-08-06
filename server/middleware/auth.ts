@@ -8,8 +8,7 @@ import { updateAccessToken } from "../controllers/user.controller";
 // authenticated user
 export const isAuthenticated = CatchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
-        console.log(req.headers.cookie)
-        const access_token = req.headers["access-token"] as string;
+        const access_token = req.headers["access_token"] as string;
         if (!access_token) {
             return next(
                 new ErrorHandler("Please login to access this resource", 400)
@@ -28,7 +27,7 @@ export const isAuthenticated = CatchAsyncError(
                 return next(error);
             }
         } else {
-            const user = await redis.get(decoded._id);
+            const user = await redis.get(decoded.id);
 
             if (!user) {
                 return next(
