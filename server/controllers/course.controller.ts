@@ -4,6 +4,7 @@ import { CatchAsyncError } from "../middleware/catchAsyncError";
 import cloudinary from "cloudinary";
 import { createCourse } from "../services/course.service";
 import CourseModel from "../models/course.model";
+import { redis } from "../utils/redis";
 
 // upload course
 export const uploadCourse = CatchAsyncError(
@@ -46,28 +47,30 @@ export const uploadCourse = CatchAsyncError(
 );
 
 // edit course
-export const editCourse = CatchAsyncError(async (req:Request,res:Response,next:NextFunction)=>{
-    const data=req.body;
-    const thumbnail=data.thumbnail;
-    if(thumbnail){
+export const editCourse = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    const data = req.body;
+    const thumbnail = data.thumbnail;
+    if (thumbnail) {
         await cloudinary.v2.uploader.destroy(thumbnail.public_id)
-        const myCloud=cloudinary.v2.uploader.upload(thumbnail,{
-            folder:"courses"
+        const myCloud = cloudinary.v2.uploader.upload(thumbnail, {
+            folder: "courses"
         })
-        data.thumbnail={
-            public_id:(await myCloud).public_id,
-            url:(await myCloud).secure_url,
+        data.thumbnail = {
+            public_id: (await myCloud).public_id,
+            url: (await myCloud).secure_url,
         }
-        const courseId=req.params.id;
+        const courseId = req.params.id;
         const course = await CourseModel.findByIdAndUpdate(
-            courseId,{
-            $set:data},
-            {new:true
-        })
+            courseId, {
+            $set: data
+        },
+            {
+                new: true
+            })
 
         res.status(200).json({
-            status:"success",
-            data:course
+            status: "success",
+            data: course
         })
 
     }
@@ -78,18 +81,28 @@ export const getSingleCourse = CatchAsyncError(async (req: Request, res: Respons
     try {
         const courseId = req.params.id;
 
-        // Find the course by ID and exclude certain fields
-        const course = await CourseModel.findById(courseId)
-            .select("-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links");
+        const isCatchExist = await redis.get(courseId)
+        if (isCatchExist) {
+            const course = JSON.parse(isCatchExist)
+            res.status(200).json({
+                success: true,
+                course
+            });
+        } else {
+            // Find the course by ID and exclude certain fields
+            const course = await CourseModel.findById(courseId)
+                .select("-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links");
 
-        if (!course) {
-            return next(new ErrorHandler("Course not found", 404));
+            if (!course) {
+                return next(new ErrorHandler("Course not found", 404));
+            }
+            await redis.set(courseId, JSON.stringify(course))
+            res.status(200).json({
+                success: true,
+                course
+            });
         }
 
-        res.status(200).json({
-            success: true,
-            data: course,
-        });
     } catch (error: any) {
         console.error("Error fetching course:", error);
         return next(new ErrorHandler("An error occurred while fetching the course", 500));
@@ -99,18 +112,54 @@ export const getSingleCourse = CatchAsyncError(async (req: Request, res: Respons
 // get all course
 export const getAllCourse = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // Fetch all courses and exclude certain fields
-        const courses = await CourseModel.find()
-            .select("-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links");
+        // Check if the courses are cached in Redis
+        const isCacheExist = await redis.get("allCourses");
 
-        res.status(200).json({
-            success: true,
-            data: courses,
-        });
+        if (isCacheExist) {
+            // If cached data exists, parse and return it
+            const courses = JSON.parse(isCacheExist);
+            res.status(200).json({
+                success: true,
+                courses,
+            });
+        } else {
+            // If no cached data, fetch from database
+            const courses = await CourseModel.find()
+                .select("-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links");
+            
+            // Store the result in Redis cache
+            await redis.set("allCourses", JSON.stringify(courses));
+            res.status(200).json({
+                success: true,
+                data: courses,
+            });
+        }
     } catch (error: any) {
         console.error("Error fetching courses:", error);
         return next(new ErrorHandler("An error occurred while fetching courses", 500));
     }
 });
 
-// 
+// get course content for only valid user
+export const getCourseByUser = CatchAsyncError(async (req: Request, res: Response, next:NextFunction)=>{
+    try {
+        const userCourseList= req.user?.courses;
+        const courseId = req.params.id;
+        
+        const courseExist = userCourseList?.find((course:any) => course._id.toString() === courseId)
+        
+        if(!courseExist){
+            next(new ErrorHandler("you are not eligible to access this course",404))
+        }
+
+        const course = await CourseModel.findById(courseId)
+        const content=course?.courseData
+
+        res.status(200).json({
+            success: true,
+            data: content,
+        });
+    } catch (error:any) {
+        return next(new ErrorHandler("An error occurred while fetching courses", 500));
+    }
+})
