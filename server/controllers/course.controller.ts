@@ -74,10 +74,43 @@ export const editCourse = CatchAsyncError(async (req:Request,res:Response,next:N
 })
 
 // get single course
-export const getSingleCourse = CatchAsyncError(async (req: Request, res: Response, next:NextFunction)=>{
+export const getSingleCourse = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        
-    } catch (error) {
-        
+        const courseId = req.params.id;
+
+        // Find the course by ID and exclude certain fields
+        const course = await CourseModel.findById(courseId)
+            .select("-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links");
+
+        if (!course) {
+            return next(new ErrorHandler("Course not found", 404));
+        }
+
+        res.status(200).json({
+            success: true,
+            data: course,
+        });
+    } catch (error: any) {
+        console.error("Error fetching course:", error);
+        return next(new ErrorHandler("An error occurred while fetching the course", 500));
     }
-})
+});
+
+// get all course
+export const getAllCourse = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // Fetch all courses and exclude certain fields
+        const courses = await CourseModel.find()
+            .select("-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links");
+
+        res.status(200).json({
+            success: true,
+            data: courses,
+        });
+    } catch (error: any) {
+        console.error("Error fetching courses:", error);
+        return next(new ErrorHandler("An error occurred while fetching courses", 500));
+    }
+});
+
+// 
