@@ -1,0 +1,69 @@
+interface IUpdateUserInfo {
+    name?: string;
+    email?: string;
+    oldPassword?: string;
+    newPassword?: string;
+    avatar?: string;
+}
+
+export const updateUserInfo = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { name, email, oldPassword, newPassword, avatar } = req.body as IUpdateUserInfo;
+        const userId = req.user?._id as string;
+        const user = await userModel.findById(userId).select("+password");
+
+        if (!user) {
+            return next(new ErrorHandler("User not found", 404));
+        }
+
+        // Update email
+        if (email) {
+            const isEmailExist = await userModel.findOne({ email });
+            if (isEmailExist) {
+                return next(new ErrorHandler("Email already exists", 400));
+            }
+            user.email = email;
+        }
+
+        // Update name
+        if (name) {
+            user.name = name;
+        }
+
+        // Update password
+        if (oldPassword && newPassword) {
+            const isPasswordMatch = await user.comparePassword(oldPassword);
+            if (!isPasswordMatch) {
+                return next(new ErrorHandler("Invalid password", 400));
+            }
+            user.password = newPassword;
+        } else if (oldPassword || newPassword) {
+            return next(new ErrorHandler("Please provide both old and new password", 400));
+        }
+
+        // Update avatar
+        if (avatar) {
+            if (user.avatar?.public_id) {
+                await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+            }
+            const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+                folder: "avatars",
+                width: 150
+            });
+            user.avatar = {
+                public_id: myCloud.public_id,
+                url: myCloud.secure_url
+            };
+        }
+
+        await user.save();
+        await redis.set(userId, JSON.stringify(user));
+
+        res.status(200).json({
+            success: true,
+            user
+        });
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400));
+    }
+});

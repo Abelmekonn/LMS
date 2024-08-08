@@ -4,6 +4,8 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import userRouter from "./routes/user.route";
 import { ErrorMiddleware } from "./middleware/error";
+import courseRouter from "./routes/course.route";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
@@ -11,7 +13,11 @@ export const app = express();
 
 // Middleware
 app.use(express.json({ limit: "50mb" }));
+// Middleware to parse JSON
+app.use(bodyParser.json());
+
 app.use(cookieParser());
+
 app.use(cors({
     origin: process.env.ORIGIN, // Update with your client's URL
     credentials: true, // Allow credentials (cookies)
@@ -27,6 +33,8 @@ app.get("/test", (req: Request, res: Response, next: NextFunction) => {
 
 // Routers
 app.use("/api/v1", userRouter);
+
+app.use("/api/v1",courseRouter)
 
 // Handle unknown routes
 app.all("*", (req: Request, res: Response, next: NextFunction) => {

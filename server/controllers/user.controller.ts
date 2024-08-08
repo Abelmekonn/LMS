@@ -270,12 +270,12 @@ interface IUpdatePassword {
 export const updatePassword = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { oldPassword, newPassword } = req.body as IUpdatePassword
-        if(!oldPassword || !newPassword){
+        if (!oldPassword || !newPassword) {
             return next(new ErrorHandler("Please provide both old and new password", 400))
         }
         const userId = req.user?._id as string
         const user = await userModel.findById(userId).select("+password")
-        
+
         if (user?.password === undefined) {
             return next(new ErrorHandler("invalid user", 400))
         }
@@ -292,35 +292,52 @@ export const updatePassword = CatchAsyncError(async (req: Request, res: Response
             success: true,
             user
         })
-    } catch (error:any) {
+    } catch (error: any) {
         return next(new ErrorHandler(error.message, 400))
     }
 })
 
 // update avatar
-interface IAvatar{
+interface IAvatar {
     avatar: string;
 }
-export const updateAvatar=CatchAsyncError(async (req: Request, res: Response, next: NextFunction)=>{
+export const updateAvatar = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {avatar} =req.body as IAvatar
+        const { avatar } = req.body as IAvatar
         const userId = req.user?._id as string
         const user = await userModel.findById(userId)
-        if(avatar && user){
-            if(user?.avatar?.public_id){
+        if (avatar && user) {
+            if (user?.avatar?.public_id) {
                 await cloudinary.v2.uploader.destroy(user?.avatar?.public_id)
-            }else{
+
                 const myCloud = await cloudinary.v2.uploader.upload(avatar, {
                     folder: "avatars",
-                    width:150
+                    width: 150
                 })
-                user.avatar={
+                user.avatar = {
+                    public_id: myCloud.public_id,
+                    url: myCloud.secure_url
+                }
+
+            } else {
+                const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+                    folder: "avatars",
+                    width: 150
+                })
+                user.avatar = {
                     public_id: myCloud.public_id,
                     url: myCloud.secure_url
                 }
             }
         }
-    } catch (error: any) {
+        await user?.save()
+        await redis.set(userId as string, JSON.stringify(user))
         
+        res.status(200).json({
+            success: true,
+            user
+        })
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400))
     }
 })
