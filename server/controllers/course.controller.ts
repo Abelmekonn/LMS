@@ -263,10 +263,10 @@ export const addAnswer = CatchAsyncError(async (req: Request, res: Response, nex
                     email: question.user.email,
                     subject: "Question Reply",
                     template: "question-reply.ejs",
-                    data
+                    data:data
                 })
             } catch (error: any) {
-
+                return next(new ErrorHandler(error.message, 500))
             }
         }
 
