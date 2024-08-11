@@ -29,9 +29,8 @@ export const createOrder = CatchAsyncError(async (req: Request, res: Response, n
     const data: any = {
         userId: user._id,
         courseId,
-        payment_info:[],  // Ensure payment_info is correctly populated before this step
+        payment_info,  // Ensure payment_info is correctly populated before this step
     };
-    console.log(data)
 
     const mailData : any = {
         order: {
@@ -41,7 +40,6 @@ export const createOrder = CatchAsyncError(async (req: Request, res: Response, n
             date: new Date().toLocaleDateString('en-us', { year: "numeric", month: "long", day: "numeric" })
         }
     };
-    console.log(mailData)
 
     try {
         await sendMail({
@@ -56,7 +54,6 @@ export const createOrder = CatchAsyncError(async (req: Request, res: Response, n
 
     user.courses.push({ courseId });
     await user.save();
-    console.log(user)
 
     await NotificationModel.create({
         user: user._id,
