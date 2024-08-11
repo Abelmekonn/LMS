@@ -6,6 +6,7 @@ import userRouter from "./routes/user.route";
 import { ErrorMiddleware } from "./middleware/error";
 import courseRouter from "./routes/course.route";
 import bodyParser from "body-parser";
+import orderRouter from "./routes/order.route";
 
 dotenv.config();
 
@@ -32,9 +33,8 @@ app.get("/test", (req: Request, res: Response, next: NextFunction) => {
 });
 
 // Routers
-app.use("/api/v1", userRouter);
+app.use("/api/v1", userRouter,courseRouter,orderRouter);
 
-app.use("/api/v1",courseRouter)
 
 // Handle unknown routes
 app.all("*", (req: Request, res: Response, next: NextFunction) => {

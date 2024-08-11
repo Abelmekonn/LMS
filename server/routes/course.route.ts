@@ -1,6 +1,6 @@
 import express from "express";
-import { editCourse, uploadCourse, getSingleCourse, getAllCourse, getCourseByUser, addQuestion, addAnswer, addReview, addReplyToReview } from "../controllers/course.controller";
 import { authorizeRoles, isAuthenticated } from "../middleware/auth";
+import { addAnswer, addQuestion, addReplyToReview, addReview, editCourse, getAllCourse, getCourseByUser, getSingleCourse, uploadCourse } from "../controllers/course.controller";
 
 const courseRouter = express.Router();
 
