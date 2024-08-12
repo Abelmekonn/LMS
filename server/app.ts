@@ -8,6 +8,8 @@ import courseRouter from "./routes/course.route";
 import bodyParser from "body-parser";
 import orderRouter from "./routes/order.route";
 import notificationRouter from "./routes/notification.route";
+import analyticsRouter from "./routes/analytic.route";
+import layoutRoute from "./routes/layout.route";
 
 dotenv.config();
 
@@ -34,7 +36,13 @@ app.get("/test", (req: Request, res: Response, next: NextFunction) => {
 });
 
 // Routers
-app.use("/api/v1", userRouter,courseRouter,orderRouter,notificationRouter);
+app.use("/api/v1", 
+    userRouter,
+    courseRouter,
+    orderRouter,
+    notificationRouter,
+    analyticsRouter,
+    layoutRoute);
 
 
 // Handle unknown routes

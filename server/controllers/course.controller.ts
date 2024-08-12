@@ -414,3 +414,4 @@ export const deleteCourse = CatchAsyncError(async (req: Request, res: Response, 
         return next(new ErrorHandler(error.message,400))
     }
 })
+
