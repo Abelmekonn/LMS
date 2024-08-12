@@ -4,13 +4,10 @@ import userModel, { IUser } from "../models/user.model";
 import ErrorHandler from "../utils/ErrorHandler";
 import { CatchAsyncError } from "../middleware/catchAsyncError";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
-import ejs from "ejs";
-import path from "path";
 import sendMail from "../utils/sendMail";
 import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt";
 import { redis } from "../utils/redis";
 import { getAllUsersService, getUserById, updateUserRoleService } from "../services/user.service";
-import { json } from "stream/consumers";
 import cloudinary from "cloudinary"
 import { getAllUsersService } from "../services/user.service";
 // Register user
@@ -165,7 +162,7 @@ export const updateAccessToken = CatchAsyncError(async (req: Request, res: Respo
 
     const session = await redis.get(decoded.id as string);
     if (!session) {
-        return next(new ErrorHandler("Session not found. Please login to access this resource!", 400));
+        return next(new ErrorHandler("Please login to access this resource!", 400));
     }
 
     const user = JSON.parse(session);
