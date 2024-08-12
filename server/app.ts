@@ -7,6 +7,7 @@ import { ErrorMiddleware } from "./middleware/error";
 import courseRouter from "./routes/course.route";
 import bodyParser from "body-parser";
 import orderRouter from "./routes/order.route";
+import notificationRouter from "./routes/notification.route";
 
 dotenv.config();
 
@@ -33,7 +34,7 @@ app.get("/test", (req: Request, res: Response, next: NextFunction) => {
 });
 
 // Routers
-app.use("/api/v1", userRouter,courseRouter,orderRouter);
+app.use("/api/v1", userRouter,courseRouter,orderRouter,notificationRouter);
 
 
 // Handle unknown routes

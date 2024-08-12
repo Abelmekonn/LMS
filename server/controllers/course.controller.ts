@@ -2,13 +2,14 @@ import { Request, Response, NextFunction } from "express";
 import ErrorHandler from "../utils/ErrorHandler";
 import { CatchAsyncError } from "../middleware/catchAsyncError";
 import cloudinary from "cloudinary";
-import { createCourse } from "../services/course.service";
+import { createCourse, getAllCoursesServices } from "../services/course.service";
 import CourseModel from "../models/course.model";
 import { redis } from "../utils/redis";
 import mongoose from "mongoose";
 import path from "path";
 import sendMail from "../utils/sendMail";
 import ejs from "ejs";
+import NotificationModel from "../models/notfication.model";
 
 // upload course
 export const uploadCourse = CatchAsyncError(
@@ -200,6 +201,12 @@ export const addQuestion = CatchAsyncError(async (req: Request, res: Response, n
         // add this question in our course content
         courseContent?.questions.push(newQuestion)
 
+        await NotificationModel.create({
+            user: req.user?._id,
+            title: "New Order",
+            message: `You have a new question for this ${courseContent.title}`,
+        });
+
         // save the upload course
         await course?.save()
         res.status(201).json({
@@ -245,25 +252,29 @@ export const addAnswer = CatchAsyncError(async (req: Request, res: Response, nex
 
         // add this answer to our course content 
         question.questionReplies.push(newAnswer);
+        
 
         await course?.save()
 
         if (req.user?._id === question.user._id) {
             // create notification
-
+            await NotificationModel.create({
+                user: req.user?._id,
+                title: "New Reply Question Received",
+                message: `You have a reply for this ${courseContent.title}`,
+            });
         } else {
             const data: any = {
                 name: question,
                 title: courseContent.title
             }
 
-            const html = await ejs.renderFile(path.join(__dirname, "../mails/question-reply.ejs"), data)
             try {
                 await sendMail({
                     email: question.user.email,
                     subject: "Question Reply",
                     template: "question-reply.ejs",
-                    data:data
+                    data
                 })
             } catch (error: any) {
                 return next(new ErrorHandler(error.message, 500))
@@ -318,11 +329,11 @@ export const addReview = CatchAsyncError(async (req: Request, res: Response, nex
             course.ratings = avg / course.reviews.length
         }
 
-        const notification = {
+        await NotificationModel.create({
+            user: req.user?._id,
             title: "New Review Added",
             message: `${req.user?.name} has added a new review for your course ${course?.name}`,
-        }
-        // create notification
+        });
 
         course?.save()
 
@@ -376,4 +387,11 @@ export const addReplyToReview = CatchAsyncError( async (req: Request, res: Respo
     }
 })
 
-// 
+// get all course for only Admin
+export const getAllCoursesForAdmin = CatchAsyncError( async (req: Request, res: Response,next:NextFunction)=>{
+    try {
+        getAllCoursesServices
+    } catch (error :any) {
+        return next(new ErrorHandler(error.message,400))
+    }
+})

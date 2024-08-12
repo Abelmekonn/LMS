@@ -1,6 +1,7 @@
-import { Response } from "express"
+import { NextFunction, Response } from "express"
 import userModel from "../models/user.model"
 import { redis } from "../utils/redis"
+import ErrorHandler from "../utils/ErrorHandler"
 
 //get user by id
 export const getUserById = async (id: string, res: Response,) => {
@@ -12,4 +13,25 @@ export const getUserById = async (id: string, res: Response,) => {
             user
         })
     }
+}
+// Get all users
+export const getAllUsersService = async ( res: Response, next: NextFunction) => {
+    try {
+        const allUsers = await userModel.find().sort({ createdAt: -1 });
+        res.status(200).json({
+            success: true,
+            allUsers
+        });
+    } catch (error: any) {
+        next(new ErrorHandler(error.message, 500));
+    }
+}
+
+// update user role
+export const updateUserRoleService = async (req: Request, res: Response, next: NextFunction)=>{
+    const user = await userModel.findByIdAndUpdate(id,{role},{new:true})
+    res.status(200).json({
+        success: true,
+        user
+        })
 }

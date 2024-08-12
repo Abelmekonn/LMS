@@ -6,7 +6,7 @@ import CourseModel from "../models/course.model";
 import UserModel from "../models/user.model";
 import sendMail from "../utils/sendMail";
 import NotificationModel from "../models/notfication.model";
-import { newOrder } from "../services/order.service";
+import { getAllOrders, getAllOrdersService, newOrder } from "../services/order.service";
 
 export const createOrder = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const { courseId, payment_info } = req.body as IOrder;
@@ -61,6 +61,20 @@ export const createOrder = CatchAsyncError(async (req: Request, res: Response, n
         message: `You have a new order for the course: ${course.name}`,
     });
 
+    if(course.purchased){
+        course.purchased += 1;
+    }
+
+    await course.save()
+
     return newOrder(data, res, next);
 });
 
+// Get all orders
+export const getOrders = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await getAllOrdersService(req, res, next);
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400));
+    }
+});

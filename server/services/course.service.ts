@@ -14,3 +14,13 @@ export const createCourse = CatchAsyncError(async (req: Request, res: Response, 
         course 
     });
 });
+
+// get allcourse
+export const getAllCoursesServices = CatchAsyncError(async (req: Request, res: Response, next:NextFunction)=>{
+    const courses = await CourseModel.find().sort({ceratedAt:-1})
+    
+    res.status(200).json({
+        success:true,
+        courses
+    })
+})

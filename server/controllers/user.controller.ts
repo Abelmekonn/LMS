@@ -9,10 +9,10 @@ import path from "path";
 import sendMail from "../utils/sendMail";
 import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt";
 import { redis } from "../utils/redis";
-import { getUserById } from "../services/user.service";
+import { getAllUsersService, getUserById, updateUserRoleService } from "../services/user.service";
 import { json } from "stream/consumers";
 import cloudinary from "cloudinary"
-
+import { getAllUsersService } from "../services/user.service";
 // Register user
 interface IRegistrationBody {
     name: string;
@@ -339,5 +339,38 @@ export const updateAvatar = CatchAsyncError(async (req: Request, res: Response, 
         })
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 400))
+    }
+})
+
+// Get all users for admin
+export const getAllUsers = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        await getAllUsersService(res, next);
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400));
+    }
+});
+
+// update user role
+export const updateUserRole = CatchAsyncError(async (req: Request, res: Response, next:NextFunction)=>{
+    try {
+        const {role , id} = req.body
+        updateUserRoleService(res,id,role)
+    } catch (error) {
+        
+    }
+})
+
+// delete user for only admin 
+export const deleteUser = CatchAsyncError(async (req: Request, res: Response, next: NextFunction)=>{
+    try {
+        const {id} = req.params;
+        const user = await userModel.findById(id);
+        if(!user) {
+            return next(new ErrorHandler("user not found", 404))
+        }
+        
+    } catch (error:any) {
+        return next(new ErrorHandler(error.message,400))
     }
 })
