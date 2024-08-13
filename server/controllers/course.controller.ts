@@ -6,9 +6,7 @@ import { createCourse, getAllCoursesServices } from "../services/course.service"
 import CourseModel from "../models/course.model";
 import { redis } from "../utils/redis";
 import mongoose from "mongoose";
-import path from "path";
 import sendMail from "../utils/sendMail";
-import ejs from "ejs";
 import NotificationModel from "../models/notfication.model";
 
 // upload course
