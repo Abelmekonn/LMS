@@ -67,19 +67,24 @@ const Header: FC<Props> = ({ activeItem, setOpen }) => {
                 {/* mobile sidebar */}
                 {
                     openSidebar && (
-                        <div className="fixed w-full h-screen top-0 left-0 z-[99999] dark:bg-[unset] bg-[#00000024]"
+                        <div className="fixed w-full h-screen top-0 left-0 z-[99999] dark:bg-[unset] bg-[#00000024] mx-2"
                             onClick={handelClose}
                             id='screen'
                         >
-                            <div className='w-[70%] fixed z-[999999999] h-screen bg-white dark:bg-slate-500 dark:bg-opacity-50 top-0 right-0'>
+                            <div className='w-[70%] fixed z-[999999999] h-screen bg-white dark:bg-slate-900 dark:bg-opacity-90 top-0 right-0'>
                                 <NavItems
                                     activeItem={activeItem}
                                     isMobile={true} />
                                 <HiOutlineUserCircle
                                     size={25}
-                                    className='cursor-pointer dark:text-white text-black'
+                                    className='cursor-pointer dark:text-white text-black w-full text-center'
                                     onClick={() => setOpen(true)}
                                 />
+                                <br />
+                                <br />
+                                <p className='text-[16px] px-2 pl-5 text-black black:text-white w-full text-center'>
+                                    Copyright &#169; 2023 ELearning
+                                </p>
                             </div>
                         </div>
                     )
