@@ -52,13 +52,13 @@ const Header: FC<Props> = ({ activeItem, setOpen }) => {
                             <div className='md:hidden'>
                                 <HiOutlineMenuAlt3
                                     size={25}
-                                    className="cursor-pointer dark:text-white text-black"
+                                    className=" cursor-pointer dark:text-white text-black"
                                     onClick={() => setOpenSidebar(true)}
                                 />
                             </div>
                             <HiOutlineUserCircle
                                 size={25}
-                                className='cursor-pointer dark:text-white text-black'
+                                className='hidden md:block cursor-pointer dark:text-white text-black'
                                 onClick={() => setOpen(true)}
                             />
                         </div>
@@ -67,7 +67,7 @@ const Header: FC<Props> = ({ activeItem, setOpen }) => {
                 {/* mobile sidebar */}
                 {
                     openSidebar && (
-                        <div className="fixed w-full h-screen top-0 left-0 z-[99999] dark:bg-[unset] bg-[#00000024] mx-2"
+                        <div className="fixed w-full h-screen top-0 left-0 z-[99999] dark:bg-[unset] bg-[#00000024] mx-3"
                             onClick={handelClose}
                             id='screen'
                         >
@@ -77,12 +77,12 @@ const Header: FC<Props> = ({ activeItem, setOpen }) => {
                                     isMobile={true} />
                                 <HiOutlineUserCircle
                                     size={25}
-                                    className='cursor-pointer dark:text-white text-black w-full text-center'
+                                    className='cursor-pointer ml-3 dark:text-white text-black '
                                     onClick={() => setOpen(true)}
                                 />
                                 <br />
                                 <br />
-                                <p className='text-[16px] px-2 pl-5 text-black black:text-white w-full text-center'>
+                                <p className='text-[16px] px-2  text-black dark:text-white'>
                                     Copyright &#169; 2023 ELearning
                                 </p>
                             </div>
