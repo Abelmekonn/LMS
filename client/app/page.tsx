@@ -1,24 +1,26 @@
 'use client'
-import React,{FC,useState} from "react"
+import React, { FC, useState } from "react"
 import Heading from "./utils/Heading";
 import Header from "./components/Header";
-interface Props {}
+import { Hero } from "./components/Route/Hero";
+interface Props { }
 
 const Page: FC<Props> = (Props) => {
-  const [open,setOpen]=useState(false);
-  const [activeItem,setActiveItem]=useState(0);
-  return(
-    <div>
-      <Heading 
-      title="ELearning"
-      description="vghfhtdd"
-      keywords="vgvhvvjh"
+  const [open, setOpen] = useState(false);
+  const [activeItem, setActiveItem] = useState(0);
+  return (
+    <div className="">
+      <Heading
+        title="ELearning"
+        description="vghfhtdd"
+        keywords="vgvhvvjh"
       />
-      <Header 
-      open={open}
-      setOpen={setOpen}
-      activeItem={activeItem}
+      <Header
+        open={open}
+        setOpen={setOpen}
+        activeItem={activeItem}
       />
+      <Hero />
     </div>
   )
 }

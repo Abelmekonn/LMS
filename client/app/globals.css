@@ -20,6 +20,9 @@ body {
   color: rgb(var(--foreground-rgb));
 }
 
+
+
+
 .hero_animation {
   background-image: linear-gradient(147.92deg, hsla(239,76%,53%,0.456) 10.41%, hsla(0,0% , 100%, 0) 89.25%);
   animation: changeBackgroundColor  8s infinite alternate;
@@ -44,4 +47,20 @@ body {
   83.33%{
     opacity: 0.4;
   }
+}
+
+.first-color { 
+	background: #323643; 
+}
+	
+.second-color { 
+	background: #606470; 
+}
+
+.third-color { 
+	background: #93deff; 
+}
+
+.fourth-color { 
+	background: #f7f7f7; 
 }
