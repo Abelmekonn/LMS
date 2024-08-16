@@ -1,10 +1,12 @@
 "use client"
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { AiOutlineEye, AiOutlineEyeInvisible, AiFillGithub } from "react-icons/ai"
 import { FcGoogle } from "react-icons/fc"
 import { styles } from '../../styles/style'
+import { useRegistrationMutation } from '../../../redux/features/auth/authApi'
+import toast from 'react-hot-toast'
 
 type Props = {
     setRoute: (route: string) => void;
@@ -21,7 +23,25 @@ const schema = Yup.object().shape({
 })
 
 const SignUp: FC<Props> = ({ setRoute }) => {
-    const [show, setShow] = useState(false)
+    const [show, setShow] = useState(false);
+    const [register, { isSuccess, data, error }] = useRegistrationMutation();
+
+    useEffect(() => {
+        if (isSuccess) {
+            const message = data?.message || "Registration success";
+            toast.success(message);
+            setRoute("verification");
+        }
+        if (error) {
+            if ("data" in error) {
+                const errorData = error as any;
+                toast.error(errorData.data.message);
+                console.error("Error Details:", errorData.data);
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isSuccess, error]);
+
     const formik = useFormik({
         initialValues: {
             name: "",
@@ -29,12 +49,17 @@ const SignUp: FC<Props> = ({ setRoute }) => {
             password: "",
         },
         validationSchema: schema,
-        onSubmit: async ({ email, password }) => {
-            setRoute("verification")
+        onSubmit: async ({ email, password, name }) => {
+            try {
+                const response = await register({ name, email, password }).unwrap();
+                console.log("Registration Response:", response);
+            } catch (error) {
+                console.error("Registration Error:", error);
+            }
         }
     });
 
-    const { errors, touched, values, handleChange, handleSubmit } = formik
+    const { errors, touched, values, handleChange, handleSubmit } = formik;
 
     return (
         <div className='w-full'>
@@ -54,11 +79,11 @@ const SignUp: FC<Props> = ({ setRoute }) => {
                         value={values.name}
                         onChange={handleChange}
                         className={`${errors.name && touched.name && "border-red-500 "} ${styles.input}`}
-                        placeholder='Jhon...'
+                        placeholder='John...'
                     />
                     {errors.name && touched.name && (
-                    <span className='text-red-500 pt-2 block'>{errors.name}</span>
-                )}
+                        <span className='text-red-500 pt-2 block'>{errors.name}</span>
+                    )}
                 </div>
                 <label className={`${styles.label}`}
                     htmlFor='email'
@@ -135,7 +160,7 @@ const SignUp: FC<Props> = ({ setRoute }) => {
             </form>
             <br />
         </div>
-    )
-}
+    );
+};
 
-export default SignUp
+export default SignUp;

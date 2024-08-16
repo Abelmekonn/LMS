@@ -9,7 +9,6 @@ import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt
 import { redis } from "../utils/redis";
 import { getAllUsersService, getUserById, updateUserRoleService } from "../services/user.service";
 import cloudinary from "cloudinary"
-import { getAllUsersService } from "../services/user.service";
 // Register user
 interface IRegistrationBody {
     name: string;
@@ -18,6 +17,7 @@ interface IRegistrationBody {
 }
 
 export const registrationUser = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    console.log("Incoming Request Body:", req.body);
     const { name, email, password } = req.body;
 
     const isEmailExist = await userModel.findOne({ email });
