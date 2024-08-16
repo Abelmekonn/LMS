@@ -1,13 +1,13 @@
-import React, { FC } from 'react'
-import { Modal, Box } from "@mui/material"
+import React, { FC } from 'react';
+import { Modal, Box } from '@mui/material';
 
 type Props = {
     open: boolean;
     setOpen: (open: boolean) => void;
-    activeItem: any;
-    component: any;
+    activeItem: number | string; // Replace with a more specific type if needed
+    component: React.ComponentType<{ setOpen: (open: boolean) => void; setRoute: (route: string) => void }>;
     setRoute: (route: string) => void;
-}
+};
 
 const CustomModel: FC<Props> = ({ open, setOpen, setRoute, component: Component, activeItem }) => {
     return (
@@ -23,7 +23,7 @@ const CustomModel: FC<Props> = ({ open, setOpen, setRoute, component: Component,
                 <Component setOpen={setOpen} setRoute={setRoute} />
             </Box>
         </Modal>
-    )
-}
+    );
+};
 
-export default CustomModel
+export default CustomModel;

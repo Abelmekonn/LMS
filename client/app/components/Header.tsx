@@ -5,6 +5,8 @@ import { ThemeSwitcher } from '../utils/ThemeSwitcher';
 import { HiOutlineMenuAlt3, HiOutlineUserCircle } from "react-icons/hi"
 import CustomModel from "../utils/CustomModel"
 import Login from "../components/Auth/Login"
+import SignUp from "../components/Auth/SignUp"
+import Verification from "../components/Auth/Verification.tsx"
 type Props = {
     open: boolean;
     setOpen: (open: boolean) => void;
@@ -80,7 +82,10 @@ const Header: FC<Props> = ({ activeItem, setOpen,route,setRoute , open }) => {
                             <HiOutlineUserCircle
                                 size={25}
                                 className='hidden md:block cursor-pointer dark:text-white text-black'
-                                onClick={() => setOpen(true)}
+                                onClick={() => {
+                                    setRoute("login");
+                                    setOpen(true);
+                                }}
                             />
                         </div>
                     </div>
@@ -99,7 +104,11 @@ const Header: FC<Props> = ({ activeItem, setOpen,route,setRoute , open }) => {
                                 <HiOutlineUserCircle
                                     size={25}
                                     className='cursor-pointer ml-3 dark:text-white text-black '
-                                    onClick={() => setOpen(true)}
+                                    onClick={() => {
+                                        setRoute("login");
+                                        setOpen(true);
+                                        setOpenSidebar(false);
+                                    }}
                                 />
                                 <br />
                                 <br />
@@ -112,11 +121,6 @@ const Header: FC<Props> = ({ activeItem, setOpen,route,setRoute , open }) => {
                 }
             </div>
             {
-                route === "sign-up" && (
-                    <></>
-                )
-            } 
-            {
                 route === "login" && (
                     <>
                         {
@@ -127,6 +131,40 @@ const Header: FC<Props> = ({ activeItem, setOpen,route,setRoute , open }) => {
                                     setRoute={setRoute}
                                     activeItem={activeItem}
                                     component={Login}
+                                />
+                            )
+                        }
+                    </>
+                )
+            }
+            {
+                route === "sign-up" && (
+                    <>
+                        {
+                            open && (
+                                <CustomModel 
+                                    open={open}
+                                    setOpen={setOpen}
+                                    setRoute={setRoute}
+                                    activeItem={activeItem}
+                                    component={SignUp}
+                                />
+                            )
+                        }
+                    </>
+                )
+            }
+            {
+                route === "verification" && (
+                    <>
+                        {
+                            open && (
+                                <CustomModel 
+                                    open={open}
+                                    setOpen={setOpen}
+                                    setRoute={setRoute}
+                                    activeItem={activeItem}
+                                    component={Verification}
                                 />
                             )
                         }
