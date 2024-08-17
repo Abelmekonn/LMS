@@ -8,7 +8,6 @@ import { updateAccessToken } from "../controllers/user.controller";
 // Authenticated user
 export const isAuthenticated = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const accessToken = req.cookies.access_token as string;
-    console.log(accessToken)
     if (!accessToken) {
         return next(new ErrorHandler("Please login to access this resource", 401));
     }
@@ -16,7 +15,6 @@ export const isAuthenticated = CatchAsyncError(async (req: Request, res: Respons
     try {
         // Verify the token
         const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN as string) as JwtPayload;
-        console.log(decoded)
         // Check if the token is expired
         if (decoded.exp && decoded.exp <= Date.now() / 1000) {
             // Refresh the access token

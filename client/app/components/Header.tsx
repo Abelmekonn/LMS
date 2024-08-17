@@ -8,19 +8,21 @@ import Login from "../components/Auth/Login"
 import SignUp from "../components/Auth/SignUp"
 import Verification from "../components/Auth/Verification"
 import { useSelector } from 'react-redux';
+import avatar from "../../public/assets/avatar.jpg"
+import Image from 'next/image';
 type Props = {
     open: boolean;
     setOpen: (open: boolean) => void;
     activeItem: number;
-    route:string;
-    setRoute:(route : string) => void;
+    route: string;
+    setRoute: (route: string) => void;
 }
 
-const Header: FC<Props> = ({ activeItem, setOpen,route,setRoute , open }) => {
+const Header: FC<Props> = ({ activeItem, setOpen, route, setRoute, open }) => {
     const [active, setActive] = useState(false)
     const [openSidebar, setOpenSidebar] = useState(false)
 
-    const{user} = useSelector((state:any)=> state.auth)
+    const { user } = useSelector((state: any) => state.auth)
 
     // Debounce function
     const debounce = (func: Function, wait: number) => {
@@ -82,14 +84,28 @@ const Header: FC<Props> = ({ activeItem, setOpen,route,setRoute , open }) => {
                                     onClick={() => setOpenSidebar(true)}
                                 />
                             </div>
-                            <HiOutlineUserCircle
-                                size={25}
-                                className='hidden md:block cursor-pointer dark:text-white text-black'
-                                onClick={() => {
-                                    setRoute("login");
-                                    setOpen(true);
-                                }}
-                            />
+                            {
+                                user ? (
+                                    <>
+                                    <Link href={"/profile"}>
+                                        <Image
+                                            src={user.avatar ? user.avatar : avatar}
+                                            alt=""
+                                            className='w-[30px] h-[30px] rounded-full cursor-pointer'
+                                        />
+                                        </Link>
+                                    </>
+                                ) : (
+                                    <HiOutlineUserCircle
+                                        size={25}
+                                        className='hidden md:block cursor-pointer dark:text-white text-black'
+                                        onClick={() => {
+                                            setRoute("login");
+                                            setOpen(true);
+                                        }}
+                                    />
+                                )
+                            }
                         </div>
                     </div>
                 </div>
@@ -128,7 +144,7 @@ const Header: FC<Props> = ({ activeItem, setOpen,route,setRoute , open }) => {
                     <>
                         {
                             open && (
-                                <CustomModel 
+                                <CustomModel
                                     open={open}
                                     setOpen={setOpen}
                                     setRoute={setRoute}
@@ -145,7 +161,7 @@ const Header: FC<Props> = ({ activeItem, setOpen,route,setRoute , open }) => {
                     <>
                         {
                             open && (
-                                <CustomModel 
+                                <CustomModel
                                     open={open}
                                     setOpen={setOpen}
                                     setRoute={setRoute}
@@ -162,7 +178,7 @@ const Header: FC<Props> = ({ activeItem, setOpen,route,setRoute , open }) => {
                     <>
                         {
                             open && (
-                                <CustomModel 
+                                <CustomModel
                                     open={open}
                                     setOpen={setOpen}
                                     setRoute={setRoute}

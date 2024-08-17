@@ -5,6 +5,7 @@ import { Poppins } from "next/font/google";
 import { Josefin_Sans } from "next/font/google";
 import { ThemeProvider } from "./utils/theme-provider";
 import { Providers } from "./Provider"; // Ensure this path is correct
+import { SessionProvider } from "next-auth/react";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -30,10 +31,12 @@ export default function RootLayout({
         className={`${poppins.variable} ${josefin_Sans.variable} !bg-[#f8f9f5] bg-no-repeat dark:bg-gradient-to-b dark:from-black dark:to-black duration-300`}
       >
         <Providers> {/* Wrap children with Providers */}
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {children}
-            <Toaster position="top-center" reverseOrder={false} />
-          </ThemeProvider>
+          <SessionProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              {children}
+              <Toaster position="top-center" reverseOrder={false} />
+            </ThemeProvider>
+          </SessionProvider>
         </Providers>
       </body>
     </html>
