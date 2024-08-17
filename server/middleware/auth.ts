@@ -7,30 +7,40 @@ import { updateAccessToken } from "../controllers/user.controller";
 
 // Authenticated user
 export const isAuthenticated = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const access_token = req.cookies.access_token as string;
-
-    if (!access_token) {
-        return next(new ErrorHandler("Please login to access this resource", 400));
+    const accessToken = req.cookies.access_token as string;
+    console.log(accessToken)
+    if (!accessToken) {
+        return next(new ErrorHandler("Please login to access this resource", 401));
     }
+
     try {
-        const decoded = jwt.decode(access_token) as JwtPayload;
-        
+        // Verify the token
+        const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN as string) as JwtPayload;
+        console.log(decoded)
+        // Check if the token is expired
         if (decoded.exp && decoded.exp <= Date.now() / 1000) {
-            
-            updateAccessToken(req, res, next);
-        } else {
-            const user = await redis.get(decoded.id);
-
-            if (!user) {
-                return next(new ErrorHandler("Please login to access this resource", 400));
-            }
-
-            req.user = JSON.parse(user);
-            next();
+            // Refresh the access token
+            await updateAccessToken(req, res, next);
+            return; // Exit to avoid further processing
         }
+
+        // Validate the user from Redis
+        const user = await redis.get(decoded.id as string);
+
+        if (!user) {
+            return next(new ErrorHandler("Please login to access this resource", 401));
+        }
+
+        req.user = JSON.parse(user);
+        next();
     } catch (error) {
-        console.error('Error verifying token:', error);
-        return next(new ErrorHandler("Invalid or expired access token", 401));
+        // If token expired error, handle it by refreshing the token
+        if (error.name === "TokenExpiredError") {
+            await updateAccessToken(req, res, next);
+        } else {
+            console.error('Error verifying token:', error);
+            return next(new ErrorHandler("Invalid or expired access token", 401));
+        }
     }
 });
 

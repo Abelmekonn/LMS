@@ -147,21 +147,22 @@ export const logoutUser = CatchAsyncError(
 );
 
 export const updateAccessToken = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const refresh_token = req.cookies.refresh_token as string;
-    if (!refresh_token) {
-        return next(new ErrorHandler("Refresh token is missing", 400));
+    const refreshToken = req.cookies.refresh_token as string;
+
+    if (!refreshToken) {
+        return next(new ErrorHandler("Refresh token is missing", 401));
     }
 
     let decoded: JwtPayload;
     try {
-        decoded = jwt.verify(refresh_token, process.env.REFRESH_TOKEN as string) as JwtPayload;
+        decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN as string) as JwtPayload;
     } catch (error) {
-        return next(new ErrorHandler("Invalid refresh token", 400));
+        return next(new ErrorHandler("Invalid refresh token", 401));
     }
 
     const session = await redis.get(decoded.id as string);
     if (!session) {
-        return next(new ErrorHandler("Please login to access this resource!", 400));
+        return next(new ErrorHandler("Session expired. Please login again.", 401));
     }
 
     const user = JSON.parse(session);
@@ -169,22 +170,22 @@ export const updateAccessToken = CatchAsyncError(async (req: Request, res: Respo
     const accessToken = jwt.sign(
         { id: user._id },
         process.env.ACCESS_TOKEN as string,
-        { expiresIn: process.env.ACCESS_TOKEN_EXPIRE }
+        { expiresIn: 15 * 60 * 1000 }
     );
 
-    const refreshToken = jwt.sign(
+    const newRefreshToken = jwt.sign(
         { id: user._id },
         process.env.REFRESH_TOKEN as string,
-        { expiresIn: process.env.REFRESH_TOKEN_EXPIRE }
+        { expiresIn: 7 * 24 * 60 * 60 * 1000 }
     );
 
     req.user = user;
 
+    // Set new tokens
+    res.cookie("access_token", accessToken, { httpOnly: true, sameSite: 'strict', maxAge: 3600000 }); // Example: 1 hour
+    res.cookie("refresh_token", newRefreshToken, { httpOnly: true, sameSite: 'strict', maxAge: 604800000 }); // Example: 7 days
+
     await redis.set(user._id, JSON.stringify(user), "EX", 604800); // 7 days
-
-
-    res.cookie("access_token", accessToken, accessTokenOptions)
-    res.cookie("refresh_token", refreshToken, refreshTokenOptions)
 
     res.status(200).json({
         success: true,
@@ -193,13 +194,14 @@ export const updateAccessToken = CatchAsyncError(async (req: Request, res: Respo
 });
 
 
+
 // get user
 export const getUserInfo = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const userId = req.user?._id as string
-        getUserById(userId, res)
-    } catch (error) {
-
+        await getUserById(userId, res)
+    } catch (error:any) {
+        return next(new ErrorHandler(error.message, 400));
     }
 })
 
