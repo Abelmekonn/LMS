@@ -29,20 +29,20 @@ export const authApi = apiSlice.injectEndpoints({
             },
         }),
         activation: builder.mutation({
-            query: ({activation_code,activation_token}) => ({
+            query: ({ activation_code, activation_token }) => ({
                 url: 'activate-user',
                 method: 'POST',
-                body:{
+                body: {
                     activation_code,
                     activation_token
                 }
             })
         }),
         login: builder.mutation({
-            query: ({email,password}) => ({
-                url:"login-user",
+            query: ({ email, password }) => ({
+                url: "login-user",
                 method: "POST",
-                body:{
+                body: {
                     email,
                     password
                 },
@@ -53,7 +53,30 @@ export const authApi = apiSlice.injectEndpoints({
                     const result = await queryFulfilled;
                     dispatch(userLogin({
                         accessToken: result.data.accessToken,
-                        user:result.data.user
+                        user: result.data.user
+                    }));
+                } catch (error: any) {
+                    console.log(error)
+                }
+            },
+        }),
+        socialAuth: builder.mutation({
+            query: ({ email,name,avatar }) => ({
+                    url: "social-auth",
+                    method: "POST",
+                    body: {
+                        email,
+                        name,
+                        avatar
+                    },
+                    credentials: "include" as const
+                }),
+            async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+                try {
+                    const result = await queryFulfilled;
+                    dispatch(userLogin({
+                        accessToken: result.data.accessToken,
+                        user: result.data.user
                     }));
                 } catch (error: any) {
                     console.log(error)
@@ -63,4 +86,4 @@ export const authApi = apiSlice.injectEndpoints({
     })
 })
 
-export const { useLoginMutation,useRegistrationMutation ,useActivationMutation} = authApi
+export const { useLoginMutation, useRegistrationMutation, useActivationMutation,useSocialAuthMutation } = authApi
