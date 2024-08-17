@@ -1,12 +1,15 @@
 "use client"
-import React, { FC, useState } from 'react'
+import React, { FC, useEffect, useState } from 'react'
 import { useFormik } from "formik"
 import * as Yup from "yup"
 import { AiOutlineEye, AiOutlineEyeInvisible, AiFillGithub } from "react-icons/ai"
 import { FcGoogle } from "react-icons/fc"
 import { styles } from '../../styles/style'
+import { useLoginMutation } from '../../../redux/features/auth/authApi'
+import toast from 'react-hot-toast'
 
 type Props = {
+    setOpen:(open:boolean)=>void;
     setRoute: (route: string) => void;
 }
 
@@ -19,8 +22,10 @@ const schema = Yup.object().shape({
         .required("Password Required"),
 })
 
-const Login: FC<Props> = ({setRoute}) => {
+const Login: FC<Props> = ({setRoute,setOpen}) => {
+    const [login, { isSuccess, error }] = useLoginMutation()
     const [show, setShow] = useState(false)
+
     const formik = useFormik({
         initialValues: {
             email: "",
@@ -28,9 +33,27 @@ const Login: FC<Props> = ({setRoute}) => {
         },
         validationSchema: schema,
         onSubmit: async ({ email, password }) => {
-            console.log(email, password)
-        }
+            try {
+                await login({ email, password });
+            } catch (error) {
+                console.error("Login error:", error);
+            }
+        },
     });
+
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success("Login successfully!");
+            setOpen(false);
+        }
+        if (error) {
+            if ("data" in error) {
+                const errorData = error as any;
+                toast.error(errorData.data.message);
+                console.error("Error Details:", errorData.data);
+            }
+        }
+    }, [isSuccess, error, setOpen]);
 
     const { errors, touched, values, handleChange, handleSubmit } = formik
 
@@ -40,9 +63,7 @@ const Login: FC<Props> = ({setRoute}) => {
                 Login with ELearning
             </h1>
             <form onSubmit={handleSubmit}>
-                <label className={`${styles.label}`}
-                    htmlFor='email'
-                >
+                <label className={`${styles.label}`} htmlFor='email'>
                     Enter your Email
                 </label>
                 <input type="email"
@@ -50,7 +71,7 @@ const Login: FC<Props> = ({setRoute}) => {
                     name="email"
                     value={values.email}
                     onChange={handleChange}
-                    className={`${errors.email && touched.email && "border-red-500 "} ${styles.input}`}
+                    className={`${errors.email && touched.email ? "border-red-500" : ""} ${styles.input}`}
                     placeholder='loginmail@gmail.com'
                 />
                 {errors.email && touched.email && (
@@ -65,7 +86,7 @@ const Login: FC<Props> = ({setRoute}) => {
                         name="password"
                         value={values.password}
                         onChange={handleChange}
-                        className={`${errors.password && touched.password && "border-red-500 "} ${styles.input}`}
+                        className={`${errors.password && touched.password ? "border-red-500" : ""} ${styles.input}`}
                         placeholder='password!@%'
                     />
                     {!show ? (
@@ -110,7 +131,7 @@ const Login: FC<Props> = ({setRoute}) => {
                     <AiFillGithub size={30} className='cursor-pointer ml-2' />
                 </div>
                 <p className="text-white mt-4 w-full text-center">
-                    Don't have an account? <span className="text-sm text-blue-500 hover:underline cursor-pointer" onClick={()=>setRoute("sign-up")}>Signup</span>
+                    Don't have an account? <span className="text-sm text-blue-500 hover:underline cursor-pointer" onClick={() => setRoute("sign-up")}>Signup</span>
                 </p>
             </form>
             <br />

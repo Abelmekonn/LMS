@@ -148,7 +148,6 @@ export const logoutUser = CatchAsyncError(
 
 export const updateAccessToken = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const refresh_token = req.cookies.refresh_token as string;
-
     if (!refresh_token) {
         return next(new ErrorHandler("Refresh token is missing", 400));
     }

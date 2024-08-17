@@ -17,19 +17,19 @@ const refreshTokenExpire = parseInt(process.env.REFRESH_TOKEN_EXPIRE || "1200", 
 
 // Options for cookies
 export const accessTokenOptions: ITokenOptions = {
-    expires: new Date(Date.now() + accessTokenExpire * 60 * 60 * 1000),
-    maxAge: accessTokenExpire * 60 * 60 * 1000,
+    expires: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
+    maxAge: 15 * 60 * 1000, // 15 minutes
     httpOnly: true,
-    sameSite: "none",
-    secure: false,
+    sameSite: "lax",
+    secure: false, // Ensure this is false in non-HTTPS environments
 };
 
 export const refreshTokenOptions: ITokenOptions = {
-    expires: new Date(Date.now() + refreshTokenExpire * 24 * 60 * 60 * 1000),
-    maxAge: refreshTokenExpire * 24 * 60 * 60 * 1000,
+    expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     httpOnly: true,
-    sameSite: "none",
-    secure: false,
+    sameSite: "lax",
+    secure: false, // Ensure this is false in non-HTTPS environments
 };
 
 export const sendToken = (user: IUser, statusCode: number, res: Response) => {

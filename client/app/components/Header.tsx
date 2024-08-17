@@ -6,7 +6,8 @@ import { HiOutlineMenuAlt3, HiOutlineUserCircle } from "react-icons/hi"
 import CustomModel from "../utils/CustomModel"
 import Login from "../components/Auth/Login"
 import SignUp from "../components/Auth/SignUp"
-import Verification from "../components/Auth/Verification.tsx"
+import Verification from "../components/Auth/Verification"
+import { useSelector } from 'react-redux';
 type Props = {
     open: boolean;
     setOpen: (open: boolean) => void;
@@ -18,6 +19,8 @@ type Props = {
 const Header: FC<Props> = ({ activeItem, setOpen,route,setRoute , open }) => {
     const [active, setActive] = useState(false)
     const [openSidebar, setOpenSidebar] = useState(false)
+
+    const{user} = useSelector((state:any)=> state.auth)
 
     // Debounce function
     const debounce = (func: Function, wait: number) => {
@@ -51,7 +54,7 @@ const Header: FC<Props> = ({ activeItem, setOpen,route,setRoute , open }) => {
             setOpenSidebar(false);
         }
     };
-
+    console.log(user)
     return (
         <div className='w-full relative'>
             <div className={`${active ?
