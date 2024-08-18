@@ -1,26 +1,38 @@
-"use client"
-import React, { FC, useState } from 'react'
-import Protected from '../hooks/useProtected'
-import Heading from '../utils/Heading'
-import Header from '../components/Header'
-import Profile from "../components/profiles/Profile"
-import { useSelector } from 'react-redux'
+'use client';
+import React, { FC, useState, useEffect } from 'react';
+import Protected from '../hooks/useProtected';
+import Heading from '../utils/Heading';
+import Header from '../components/Header';
+import Profile from '../components/profiles/Profile';
+import { useSelector } from 'react-redux';
 
-type Props = {}
+type Props = {};
 
-const Page: FC<Props> = (Props) => {
+const Page: FC<Props> = () => {
     const [open, setOpen] = useState(false);
     const [activeItem, setActiveItem] = useState(0);
-    const [route, setRoute] = useState("Login")
-    const {user} = useSelector((state : any)=>state.auth)
-    console.log("user",user)
+    const [route, setRoute] = useState("Login");
+    const { user } = useSelector((state: any) => state.auth);
+
+    // State to track if the component has mounted
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    if (!isMounted) {
+        // Render a loading state or nothing until the component is mounted
+        return null;
+    }
+
     return (
         <div>
             <Protected>
                 <Heading
                     title="ELearning"
-                    description="vghfhtdd"
-                    keywords="vgvhvvjh"
+                    description="Learning platform"
+                    keywords="elearning, education"
                 />
                 <Header
                     open={open}
@@ -29,10 +41,10 @@ const Page: FC<Props> = (Props) => {
                     setRoute={setRoute}
                     route={route}
                 />
-                <Profile />
+                <Profile user={user} />
             </Protected>
         </div>
-    )
-}
+    );
+};
 
-export default Page
+export default Page;
