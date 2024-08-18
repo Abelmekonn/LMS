@@ -1,5 +1,4 @@
 "use client";
-import type { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 import { Poppins } from "next/font/google";
 import { Josefin_Sans } from "next/font/google";
