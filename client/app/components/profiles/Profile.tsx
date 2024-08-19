@@ -86,7 +86,14 @@ const Profile: FC<Props> = ({ user }) => {
             logOutHandler={logOutHandler}
           />
         </div>
-        {active === 1 && <ProfileInfo />}
+        {active === 1 && (
+          <div className='w-full h-full bg-transparent mt-[80px]'>
+            <ProfileInfo
+              user={user}
+              avatar={avatar}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
