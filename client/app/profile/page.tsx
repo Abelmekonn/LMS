@@ -30,7 +30,7 @@ const Page: FC<Props> = () => {
         <div>
             <Protected>
                 <Heading
-                    title="ELearning"
+                    title={`${user.name} profile`}
                     description="Learning platform"
                     keywords="elearning, education"
                 />
