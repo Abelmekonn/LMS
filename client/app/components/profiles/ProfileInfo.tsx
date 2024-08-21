@@ -3,8 +3,9 @@ import React, { FC, useEffect, useState } from 'react';
 import avatarDefault from '../../../public/assets/avatar.jpg';
 import { AiOutlineCamera } from 'react-icons/ai';
 import { styles } from '../../../app/styles/style';
-import { useUpdateAvatarMutation } from '../../../redux/features/user/userApi';
+import { useEditProfileMutation, useUpdateAvatarMutation } from '../../../redux/features/user/userApi';
 import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
+import toast from 'react-hot-toast';
 
 type Props = {
     avatar: string | null;
@@ -17,7 +18,8 @@ type Props = {
 
 const ProfileInfo: FC<Props> = ({ avatar, user }) => {
     const [name, setName] = useState(user.name || '');
-    const [updateAvatar, { isSuccess, isError, error }] = useUpdateAvatarMutation();
+    const [updateAvatar,{isSuccess,isError}] = useUpdateAvatarMutation();
+    const [editProfile, { isSuccess: success, isError: updateError, error: updateErrorDetails }] = useEditProfileMutation();
     const [loadingUser, setLoadingUser] = useState(false);
     const { data: loadedUser, isLoading } = useLoadUserQuery(undefined, { skip: !loadingUser });
 
@@ -28,27 +30,33 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
             fileReader.onload = () => {
                 if (fileReader.readyState === 2) {
                     const avatarUrl = fileReader.result as string;
-                    updateAvatar(avatarUrl);
+                    updateAvatar(avatarUrl).catch((error) => console.error("Error updating avatar:", error));
                 }
             };
             fileReader.readAsDataURL(file);
         }
     };
 
-    console.log(user.avatar)
     useEffect(() => {
-        if (isSuccess) {
+        if (success || isSuccess) {
             setLoadingUser(true);
+            toast.success("profile updated")
         }
-        if (isError) {
-            console.error(error);
+        if (updateError || isError) {
+            console.error("Update profile error:", updateErrorDetails);
         }
-    }, [isSuccess, isError, error]);
+    }, [success, updateError, updateErrorDetails,isSuccess,isError]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("Submitting profile update...");
-        // Add logic to update the user's profile
+        if (name.trim() !== '') {
+            try {
+                await editProfile({ name }).unwrap();
+                // Optionally, you can set success state or trigger other actions
+            } catch (error) {
+                console.error("Error updating profile:", error);
+            }
+        }
     };
 
     return (
@@ -56,11 +64,12 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
             <div className='w-full flex justify-center'>
                 <div className="relative">
                     <Image
-                        src={user.avatar.url || avatar || avatarDefault}
+                        src={user.avatar ? user.avatar.url : avatarDefault}
                         alt='User Avatar'
                         className='w-[120px] h-[120px] cursor-pointer border-[3px] border-[#37a39a] rounded-full'
                         width={120}
                         height={120}
+                        priority
                     />
                     <input
                         type="file"
@@ -103,7 +112,6 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
                             type="submit" 
                             className={`w-[50%] md:w-[250px] h-[40px] border border-[#37a39a] text-center dark:text-[#fff] text-black rounded-[3px] mt-8 cursor-pointer`}
                             value="Update Profile"
-                            required
                         />
                     </div>
                 </form>
