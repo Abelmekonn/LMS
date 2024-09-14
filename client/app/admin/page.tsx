@@ -3,6 +3,7 @@ import React from 'react'
 import Heading from '../utils/Heading'
 import AdminSidebar from "../components/Admin/Sidebar/AdminSidebar"
 import AdminProtected from '../hooks/adminProtected'
+import AdminLayout from '../components/Admin/adminLayout/AdminLayout'
 type Props = {}
 
 const page = (props: Props) => {
@@ -14,11 +15,9 @@ const page = (props: Props) => {
                     description="Learning platform"
                     keywords="ELearning, education"
                 />
-                <div className="flex h-[200hv]">
-                    <div className="w-1/5 2xl:w-[16%]">
-                        <AdminSidebar />
-                    </div>
-                </div>
+                <AdminLayout>
+                    
+                </AdminLayout>
             </AdminProtected>
         </div>
     )
