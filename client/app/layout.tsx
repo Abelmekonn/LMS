@@ -49,7 +49,7 @@ const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isLoading } = useLoadUserQuery({});
 
   if (isLoading) {
-    return <div><Loader /></div>; // Display a loading indicator
+    return <div className="w-full h-screen absolute"><Loader /></div>; 
   }
 
   return (
