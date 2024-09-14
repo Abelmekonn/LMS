@@ -44,7 +44,7 @@ const AdminHeader: FC<Props> = ({ user }) => {
                 </Link>
             </Box>
             {/* Search Bar */}
-            <Box className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-md px-3 py-1">
+            {/* <Box className="flex items-center bg-gray-100 dark:bg-gray-700 rounded-md px-3 py-1">
                 <InputBase
                     placeholder="Search..."
                     className="flex-1 text-[16px] text-black dark:text-white"
@@ -52,7 +52,7 @@ const AdminHeader: FC<Props> = ({ user }) => {
                 <IconButton type="button" className="text-black dark:text-white">
                     <Search />
                 </IconButton>
-            </Box>
+            </Box> */}
 
             {/* Right Icons (Profile, Notifications) */}
             <Box className="flex items-center gap-4">

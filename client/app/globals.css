@@ -55,6 +55,7 @@ input[type="number"].no-spin {
 
 body {
   color: rgb(var(--foreground-rgb));
+  overflow-x: hidden;
 }
 
 .hero_animation {

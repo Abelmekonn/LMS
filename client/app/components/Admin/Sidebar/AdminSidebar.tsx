@@ -29,8 +29,7 @@ const Item: FC<ItemProps> = ({ title, to, icon, selected, setSelected, collapsed
             <MenuItem
                 active={selected === title}
                 onClick={() => setSelected(title)}
-                className={`text-gray-600 mb-10 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400
-                    ${selected === title ? 'text-blue-500 dark:text-blue-400 font-bold' : ''}`}
+                className={`text-white mb-10 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${selected === title ? 'text-blue-500 dark:text-blue-400 font-bold' : ''}`}
             >
                 <div className={`flex items-center gap-2 ${collapsed ? 'justify-center' : 'justify-start'}`}>
                     <span>{icon}</span>
@@ -46,7 +45,7 @@ const AdminSidebar: FC = () => {
     const [collapsed, setCollapsed] = useState(false); // State to manage sidebar collapse
 
     return (
-        <Box className={`flex flex-col shadow-lg justify-center relative h-full bg-white dark:bg-gray-800 py-6 ${collapsed ? 'w-24' : 'w-52'} transition-width duration-300`}>
+        <Box className={`flex flex-col shadow-lg justify-center relative h-full bg-[#135997] dark:bg-gray-800 py-6 ${collapsed ? 'md:w-24 w-16' : 'w-52'} transition-width duration-300`}>
             <ProSidebar collapsed={collapsed}>
                 <Box className="flex flex-col items-center mt-5 justify-center h-full">
                     <Menu iconShape="circle" className='gap-6'>
