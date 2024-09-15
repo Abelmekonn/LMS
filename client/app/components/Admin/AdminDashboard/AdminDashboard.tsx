@@ -6,8 +6,9 @@ import SchoolIcon from '@mui/icons-material/School';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { Box, Grid, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 // Dynamically import the chart component to avoid SSR issues
 const CourseMonthlyChart = dynamic(() => import('../common/StudentRegistrationsChart'), { ssr: false });
@@ -27,18 +28,18 @@ const AdminDashboard = () => {
             monthlyRegistrations: [12, 22, 32, 42, 52, 62, 72, 82, 92, 102, 112, 122],
         },
     ];
+    
+    const [date, setDate] = useState<Date | null>(new Date());
 
-    const [date, setDate] = useState<Date>(new Date());
-
-    const handleDateChange = (newDate: Date) => {
+    const handleDateChange = (newDate: Date | null) => {
         setDate(newDate);
     };
 
     return (
-        <div>
-            <div className='md:flex justify-between items-start'>
-                {/* Total Students Box */}
-                <div className='flex gap-5 flex-wrap w-full'>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <div>
+                <div className='md:flex justify-around items-start'>
+                    {/* Total Students Box */}
                     <Boxes
                         title="Total Students"
                         value="500+"
@@ -56,36 +57,35 @@ const AdminDashboard = () => {
                         value="$12,000"
                         icon={<AttachMoneyIcon sx={{ fontSize: 40, color: 'green' }} />}
                     />
+                    {/* Calendar */}
+                    <div className="p-4 bg-white shadow-lg rounded-lg w-full md:w-auto">
+                        <DatePicker
+                            value={date}
+                            onChange={handleDateChange}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </div>
                 </div>
 
-                {/* Calendar */}
-                <div className=" bg-white text-black shadow-lg rounded-lg  md:w-auto">
-                    <Calendar
-                        onChange={handleDateChange}
-                        value={date}
-                        className="calendar"
-                    />
+                <div className='mt-10'>
+                    <Typography variant="h4" component="h1" gutterBottom className='text-black dark:text-white'>
+                        Course Registration
+                    </Typography>
+                    <Grid container spacing={2}>
+                        {courses.map((course, index) => (
+                            <Grid item xs={12} md={6} lg={4} key={index}>
+                                <Box sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
+                                    <CourseMonthlyChart
+                                        courseName={course.name}
+                                        monthlyRegistrations={course.monthlyRegistrations}
+                                    />
+                                </Box>
+                            </Grid>
+                        ))}
+                    </Grid>
                 </div>
             </div>
-
-            <div className='mt-10'>
-                <Typography variant="h4" component="h1" gutterBottom className='text-black dark:text-white'>
-                    Course Registration
-                </Typography>
-                <Grid container spacing={2}>
-                    {courses.map((course, index) => (
-                        <Grid item xs={12} md={6} lg={4} key={index}>
-                            <Box sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
-                                <CourseMonthlyChart
-                                    courseName={course.name}
-                                    monthlyRegistrations={course.monthlyRegistrations}
-                                />
-                            </Box>
-                        </Grid>
-                    ))}
-                </Grid>
-            </div>
-        </div>
+        </LocalizationProvider>
     );
 };
 
