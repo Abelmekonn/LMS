@@ -29,7 +29,7 @@ const AdminHeader: FC<Props> = ({ user }) => {
     }, [user]);
 
     return (
-        <Box className="flex h-20 justify-between relative z-50 top-0  w-screen items-center px-6 py-4  bg-white dark:bg-gray-800">
+        <Box className="flex relative h-20 justify-between relative top-0  w-screen items-center px-6 py-4  bg-white dark:bg-gray-800">
             {/* Logo */}
             <Box className=' flex justify-end'>
                 <Image

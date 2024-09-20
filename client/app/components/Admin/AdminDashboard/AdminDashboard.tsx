@@ -1,17 +1,21 @@
 "use client";
-import React, { useState } from 'react';
+import React from 'react';
 import Boxes from '../common/Boxes';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import SchoolIcon from '@mui/icons-material/School';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { Box, Grid, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
+<<<<<<< HEAD
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+=======
+>>>>>>> 79a5d5ac1d09948a12d0cf9ae40a7c8f27bda83b
 
 // Dynamically import the chart component to avoid SSR issues
 const CourseMonthlyChart = dynamic(() => import('../common/StudentRegistrationsChart'), { ssr: false });
 
 const AdminDashboard = () => {
+    // Define course data with registration details
     const courses = [
         {
             name: 'React Basics',
@@ -26,14 +30,9 @@ const AdminDashboard = () => {
             monthlyRegistrations: [12, 22, 32, 42, 52, 62, 72, 82, 92, 102, 112, 122],
         },
     ];
-    
-    const [date, setDate] = useState<Date | null>(new Date());
-
-    const handleDateChange = (newDate: Date | null) => {
-        setDate(newDate);
-    };
 
     return (
+<<<<<<< HEAD
         <LocalizationProvider >
             <div>
                 <div className='md:flex justify-around items-start'>
@@ -56,26 +55,57 @@ const AdminDashboard = () => {
                         icon={<AttachMoneyIcon sx={{ fontSize: 40, color: 'green' }} />}
                     />
                 </div>
+=======
+        <div className="p-4">
+            {/* Main Dashboard Section */}
+            <div className="md:flex justify-around items-start mb-10">
+                {/* Total Students Box */}
+                <Boxes
+                    title="Total Students"
+                    value="500+"
+                    icon={<SchoolIcon sx={{ fontSize: 40, color: 'blue' }} />}
+                />
+>>>>>>> 79a5d5ac1d09948a12d0cf9ae40a7c8f27bda83b
 
-                <div className='mt-10'>
-                    <Typography variant="h4" component="h1" gutterBottom className='text-black dark:text-white'>
-                        Course Registration
-                    </Typography>
-                    <Grid container spacing={2}>
-                        {courses.map((course, index) => (
-                            <Grid item xs={12} md={6} lg={4} key={index}>
-                                <Box sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
-                                    <CourseMonthlyChart
-                                        courseName={course.name}
-                                        monthlyRegistrations={course.monthlyRegistrations}
-                                    />
-                                </Box>
-                            </Grid>
-                        ))}
-                    </Grid>
-                </div>
+                {/* Total Courses Box */}
+                <Boxes
+                    title="Total Courses"
+                    value="30"
+                    icon={<MenuBookIcon sx={{ fontSize: 40, color: 'purple' }} />}
+                />
+
+                {/* Total Earnings Box */}
+                <Boxes
+                    title="Total Earnings"
+                    value="$12,000"
+                    icon={<AttachMoneyIcon sx={{ fontSize: 40, color: 'green' }} />}
+                />
             </div>
-        </LocalizationProvider>
+
+            {/* Course Registration Charts */}
+            <div>
+                <Typography variant="h4" component="h1" gutterBottom className="text-black dark:text-white">
+                    Course Registration Trends
+                </Typography>
+
+                {/* Grid layout for course registration charts */}
+                <Grid container spacing={2}>
+                    {courses.map((course, index) => (
+                        <Grid item xs={12} md={6} lg={4} key={index}>
+                            <Box sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
+                                <Typography className='text-black dark:text-white' variant="h6"  gutterBottom>
+                                    {course.name}
+                                </Typography>
+                                <CourseMonthlyChart
+                                    courseName={course.name}
+                                    monthlyRegistrations={course.monthlyRegistrations}
+                                />
+                            </Box>
+                        </Grid>
+                    ))}
+                </Grid>
+            </div>
+        </div>
     );
 };
 
