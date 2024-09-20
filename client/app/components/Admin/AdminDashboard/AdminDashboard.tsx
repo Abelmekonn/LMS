@@ -6,8 +6,6 @@ import SchoolIcon from '@mui/icons-material/School';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { Box, Grid, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 // Dynamically import the chart component to avoid SSR issues
@@ -36,7 +34,7 @@ const AdminDashboard = () => {
     };
 
     return (
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <LocalizationProvider >
             <div>
                 <div className='md:flex justify-around items-start'>
                     {/* Total Students Box */}
@@ -57,14 +55,6 @@ const AdminDashboard = () => {
                         value="$12,000"
                         icon={<AttachMoneyIcon sx={{ fontSize: 40, color: 'green' }} />}
                     />
-                    {/* Calendar */}
-                    <div className="p-4 bg-white shadow-lg rounded-lg w-full md:w-auto">
-                        <DatePicker
-                            value={date}
-                            onChange={handleDateChange}
-                            renderInput={(params) => <TextField {...params} />}
-                        />
-                    </div>
                 </div>
 
                 <div className='mt-10'>
