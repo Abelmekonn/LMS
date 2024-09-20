@@ -49,6 +49,7 @@ const CourseMonthlyChart: React.FC<CourseMonthlyChartProps> = ({ courseName, mon
             title: {
                 display: true,
                 text: `Monthly Registrations for ${courseName}`,
+                
             },
             tooltip: {
                 callbacks: {
@@ -66,7 +67,7 @@ const CourseMonthlyChart: React.FC<CourseMonthlyChartProps> = ({ courseName, mon
     };
 
     return (
-        <div style={{ height: '400px' }}>
+        <div style={{ height: 'auto' }}>
             <Line data={data} options={options} />
         </div>
     );

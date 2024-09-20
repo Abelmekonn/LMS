@@ -12,7 +12,7 @@
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@mui/icons-material": "^5.16.7",
-    "@mui/material": "^6.1.0",
+    "@mui/material": "^5.16.7",
     "@mui/x-date-pickers": "^7.17.0",
     "@reduxjs/toolkit": "^2.2.7",
     "chart.js": "^4.4.4",
