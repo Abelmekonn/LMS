@@ -6,10 +6,6 @@ import SchoolIcon from '@mui/icons-material/School';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { Box, Grid, Typography } from '@mui/material';
 import dynamic from 'next/dynamic';
-<<<<<<< HEAD
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-=======
->>>>>>> 79a5d5ac1d09948a12d0cf9ae40a7c8f27bda83b
 
 // Dynamically import the chart component to avoid SSR issues
 const CourseMonthlyChart = dynamic(() => import('../common/StudentRegistrationsChart'), { ssr: false });
@@ -32,40 +28,15 @@ const AdminDashboard = () => {
     ];
 
     return (
-<<<<<<< HEAD
-        <LocalizationProvider >
-            <div>
-                <div className='md:flex justify-around items-start'>
-                    {/* Total Students Box */}
-                    <Boxes
-                        title="Total Students"
-                        value="500+"
-                        icon={<SchoolIcon sx={{ fontSize: 40, color: 'blue' }} />}
-                    />
-                    {/* Total Courses Box */}
-                    <Boxes
-                        title="Total Courses"
-                        value="30"
-                        icon={<MenuBookIcon sx={{ fontSize: 40, color: 'purple' }} />}
-                    />
-                    {/* Total Earnings Box */}
-                    <Boxes
-                        title="Total Earn"
-                        value="$12,000"
-                        icon={<AttachMoneyIcon sx={{ fontSize: 40, color: 'green' }} />}
-                    />
-                </div>
-=======
         <div className="p-4">
             {/* Main Dashboard Section */}
-            <div className="md:flex justify-around items-start mb-10">
+            <div className="flex flex-wrap gap-6  mb-10">
                 {/* Total Students Box */}
                 <Boxes
                     title="Total Students"
                     value="500+"
                     icon={<SchoolIcon sx={{ fontSize: 40, color: 'blue' }} />}
                 />
->>>>>>> 79a5d5ac1d09948a12d0cf9ae40a7c8f27bda83b
 
                 {/* Total Courses Box */}
                 <Boxes
@@ -93,7 +64,7 @@ const AdminDashboard = () => {
                     {courses.map((course, index) => (
                         <Grid item xs={12} md={6} lg={4} key={index}>
                             <Box sx={{ p: 2, boxShadow: 3, borderRadius: 2 }}>
-                                <Typography className='text-black dark:text-white' variant="h6"  gutterBottom>
+                                <Typography className="text-black dark:text-white" variant="h6" gutterBottom>
                                     {course.name}
                                 </Typography>
                                 <CourseMonthlyChart

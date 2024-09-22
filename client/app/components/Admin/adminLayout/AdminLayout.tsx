@@ -1,30 +1,29 @@
 "use client";
-import React, { FC, ReactNode } from 'react'; // Import ReactNode for typing children
+import React, { FC, ReactNode } from 'react';
 import AdminHeader from '../AdminHeader/AdminHeader';
 import AdminSidebar from '../Sidebar/AdminSidebar';
 import { useSelector } from 'react-redux';
+import { RootState } from '../../store';
 
 interface AdminLayoutProps {
-    children: ReactNode; // Define the type for children
+    children: ReactNode;
 }
 
 const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
-    const { user } = useSelector((state: any) => state.auth);
+    const { user } = useSelector((state: RootState) => state.auth);
+
     return (
-        <div className="flex h-screen">
+        <div className="flex flex-row h-screen overflow-hidden">
             {/* Sidebar */}
-
-            <div className="fixed z-50 top-0   bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-600">
-                <AdminHeader user={user} />
-            </div>
+            <aside className="flex-shrink-0">
+                <AdminSidebar />
+            </aside>
             {/* Main Content Area */}
-            <div className="flex  flex-1 ">
-                {/* Header */}
-
-                    <AdminSidebar />
-                
-                {/* Page Content */}
-                <main className="pt-16 px-10 pb-4 mt-16 flex-1 overflow-y-auto">
+            <div className="flex flex-col flex-1">
+                <header>
+                    <AdminHeader user={user} />
+                </header>
+                <main className="flex-1 overflow-auto p-4">
                     {children}
                 </main>
             </div>

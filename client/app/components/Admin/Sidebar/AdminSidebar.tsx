@@ -1,8 +1,6 @@
 "use client";
+
 import React, { useState, useCallback } from 'react';
-import { Box, Typography, IconButton } from '@mui/material';
-import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
-import 'react-pro-sidebar/dist/css/styles.css'; // Import ProSidebar styles
 import {
     HomeOutlined as HomeOutlinedIcon,
     ArrowBackIos as ArrowBackIosIcon,
@@ -17,205 +15,98 @@ import {
     HelpOutline as HelpOutlineIcon,
     Analytics as AnalyticsIcon,
 } from '@mui/icons-material';
-import Link from 'next/link'; // Assuming you're using Next.js for routing
+import Link from 'next/link';
 
-// Define the interface for ItemProps
-interface ItemProps {
-    title: string;
-    to?: string; // Made optional for action items like Logout
-    icon: JSX.Element;
-    selected: string;
-    setSelected: (value: string) => void;
-    collapsed: boolean; // Control the display based on collapsed state
-    onClick?: () => void; // Optional onClick handler for action items
-}
-
-const Item: React.FC<ItemProps> = ({ title, to, icon, selected, setSelected, collapsed }) => {
-    const handleClick = useCallback(() => {
-        setSelected(title);
-    }, [title, setSelected]);
-
-    return (
-        <Link href={to} passHref>
-            <MenuItem
-                active={selected === title}
-                onClick={handleClick}
-                className={`text-white mb-10 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400 ${selected === title ? 'text-blue-500 dark:text-blue-400 font-bold' : ''}`}
-            >
-                <div className={`flex items-center gap-2 ${collapsed ? 'justify-center' : 'justify-start'}`}>
-                    <span>{icon}</span>
-                    {!collapsed && <Typography className="text-4xl !font-Poppins">{title}</Typography>}
-                </div>
-            </MenuItem>
-        </Link>
-    );
-};
-
-// Main Sidebar Component
 const AdminSidebar: React.FC = () => {
-    const [selected, setSelected] = useState('Dashboard'); // Track the selected menu item
-    const [isCollapsed, setIsCollapsed] = useState(false); // Control collapse state
+    const [selected, setSelected] = useState('Dashboard');
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     const handleSelect = useCallback((title: string) => {
         setSelected(title);
-    }, [setSelected]);
+    }, []);
 
-    const logouHandler = () => {
-        // Your logout logic here
+    const logoutHandler = () => {
         console.log('Logged out');
+        // Add logout logic here
     };
 
-    const handleLogout = (event: React.MouseEvent) => {
-        event.stopPropagation(); // Prevent event bubbling
-        logouHandler(); // Call your logout logic
-    };
+    
 
     return (
-        <Box
-            className={`relative left-0 h-full transition-width duration-300 ${isCollapsed ? 'w-20' : 'w-64'} bg-white text-black dark:bg-blue-200 dark:text-white`}
-        >
-            {/* ProSidebar wrapper */}
-            <ProSidebar collapsed={isCollapsed}>
-                <Menu iconShape="square">
-                    {/* Sidebar Header */}
-                    <Box className="flex items-center justify-between p-4">
-                        <Typography
-                            variant="h5"
-                            className={`uppercase font-bold ${isCollapsed ? 'hidden' : 'block'}`}
-                        >
-                            E-Learning
-                        </Typography>
-                        <IconButton onClick={() => setIsCollapsed(!isCollapsed)} className="dark:text-white">
+        <div className={`h-screen scrollbar-thin scrollbar-thumb-gray-300 flex overflow-y-auto min-h-screen  transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'} bg-white shadow-md  scrollbar-thin scrollbar-thumb-gray-300`}>
+            <div className="flex flex-col w-full h-full">
+                <div className='items-center flex flex-col relative'>
+                    <div className="flex items-center justify-between p-4 mb-5">
+                        <h1 className={`text-xl font-bold ${isCollapsed ? 'hidden' : 'block'}`}>E-Learning</h1>
+                        <button onClick={() => setIsCollapsed(!isCollapsed)} className={`${!isCollapsed ? "absolute  top-0 right-0 mt-5":""}`}>
                             {isCollapsed ? <ArrowForwardIosIcon /> : <ArrowBackIosIcon />}
-                        </IconButton>
-                    </Box>
-
-                    {/* Sidebar Menu Items */}
-                    <Box paddingLeft={isCollapsed ? undefined : '10%'}>
-                        <Item
-                            title="Dashboard"
-                            to="/admin"
-                            icon={<HomeOutlinedIcon />}
-                            selected={selected}
-                            setSelected={handleSelect}
-                            collapsed={isCollapsed}
-                        />
-                         <Typography
-                            variant='h6'
-                            className='!text-[18px] text-black dark:text-white capitalize !font-[400]'
-                        >
-                            {!isCollapsed && "Analytics"}
-                        </Typography>
-                        <Item
-                            title="Course Analytics"
-                            to="/admin/course-analytics"
-                            icon={<AnalyticsIcon />}
-                            selected={selected}
-                            setSelected={handleSelect}
-                        />
-                        <Item
-                            title="Order Analytics"
-                            to="/admin/order-analytics"
-                            icon={<AnalyticsIcon />}
-                            selected={selected}
-                            setSelected={handleSelect}
-                        />
-                        <Item
-                            title="User Analytics"
-                            to="/admin/user-analytics"
-                            icon={<AnalyticsIcon />}
-                            selected={selected}
-                            setSelected={handleSelect}
-                        />
-                        <Typography
-                            variant='h6'
-                            className='!text-[18px] text-black dark:text-white capitalize !font-[400]'
-                        >
-                            {!isCollapsed && "Content"}
-                        </Typography>
-                        <Item
-                            title="Live Courses"
-                            to="/admin/live-courses"
-                            icon={<LiveTvIcon />}
-                            selected={selected}
-                            setSelected={handleSelect}
-                        />
-                        <Item
-                            title="Create Course"
-                            to="/admin/create-course"
-                            icon={<CreateIcon />}
-                            selected={selected}
-                            setSelected={handleSelect}
-                        />
-                        <Typography
-                            variant='h6'
-                            className='!text-[18px] text-black dark:text-white capitalize !font-[400]'
-                        >
-                            {!isCollapsed && "Customization"}
-                        </Typography>
-                        <Item
-                            title="Hero"
-                            to="/admin/hero"
-                            icon={<BarChartIcon />}
-                            selected={selected}
-                            setSelected={handleSelect}
-                        />
-                        <Item
-                            title="Categories"
-                            to="/admin/categories"
-                            icon={<CategoryIcon />}
-                            selected={selected}
-                            setSelected={handleSelect}
-                        />
-                        <Item
-                            title="FAQ"
-                            to="/admin/faq"
-                            icon={<HelpOutlineIcon />}
-                            selected={selected}
-                            setSelected={handleSelect}
-                        />
-                        <Typography
-                            variant='h6'
-                            className='!text-[18px] text-black dark:text-white capitalize !font-[400]'
-                        >
-                            {!isCollapsed && "Controller"}
-                        </Typography>
-                        <Item
-                            title="Manage Team"
-                            to="/admin/manage-team"
-                            icon={<PeopleIcon />}
-                            selected={selected}
-                            setSelected={handleSelect}
-                        />
-
-                        
-                        <Typography
-                            variant='h6'
-                            className='!text-[18px] text-black dark:text-white capitalize !font-[400]'
-                        >
-                            {!isCollapsed && "Extras"}
-                        </Typography>
-                        <Item
-                            title="Settings"
-                            to="/admin/settings"
-                            icon={<SettingsIcon />}
-                            selected={selected}
-                            setSelected={handleSelect}
-                        />
-                        <div onClick={handleLogout}>
-                            <Item
-                                title="Logout"
-                                to="#"
-                                icon={<LogoutIcon />}
-                                selected={selected}
-                                setSelected={handleSelect}
-                                collapsed={isCollapsed}
-                            />
-                        </div>
-                    </Box>
-                </Menu>
-            </ProSidebar>
-        </Box>
+                        </button>
+                    </div>
+                    <nav className={`flex flex-col gap-3 mt-4${isCollapsed ? 'h-full' : 'h-[calc(100vh-64px)]'}`}>
+                        <Link href="/admin" passHref>
+                            <div onClick={() => handleSelect('Dashboard')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:bg-blue-100 ${selected === 'Dashboard' ? 'bg-blue-200' : ''}`}>
+                                <HomeOutlinedIcon />
+                                {!isCollapsed && <span className="ml-2">Dashboard</span>}
+                            </div>
+                        </Link>
+                        <Link href="/admin/create-course" passHref>
+                            <div onClick={() => handleSelect('Create Course')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:bg-blue-100 ${selected === 'Create Course' ? 'bg-blue-200' : ''}`}>
+                                <CreateIcon />
+                                {!isCollapsed && <span className="ml-2">Create Course</span>}
+                            </div>
+                        </Link>
+                        <Link href="/admin/live-courses" passHref>
+                            <div onClick={() => handleSelect('Live Courses')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:bg-blue-100 ${selected === 'Live Courses' ? 'bg-blue-200' : ''}`}>
+                                <LiveTvIcon />
+                                {!isCollapsed && <span className="ml-2">Live Courses</span>}
+                            </div>
+                        </Link>
+                        <Link href="/admin/course-analytics" passHref>
+                            <div onClick={() => handleSelect('Course Analytics')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:bg-blue-100 ${selected === 'Course Analytics' ? 'bg-blue-200' : ''}`}>
+                                <AnalyticsIcon />
+                                {!isCollapsed && <span className="ml-2">Course Analytics</span>}
+                            </div>
+                        </Link>
+                        <Link href="/admin/order-analytics" passHref>
+                            <div onClick={() => handleSelect('Order Analytics')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:bg-blue-100 ${selected === 'Order Analytics' ? 'bg-blue-200' : ''}`}>
+                                <AnalyticsIcon />
+                                {!isCollapsed && <span className="ml-2">Order Analytics</span>}
+                            </div>
+                        </Link>
+                        <Link href="/admin/user-analytics" passHref>
+                            <div onClick={() => handleSelect('User Analytics')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:bg-blue-100 ${selected === 'User Analytics' ? 'bg-blue-200' : ''}`}>
+                                <AnalyticsIcon />
+                                {!isCollapsed && <span className="ml-2">User Analytics</span>}
+                            </div>
+                        </Link>
+                        <Link href="/admin/manage-team" passHref>
+                            <div onClick={() => handleSelect('Manage Team')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:bg-blue-100 ${selected === 'Manage Team' ? 'bg-blue-200' : ''}`}>
+                                <PeopleIcon />
+                                {!isCollapsed && <span className="ml-2">Manage Team</span>}
+                            </div>
+                        </Link>
+                        <Link href="/admin/categories" passHref>
+                            <div onClick={() => handleSelect('Categories')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:bg-blue-100 ${selected === 'Categories' ? 'bg-blue-200' : ''}`}>
+                                <CategoryIcon />
+                                {!isCollapsed && <span className="ml-2">Categories</span>}
+                            </div>
+                        </Link>
+                        <Link href="/admin/settings" passHref>
+                            <div onClick={() => handleSelect('Settings')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:bg-blue-100 ${selected === 'Settings' ? 'bg-blue-200' : ''}`}>
+                                <SettingsIcon />
+                                {!isCollapsed && <span className="ml-2">Settings</span>}
+                            </div>
+                        </Link>
+                        <Link href="#" passHref>
+                            <div onClick={logoutHandler} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:bg-blue-100`}>
+                                <LogoutIcon />
+                                {!isCollapsed && <span className="ml-2">Logout</span>}
+                            </div>
+                        </Link>
+                    </nav>
+                </div>
+            </div>
+        </div>
     );
 };
 
