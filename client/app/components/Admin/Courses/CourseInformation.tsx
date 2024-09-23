@@ -1,4 +1,4 @@
-import React, { FC, useState, ChangeEvent, DragEvent, FormEvent } from 'react';
+import React, { FC, useState, ChangeEvent, DragEvent, FormEvent, Dispatch, SetStateAction } from 'react';
 import { styles } from '../../../styles/style';
 
 type CourseInfoType = {
@@ -10,12 +10,12 @@ type CourseInfoType = {
     level: string;
     demoUrl: string;
     thumbnail: string | null;
-    category: string;  // Added the missing category field
+    category: string;
 }
 
 type Props = {
     courseInfo: CourseInfoType;
-    setCourseInfo: (courseInfo: any) => void;
+    setCourseInfo: Dispatch<SetStateAction<CourseInfoType>>;  // Use React's Dispatch typing for state setter
     active: number;
     setActive: (active: number) => void;
 }
@@ -61,6 +61,7 @@ const CourseInformation: FC<Props> = ({ courseInfo, setCourseInfo, setActive, ac
             reader.readAsDataURL(file);
         }
     };
+
 
     return (
         <div className='w-[80%] m-auto mt-2'>
