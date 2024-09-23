@@ -39,7 +39,7 @@ const CreateCourses = (props: Props) => {
     return (
         <div className='min-h-screen flex'>
             <div className='w-[80%]'>
-                {active === 0 && (
+                {active === 1 && (
                     <CourseInformation
                         courseInfo={courseInfo}
                         setCourseInfo={setCourseInfo}
@@ -47,10 +47,12 @@ const CreateCourses = (props: Props) => {
                         setActive={setActive}
                     />
                 )}
-                {active === 1 && (
+                {active === 0 && (
                     <CourseData
-                        courseInfo={courseInfo}
-                        setCourseInfo={setCourseInfo}
+                        benefits={benefits}
+                        setBenefits={setBenefits}
+                        prerequisites={prerequisites}
+                        setPrerequisites={setPrerequisites}
                         active={active}
                         setActive={setActive}
                     />
