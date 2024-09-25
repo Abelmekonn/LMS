@@ -15,7 +15,7 @@ type CourseInfoType = {
 
 type Props = {
     courseInfo: CourseInfoType;
-    setCourseInfo: Dispatch<SetStateAction<CourseInfoType>>;  // Use React's Dispatch typing for state setter
+    setCourseInfo: (CourseInfoType :CourseInfoType) => void;  // Use React's Dispatch typing for state setter
     active: number;
     setActive: (active: number) => void;
 }

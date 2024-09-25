@@ -1,44 +1,92 @@
 import React, { useState } from 'react';
 import CourseInformation from "./CourseInformation";
 import CourseOption from "./CourseOption";
-import CourseData from "./CourseData"
-import CourseContent from "./CourseContent"
-type Props = {}
+import CourseData from "./CourseData";
+import CourseContent from "./CourseContent";
+import CoursePreview from "./CoursePreview"
+type CourseInfo = {
+    name: string;
+    description: string;
+    price: string;
+    estimatePrice: string;
+    category: string;
+    tags: string;
+    level: string;
+    demoUrl: string;
+    thumbnail: string;
+};
 
-const CreateCourses = (props: Props) => {
+type CourseContentData = {
+    title: string;
+    videoUrl: string;
+    description: string;
+    videoDescription: string;
+    videoSection: string;
+    links: Array<{ title: string; url: string }>;
+    suggestion: string;
+};
+
+const CreateCourses: React.FC = () => {
     const [active, setActive] = useState(0);
-    const [courseInfo, setCourseInfo] = useState({
+    const [courseInfo, setCourseInfo] = useState<CourseInfo>({
         name: "",
         description: "",
         price: "",
         estimatePrice: "",
-        category: "",  // Ensure category exists
+        category: "",
         tags: "",
         level: "",
         demoUrl: "",
         thumbnail: ""
     });
-    
+
     const [benefits, setBenefits] = useState([{ title: "" }]);
-    const [prerequisites, setPrerequisites] = useState([{ title: "" }]);  // Fixed the typo (setPrerequisites)
-    const [courseContentData, setCourseContentData] = useState([{
+    const [prerequisites, setPrerequisites] = useState([{ title: "" }]);
+    const [courseContentData, setCourseContentData] = useState<CourseContentData[]>([{
         title: "",
         videoUrl: "",
         description: "",
         videoDescription: "",
-        links: [
-            {
-                title: "",
-                url: ""
-            }
-        ],
+        videoSection: "Untitled Section",
+        links: [{ title: "", url: "" }],
         suggestion: ""
     }]);
 
     const [courseData, setCourseData] = useState({});
 
-    const handelSubmit = async ()=>{
+    const handelSubmit = async () => {
+        const formattedBenefit = benefits.map((benefit) => ({ title: benefit.title }));
+        const formattedPrerequisite = prerequisites.map((prerequisite) => ({ title: prerequisite.title }));
 
+        const formattedCourseContent = courseContentData.map((courseContent) => ({
+            title: courseContent.title,
+            videoUrl: courseContent.videoUrl,
+            description: courseContent.description,
+            videoSection: courseContent.videoSection,
+            links: courseContent.links.map((link) => ({ title: link.title, url: link.url })),
+            suggestion: courseContent.suggestion
+        }));
+
+        const data = {
+            name: courseInfo.name,
+            description: courseInfo.description,
+            price: courseInfo.price,
+            estimatedPrice: courseInfo.estimatePrice,
+            tags: courseInfo.tags,
+            thumbnail: courseInfo.thumbnail,
+            benefits: formattedBenefit,
+            prerequisites: formattedPrerequisite,
+            courseContent: formattedCourseContent,
+            level: courseInfo.level,
+            demoUrl: courseInfo.demoUrl,
+            totalVideos: courseContentData.length,
+        };
+
+        setCourseData(data);
+    };
+
+    const handelCourseCreate = async (e:any) =>{
+        const data = courseData;
     }
 
     return (
@@ -69,6 +117,14 @@ const CreateCourses = (props: Props) => {
                         courseContentData={courseContentData}
                         setCourseContentData={setCourseContentData}
                         handelSubmit={handelSubmit}
+                    />
+                )}
+                {active === 3 && (
+                    <CoursePreview
+                        active={active}
+                        setActive={setActive}
+                        courseData={courseData}
+                        handelCourseCreate={handelCourseCreate}
                     />
                 )}
             </div>
