@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { FC } from 'react'
 
 type Props = {
-    
+    videoUrl:string;
+    title: string;
 }
 
-const CoursePlayer = () => {
+const CoursePlayer : FC<Props> = ({videoUrl,title}) => {
   return (
     <div>CoursePlayer</div>
   )

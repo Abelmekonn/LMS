@@ -1,3 +1,4 @@
+require("dotenv").config();
 import { Request, Response, NextFunction } from "express";
 import ErrorHandler from "../utils/ErrorHandler";
 import { CatchAsyncError } from "../middleware/catchAsyncError";
@@ -8,7 +9,7 @@ import { redis } from "../utils/redis";
 import mongoose from "mongoose";
 import sendMail from "../utils/sendMail";
 import NotificationModel from "../models/notfication.model";
-
+import axios from 'axios';
 // upload course
 export const uploadCourse = CatchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
@@ -413,3 +414,23 @@ export const deleteCourse = CatchAsyncError(async (req: Request, res: Response, 
     }
 })
 
+// Generate video url
+export const generateVideoUrl = CatchAsyncError(async (req: Request, res: Response, next:NextFunction) =>{
+    try {
+        const {videoId} = req.body
+        const response = await axios.post(
+            `http://dev.vdocipher.com/api/videos/${videoId}/otp`,
+            {ttl:300},
+            {
+                headers: {
+                    Accept:"application/json",
+                    "Content-Type": "application/json",
+                    Authorization : `ApiSecret ${process.env.VDOCIPHER_API_SECRET}`,
+                }
+            }
+        )
+        res.json(response.data)
+    } catch (error : any) {
+        return next(new ErrorHandler(error.message,400))
+    }
+})
