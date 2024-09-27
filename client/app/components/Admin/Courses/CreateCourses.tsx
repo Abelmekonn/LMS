@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CourseInformation from "./CourseInformation";
 import CourseOption from "./CourseOption";
 import CourseData from "./CourseData";
 import CourseContent from "./CourseContent";
 import CoursePreview from "./CoursePreview"
+import { useCreateCourseMutation } from '../../../../redux/features/courses/coursesApi';
+import toast from 'react-hot-toast';
+import { redirect } from 'next/navigation';
+import { error } from 'console';
 type CourseInfo = {
     name: string;
     description: string;
@@ -27,6 +31,21 @@ type CourseContentData = {
 };
 
 const CreateCourses: React.FC = () => {
+    const [createCourse, { isLoading, isSuccess, error }] = useCreateCourseMutation();
+
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success("Course Created Successfully")
+            redirect('/admin/courses')
+        }
+        if (error) {
+            if ("data" in error) {
+                const errorMessage = error as any
+                toast.error(errorMessage.data.message)
+            }
+        }
+    }, [isLoading, isSuccess, error])
+
     const [active, setActive] = useState(0);
     const [courseInfo, setCourseInfo] = useState<CourseInfo>({
         name: "",
@@ -85,8 +104,12 @@ const CreateCourses: React.FC = () => {
         setCourseData(data);
     };
 
-    const handelCourseCreate = async (e:any) =>{
+    const handelCourseCreate = async (e: any) => {
         const data = courseData;
+
+        if (!isLoading) {
+            await createCourse(data)
+        }
     }
 
     return (

@@ -18,7 +18,6 @@ export const uploadCourse = CatchAsyncError(
             const thumbnail = data.thumbnail;
 
             // Log the thumbnail value
-            console.log("Thumbnail received:", thumbnail);
 
             if (thumbnail) {
                 let myCloud;

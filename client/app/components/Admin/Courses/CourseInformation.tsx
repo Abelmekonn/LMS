@@ -108,7 +108,7 @@ const CourseInformation: FC<Props> = ({ courseInfo, setCourseInfo, setActive, ac
                         />
                     </div>
                     <div className="w-[45%]">
-                        <label htmlFor="estimatePrice" className={`${styles.label}`}>Estimate Price</label>
+                        <label htmlFor="estimatePrice" className={`${styles.label}`}>Estimate Price (optional)</label>
                         <input
                             type="number"
                             id="estimatePrice"
@@ -121,18 +121,7 @@ const CourseInformation: FC<Props> = ({ courseInfo, setCourseInfo, setActive, ac
                 </div>
                 <br />
                 {/* Course Category */}
-                <div>
-                    <label htmlFor="category">Course Category</label>
-                    <input
-                        type="text"
-                        id="category"
-                        required
-                        value={courseInfo.category}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setCourseInfo({ ...courseInfo, category: e.target.value })}
-                        placeholder='Web Development, Data Science, etc.'
-                        className={`${styles.input}`}
-                    />
-                </div>
+                
                 <br />
                 {/* Course Tags */}
                 <div>

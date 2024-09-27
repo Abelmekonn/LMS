@@ -319,12 +319,12 @@ const CourseContent: FC<Props> = ({
                 </div>
             </form>
             <div className="w-full flex justify-between items-center">
-                <div className="w-full md:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] rounded text-center text-[#fff] mt-8"
+                <div className="w-full md:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] rounded text-center text-[#fff] mt-8 cursor-pointer"
                     onClick={() => prevButton()}
                 >
                     Prev
                 </div>
-                <div className="w-full md:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] rounded text-center text-[#fff] mt-8"
+                <div className="w-full md:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] rounded text-center text-[#fff] mt-8 cursor-pointer"
                     onClick={() => handelOptions()}
                 >
                     Next

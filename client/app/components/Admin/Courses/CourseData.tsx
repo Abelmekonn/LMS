@@ -55,7 +55,7 @@ const handelOptions = () =>{
   return (
     <div className='w-[80%] m-auto mt-24 block'>
       <div>
-        <label htmlFor="benefit" className={`${styles.label} text-[20px]`}>
+        <label htmlFor="benefit" className={`${styles.label} dark:text-white text-[20px]`}>
           What are the benefits of this course for students?
         </label>
         <br />
@@ -73,6 +73,8 @@ const handelOptions = () =>{
         <AddCircle
           style={{ margin: "10px 0px", cursor: "pointer", width: "30px" }}
           onClick={handelAddBenefit}
+          className="dark:text-white"
+
         />
       </div>
       <div>
@@ -94,15 +96,17 @@ const handelOptions = () =>{
         <AddCircle
           style={{ margin: "10px 0px", cursor: "pointer", width: "30px" }}
           onClick={handelAddPrerequisites}
+          className="dark:text-white"
+
         />
       </div>
       <div className="w-full flex justify-between items-center">
-        <div  className="w-full md:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] rounded text-center text-[#fff] mt-8"
+        <div  className="w-full md:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] rounded text-center text-[#fff] mt-8 cursor-pointer"
         onClick={()=>prevButton()}
         >
           Prev
         </div>
-        <div className="w-full md:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] rounded text-center text-[#fff] mt-8"
+        <div className="w-full md:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] rounded text-center text-[#fff] mt-8 cursor-pointer"
         onClick={()=>handelOptions()}
         >
           Next
