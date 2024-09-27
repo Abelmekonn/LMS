@@ -100,7 +100,7 @@ export const getSingleCourse = CatchAsyncError(async (req: Request, res: Respons
             if (!course) {
                 return next(new ErrorHandler("Course not found", 404));
             }
-            await redis.set(courseId, JSON.stringify(course),"EX",604800)
+            await redis.set(courseId, JSON.stringify(course), "EX", 604800)
             res.status(200).json({
                 success: true,
                 course
@@ -251,7 +251,7 @@ export const addAnswer = CatchAsyncError(async (req: Request, res: Response, nex
 
         // add this answer to our course content 
         question.questionReplies.push(newAnswer);
-        
+
 
         await course?.save()
 
@@ -342,34 +342,34 @@ export const addReview = CatchAsyncError(async (req: Request, res: Response, nex
         })
 
     } catch (error: any) {
-        return next(new ErrorHandler(error.message,500))
+        return next(new ErrorHandler(error.message, 500))
     }
 })
 
 // add reply to review
 interface IAddReviewData {
-    comment:string,
-    courseId:string,
-    reviewId:string
+    comment: string,
+    courseId: string,
+    reviewId: string
 }
-export const addReplyToReview = CatchAsyncError( async (req: Request, res: Response, next: NextFunction) => {
+export const addReplyToReview = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {comment,courseId,reviewId} : IAddReviewData = req.body
+        const { comment, courseId, reviewId }: IAddReviewData = req.body
         const course = await CourseModel.findById(courseId)
 
-        if(!course){
-            return next(new ErrorHandler("course not found",404))
+        if (!course) {
+            return next(new ErrorHandler("course not found", 404))
         }
 
         const review = course?.reviews.find((review: any) => review._id.toString() === reviewId);
         if (!review) {
             return next(new ErrorHandler("review not found", 404));
         }
-        const replyData : any ={
-            user:req.user,
+        const replyData: any = {
+            user: req.user,
             comment,
         }
-        if(!review.commentReplies){
+        if (!review.commentReplies) {
             review.commentReplies = []
         }
         review.commentReplies?.push(replyData)
@@ -381,56 +381,69 @@ export const addReplyToReview = CatchAsyncError( async (req: Request, res: Respo
             course
         })
 
-    } catch (error:any) {
-        return next(new ErrorHandler(error.message,500))
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 500))
     }
 })
 
 // get all course for only Admin
-export const getAllCoursesForAdmin = CatchAsyncError( async (req: Request, res: Response,next:NextFunction)=>{
+export const getAllCoursesForAdmin = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         getAllCoursesServices
-    } catch (error :any) {
-        return next(new ErrorHandler(error.message,400))
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400))
     }
 })
 
 // delete course for only admin 
-export const deleteCourse = CatchAsyncError(async (req: Request, res: Response, next: NextFunction)=>{
+export const deleteCourse = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {id} = req.params;
+        const { id } = req.params;
         const course = await CourseModel.findById(id);
-        if(!course) {
+        if (!course) {
             return next(new ErrorHandler("user not found", 404))
         }
-        await course.deleteOne({id})
+        await course.deleteOne({ id })
         await redis.del(id)
         res.status(200).json({
             success: true,
             message: "user deleted successfully"
         })
-    } catch (error:any) {
-        return next(new ErrorHandler(error.message,400))
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400))
     }
 })
 
-// Generate video url
-export const generateVideoUrl = CatchAsyncError(async (req: Request, res: Response, next:NextFunction) =>{
+// Generate video URL
+// Generate video URL
+export const generateVideoUrl = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {videoId} = req.body
+        const { videoId } = req.body;
+
+        if (!videoId) {
+            return res.status(400).json({ message: "Video ID is missing." });
+        }
+
+        console.log('Video ID:', videoId);
+
+        // Hardcoded API secret for debugging purpose
+        const apiSecret = 'RG4TvN38GgRJ2jILYI6RLEbK37SuSZZBuOnvx5uKYbD3CVEvuJMHQE2HPpP5f6Zj';
+
         const response = await axios.post(
-            `http://dev.vdocipher.com/api/videos/${videoId}/otp`,
-            {ttl:300},
+            `https://dev.vdocipher.com/api/videos/${videoId}/otp`,
+            { ttl: 300 },
             {
                 headers: {
-                    Accept:"application/json",
+                    Accept: "application/json",
                     "Content-Type": "application/json",
-                    Authorization : `ApiSecret ${process.env.VDOCIPHER_API_SECRET}`,
-                }
+                    Authorization: `Apisecret ${apiSecret}`, // Hardcoded for now
+                },
             }
-        )
-        res.json(response.data)
-    } catch (error : any) {
-        return next(new ErrorHandler(error.message,400))
+        );
+
+        res.json(response.data);
+    } catch (error: any) {
+        console.error('Error from VdoCipher:', error.response?.data || error.message);
+        return next(new ErrorHandler(error.message, 400));
     }
-})
+});
