@@ -2,7 +2,7 @@ import AdminDashboard from '../../../app/components/Admin/AdminDashboard/AdminDa
 import AdminLayout from '../../../app/components/Admin/adminLayout/AdminLayout'
 import AdminProtected from '../../../app/hooks/adminProtected'
 import Heading from '../../../app/utils/Heading'
-import AllCourses from '@/app/components/Admin/Courses/Allcourses'
+import AllCourses from '@/app/components/Admin/Courses/AllCourses'
 import React from 'react'
 
 type Props = {}
