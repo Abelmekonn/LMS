@@ -115,28 +115,17 @@ export const getSingleCourse = CatchAsyncError(async (req: Request, res: Respons
 // get all course
 export const getAllCourse = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        // Check if the courses are cached in Redis
-        const isCacheExist = await redis.get("allCourses");
-
-        if (isCacheExist) {
-            // If cached data exists, parse and return it
-            const courses = JSON.parse(isCacheExist);
-            res.status(200).json({
-                success: true,
-                courses,
-            });
-        } else {
+        
             // If no cached data, fetch from database
             const courses = await CourseModel.find()
                 .select("-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links");
 
             // Store the result in Redis cache
-            await redis.set("allCourses", JSON.stringify(courses));
             res.status(200).json({
                 success: true,
                 data: courses,
             });
-        }
+        
     } catch (error: any) {
         console.error("Error fetching courses:", error);
         return next(new ErrorHandler("An error occurred while fetching courses", 500));

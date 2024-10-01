@@ -15,7 +15,7 @@ export const createCourse = CatchAsyncError(async (req: Request, res: Response, 
     });
 });
 
-// get allcourse
+// get all course
 export const getAllCoursesServices = CatchAsyncError(async (req: Request, res: Response, next:NextFunction)=>{
     const courses = await CourseModel.find().sort({ceratedAt:-1})
     

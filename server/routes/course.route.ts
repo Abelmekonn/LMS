@@ -10,7 +10,7 @@ courseRouter.post("/getVdoCipherOtp",updateAccessToken,generateVideoUrl)
 
 courseRouter.get("/get-course/:id", updateAccessToken, getSingleCourse);
 courseRouter.get("/all-course",updateAccessToken,isAuthenticated,authorizeRoles("admin"),getAllCoursesForAdmin)
-courseRouter.get("/get-all-courses",updateAccessToken,getAllCourse);
+courseRouter.get("/get-courses",updateAccessToken,getAllCourse);
 courseRouter.get("/get-course-by-user/:id",updateAccessToken,isAuthenticated,getCourseByUser)
 
 courseRouter.put("/edit-course/:id",updateAccessToken, isAuthenticated, authorizeRoles("admin"), editCourse);

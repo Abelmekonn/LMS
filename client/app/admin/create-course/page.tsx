@@ -8,10 +8,10 @@ const page = () => {
   return (
     <div>
       <Heading
-                title="ELearning - Admin"
-                description="Learning platform"
-                keywords="ELearning, education"
-            />
+        title="ELearning - Admin"
+        description="Learning platform"
+        keywords="ELearning, education"
+      />
       <AdminLayout>
         <CreateCourses />
       </AdminLayout>
