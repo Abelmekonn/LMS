@@ -1,20 +1,25 @@
 'use client'; // Indicates that this component will use client-side rendering
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataGrid } from "@mui/x-data-grid";
 import { Box, Button } from '@mui/material';
 import { AiOutlineDelete } from 'react-icons/ai';
 import { useTheme } from 'next-themes'; // Importing useTheme hook for theme management
 import { FiEdit2 } from 'react-icons/fi';
 import Loader from '../../loader';
-import { useGetAllCoursesQuery } from '@/redux/features/courses/coursesApi';
+import { useDeleteCourseMutation, useGetAllCoursesQuery } from '../../../../redux/features/courses/coursesApi';
 import moment from 'moment';
+import toast from 'react-hot-toast';
+import Link from 'next/link';
 
 type Props = {};
 
 const AllCourses = (props: Props) => {
     const { theme } = useTheme(); // Get current theme
-    const { isLoading, data, error } = useGetAllCoursesQuery({});
+    const { isLoading, data, refetch } = useGetAllCoursesQuery({}, { refetchOnMountOrArgChange: true });
+    const [deleteCourse, { isSuccess, error }] = useDeleteCourseMutation();
+    const [open, setOpen] = useState(false);
+    const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
 
     // Defining the columns for the DataGrid
     const columns = [
@@ -46,16 +51,16 @@ const AllCourses = (props: Props) => {
             field: 'created_at',
             headerName: 'Created At',
             flex: 0.5,
-            renderCell: (params: any) => <span className='dark:text-white'>{new Date(params.value).toLocaleDateString()}</span>,
+            renderCell: (params: any) => <span className='dark:text-white'>{moment(params.value).format('LL')}</span>,
         },
         {
             field: 'edit',
             headerName: 'Edit',
             flex: 0.2,
             renderCell: (params: any) => (
-                <Button onClick={() => handleEdit(params.row.id)}>
+                <Link href={`admin/edit-course/${params.row.id}`}>
                     <FiEdit2 className={theme === 'dark' ? 'text-white' : 'text-black'} size={20} />
-                </Button>
+                </Link>
             ),
         },
         {
@@ -63,36 +68,50 @@ const AllCourses = (props: Props) => {
             headerName: 'Delete',
             flex: 0.2,
             renderCell: (params: any) => (
-                <Button onClick={() => handleDelete(params.id)}>
+                <Button onClick={() => handleOpenDeleteModal(params.id)}>
                     <AiOutlineDelete className="text-black dark:text-white" size={20} />
                 </Button>
             ),
         }
     ];
 
-    const handleEdit = (id: number) => {
-        console.log(`Edit course with ID: ${id}`);
-        // Implement your edit logic here (e.g., navigate to the edit page)
+
+
+    const handleOpenDeleteModal = (id: number) => {
+        setSelectedCourseId(id); // Set the selected course ID for deletion
+        setOpen(true); // Open the confirmation modal
     };
 
-    const handleDelete = (id: number) => {
-        console.log(`Delete course with ID: ${id}`);
-        // Implement your delete logic here (e.g., API call to delete the course)
+    const handleDelete = async () => {
+        if (selectedCourseId) {
+            await deleteCourse(selectedCourseId); // Trigger the delete mutation with selected course ID
+        }
     };
 
-    console.log(data)
+    useEffect(() => {
+        if (isSuccess) {
+            refetch();
+            toast.success("Course deleted successfully");
+            setOpen(false); // Close the modal after deletion
+        }
+
+        if (error) {
+            if ("data" in error) {
+                const errorMessage = error as any;
+                toast.error(errorMessage.data.message);
+            }
+        }
+    }, [isSuccess, error, refetch]);
 
     const rows = Array.isArray(data?.data)
-    ? data.data.map((item: any) => ({
-        id: item._id,
-        title: item.name, // Field mappings according to your data
-        ratings: item.ratings,
-        purchase: item.purchased,
-        created_at: item.createdAt, 
-    }))
-    : [];
-
-
+        ? data.data.map((item: any) => ({
+            id: item._id,
+            title: item.name, // Field mappings according to your data
+            ratings: item.ratings,
+            purchase: item.purchased,
+            created_at: item.createdAt,
+        }))
+        : [];
 
     return (
         <div className='mt-[10px] text-black'>
@@ -146,6 +165,19 @@ const AllCourses = (props: Props) => {
                             }}
                         />
                     </Box>
+                    {open && (
+                        <div className='dark:bg-[#575ba7] bg-[#575ba7] rounded-lg z-50 absolute top-[40%] w-[60%] md:w-[30%] left-1/2 translate-x-[-50%] p-5'>
+                            <h2 className='text-lg text-white text-center'>Are you sure you want to delete this course?</h2>
+                            <div className='flex justify-around mt-4'>
+                                <Button onClick={handleDelete} variant="contained" color="error">
+                                    Delete
+                                </Button>
+                                <Button onClick={() => setOpen(false)} variant="contained" className="ml-2">
+                                    Cancel
+                                </Button>
+                            </div>
+                        </div>
+                    )}
                 </Box>
             )}
         </div>

@@ -102,7 +102,7 @@ const AdminSidebar: React.FC = () => {
                                 {!isCollapsed && <span className="ml-2">User Analytics</span>}
                             </div>
                         </Link>
-                        <Link href="/admin/manage-team" passHref>
+                        <Link href="/admin/team" passHref>
                             <div onClick={() => handleSelect('Manage Team')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Manage Team' ? 'bg-blue-200' : ''}`}>
                                 <PeopleIcon />
                                 {!isCollapsed && <span className="ml-2">Manage Team</span>}

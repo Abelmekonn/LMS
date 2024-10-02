@@ -340,15 +340,16 @@ export const getAllUsers = CatchAsyncError(async (req: Request, res: Response, n
     }
 });
 
-// update user role
-export const updateUserRole = CatchAsyncError(async (req: Request, res: Response, next:NextFunction)=>{
+export const updateUserRole = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const {role , id} = req.body
-        updateUserRoleService(res,id,role)
-    } catch (error) {
+        const { role, id } = req.body; // Destructure role and id from req.body
         
+        // Call updateUserRoleService and pass the necessary arguments
+        await updateUserRoleService(id, role, res, next); // Pass id, role, res, and next
+    } catch (error) {
+        next(error); // Handle errors by passing to the next middleware
     }
-})
+});
 
 // delete user for only admin 
 export const deleteUser = CatchAsyncError(async (req: Request, res: Response, next: NextFunction)=>{
