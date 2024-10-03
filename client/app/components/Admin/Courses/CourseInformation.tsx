@@ -4,13 +4,12 @@ import { styles } from '../../../styles/style';
 type CourseInfoType = {
     name: string;
     description: string;
-    price: number | string;
-    estimatePrice: number | string;
+    price: string;
+    estimatePrice: string;
     tags: string;
     level: string;
     demoUrl: string;
     thumbnail: string | null;
-    category: string;
 }
 
 type Props = {

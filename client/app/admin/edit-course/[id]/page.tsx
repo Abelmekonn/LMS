@@ -2,9 +2,10 @@
 import React from 'react'
 import AdminLayout from '../../../../app/components/Admin/adminLayout/AdminLayout'
 import Heading from '../../../../app/utils/Heading'
-import CreateCourses from '../../../../app/components/Admin/Courses/CreateCourses'
+import EditCourse from '../../../../app/components/Admin/Courses/EditCourse'
 
-const page = () => {
+const page = ({params}:any) => {
+  const id = params?.id;
   return (
     <div>
       <Heading
@@ -13,7 +14,7 @@ const page = () => {
         keywords="ELearning, education"
       />
       <AdminLayout>
-        <CreateCourses />
+        <EditCourse id={id}/>
       </AdminLayout>
     </div>
   )

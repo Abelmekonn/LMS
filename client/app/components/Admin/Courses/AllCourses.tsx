@@ -58,9 +58,9 @@ const AllCourses = (props: Props) => {
             headerName: 'Edit',
             flex: 0.2,
             renderCell: (params: any) => (
-                <Link href={`admin/edit-course/${params.row.id}`}>
-                    <FiEdit2 className={theme === 'dark' ? 'text-white' : 'text-black'} size={20} />
-                </Link>
+                <a href={`/admin/edit-course/${params.row.id}`} className='flex h-full'>
+                    <FiEdit2 className={theme === 'dark' ? 'text-white self-center' : 'text-black self-center '} size={20} />
+                </a>
             ),
         },
         {
