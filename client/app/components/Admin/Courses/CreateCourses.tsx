@@ -76,16 +76,24 @@ const CreateCourses: React.FC = () => {
     const handelSubmit = async () => {
         const formattedBenefit = benefits.map((benefit) => ({ title: benefit.title }));
         const formattedPrerequisite = prerequisites.map((prerequisite) => ({ title: prerequisite.title }));
-
+        console.log("course content" , courseContentData)
+        // Map course content data to the expected format
         const formattedCourseContent = courseContentData.map((courseContent) => ({
             title: courseContent.title,
             videoUrl: courseContent.videoUrl,
+            videoThumbnail: {},  // Add your video thumbnail logic if needed
             description: courseContent.description,
             videoSection: courseContent.videoSection,
+            videoLength: 0,      // Placeholder for video length, update as necessary
+            videoPlayer: "",     // Placeholder for video player, update as necessary
             links: courseContent.links.map((link) => ({ title: link.title, url: link.url })),
-            suggestion: courseContent.suggestion
+            suggestion: courseContent.suggestion,
+            questions: []        // You can later handle adding questions here
         }));
-
+        
+        console.log("formatted course content" , formattedCourseContent)
+        
+        // Structure the final data object to send
         const data = {
             name: courseInfo.name,
             description: courseInfo.description,
@@ -95,14 +103,15 @@ const CreateCourses: React.FC = () => {
             thumbnail: courseInfo.thumbnail,
             benefits: formattedBenefit,
             prerequisites: formattedPrerequisite,
-            courseContent: formattedCourseContent,
+            courseData: formattedCourseContent, // Map course content to `courseData`
             level: courseInfo.level,
             demoUrl: courseInfo.demoUrl,
-            totalVideos: courseContentData.length,
+            purchased: 0,        // Default value for purchased
         };
-
+    
         setCourseData(data);
     };
+    
 
     const handelCourseCreate = async (e: any) => {
         const data = courseData;
@@ -147,8 +156,8 @@ const CreateCourses: React.FC = () => {
                         active={active}
                         setActive={setActive}
                         courseData={courseData}
-                        handelCourseCreate={handelCourseCreate}
-                    />
+                        handelCourseCreate={handelCourseCreate} 
+                        isEdit={false}                    />
                 )}
             </div>
             <div className="w-[20%] mt-[100px] h-screen relative z-[-1] top-18 right-0">

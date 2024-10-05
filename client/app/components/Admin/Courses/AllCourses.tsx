@@ -21,6 +21,8 @@ const AllCourses = (props: Props) => {
     const [open, setOpen] = useState(false);
     const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
 
+    console.log(data)
+
     // Defining the columns for the DataGrid
     const columns = [
         {
@@ -103,8 +105,8 @@ const AllCourses = (props: Props) => {
         }
     }, [isSuccess, error, refetch]);
 
-    const rows = Array.isArray(data?.data)
-        ? data.data.map((item: any) => ({
+    const rows = Array.isArray(data?.courses)
+        ? data.courses.map((item: any) => ({
             id: item._id,
             title: item.name, // Field mappings according to your data
             ratings: item.ratings,

@@ -253,7 +253,7 @@ const CourseContent: FC<Props> = ({
                                             }}
                                         />
                                     </div>
-                                    {/* {item.links.map((link, linkIndex) => (
+                                    {item.links.map((link, linkIndex) => (
                                         <div className="mb-3 block" key={linkIndex}>
                                             <div className="w-full flex items-center justify-between">
                                                 <label className={styles.label}>Link {linkIndex + 1}</label>
@@ -289,7 +289,7 @@ const CourseContent: FC<Props> = ({
                                                 }}
                                             />
                                         </div>
-                                    ))} */}
+                                    ))}
                                     <div className="inline-block mb-4">
                                         <p className='flex items-center text-[18px] dark:text-white text-black cursor-pointer'
                                             onClick={() => handelAddLink(index)}

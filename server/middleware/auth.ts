@@ -31,7 +31,7 @@ export const isAuthenticated = CatchAsyncError(async (req: Request, res: Respons
 
         req.user = JSON.parse(user);
         next();
-    } catch (error) {
+    } catch (error:any) {
         // If token expired error, handle it by refreshing the token
         if (error.name === "TokenExpiredError") {
             await updateAccessToken(req, res, next);

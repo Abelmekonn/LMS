@@ -179,6 +179,7 @@ const CourseInformation: FC<Props> = ({ courseInfo, setCourseInfo, setActive, ac
                         onDrop={handleDrop}
                     >
                         {courseInfo.thumbnail ? (
+                            // eslint-disable-next-line @next/next/no-img-element
                             <img src={courseInfo.thumbnail} alt="Course Thumbnail" className="w-full max-h-full object-cover" />
                         ) : (
                             <span className='text-black dark:text-white'>

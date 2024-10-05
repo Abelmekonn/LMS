@@ -5,7 +5,7 @@ import CourseOption from "./CourseOption";
 import CourseData from "./CourseData";
 import CourseContent from "./CourseContent";
 import CoursePreview from "./CoursePreview";
-import { useCreateCourseMutation, useGetAllCoursesQuery } from '../../../../redux/features/courses/coursesApi';
+import { useEditCourseMutation, useGetAllCoursesQuery } from '../../../../redux/features/courses/coursesApi';
 import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
 
@@ -30,16 +30,40 @@ type CourseContentData = {
     suggestion: string;
 };
 
+type CourseDataType = {
+    name: string;
+    description: string;
+    price: string;
+    estimatedPrice: string;
+    tags: string;
+    thumbnail: string;
+    benefits: Array<{ title: string }>;
+    prerequisites: Array<{ title: string }>;
+    courseData: CourseContentData[];
+    level: string;
+    demoUrl: string;
+    totalVideos: number;
+};
+
 type Props = {
     id: string;
 };
 
 const EditCourse: React.FC<Props> = ({ id }) => {
     const { isLoading, data, refetch } = useGetAllCoursesQuery({}, { refetchOnMountOrArgChange: true });
-    const [createCourse, { isSuccess, isError, error }] = useCreateCourseMutation();
-
-    console.log(data)
-
+    const [editCourse, { isSuccess, error }] = useEditCourseMutation({})
+    useEffect(() => {
+        if (isSuccess) {
+            toast.success("Course Edited Successfully")
+            redirect('/admin/courses')
+        }
+        if (error) {
+            if ("data" in error) {
+                const errorMessage = error as any
+                toast.error(errorMessage.data.message)
+            }
+        }
+    }, [isSuccess, error])
     const [active, setActive] = useState(0);
     const [courseInfo, setCourseInfo] = useState<CourseInfo>({
         name: "",
@@ -64,33 +88,32 @@ const EditCourse: React.FC<Props> = ({ id }) => {
         suggestion: ""
     }]);
 
-    const [courseData, setCourseData] = useState({});
-
-    // Find the course with the matching id
-    const editCourseData = data && Array.isArray(data.data)
-        ? data.data.find((course: any) => course._id === id)
-        : null;
+    const [courseData, setCourseData] = useState<CourseDataType | null>(null);
 
     useEffect(() => {
-        if (editCourseData) {
-            setCourseInfo({
-                name: editCourseData.name,
-                description: editCourseData.description,
-                price: editCourseData.price,
-                estimatePrice: editCourseData.estimatedPrice,
-                tags: editCourseData.tags,
-                level: editCourseData.level,
-                demoUrl: editCourseData.demoUrl,
-                thumbnail: editCourseData?.thumbnail?.url
-            });
-            setBenefits(editCourseData.benefits);
-            setPrerequisites(editCourseData.prerequisites);
-            setCourseContentData(editCourseData.courseData);
-        }
-    }, [editCourseData]);
-    
+        if (!isLoading && data && Array.isArray(data.courses)) {
+            const editCourseData = data.courses.find((course: any) => course._id === id);
+            if (editCourseData) {
+                setCourseInfo({
+                    name: editCourseData.name,
+                    description: editCourseData.description,
+                    price: editCourseData.price,
+                    estimatePrice: editCourseData.estimatedPrice,
+                    tags: editCourseData.tags,
+                    level: editCourseData.level,
+                    demoUrl: editCourseData.demoUrl,
+                    thumbnail: editCourseData?.thumbnail?.url
+                });
+                setBenefits(editCourseData.benefits);
+                setPrerequisites(editCourseData.prerequisites);
 
-    const handleSubmit = async () => {
+                setCourseContentData(editCourseData.courseData);
+                setCourseData(editCourseData); // Set course data here
+            }
+        }
+    }, [isLoading, data, id]);
+
+    const handleSubmit = () => {
         const formattedBenefit = benefits.map((benefit) => ({ title: benefit.title }));
         const formattedPrerequisite = prerequisites.map((prerequisite) => ({ title: prerequisite.title }));
 
@@ -98,12 +121,14 @@ const EditCourse: React.FC<Props> = ({ id }) => {
             title: courseContent.title,
             videoUrl: courseContent.videoUrl,
             description: courseContent.description,
-            videoSection: courseContent.videoSection,
+            videoDescription: courseContent.videoDescription || "", // Default value if empty
+            videoSection: courseContent.videoSection || "Untitled Section",
             links: courseContent.links.map((link) => ({ title: link.title, url: link.url })),
-            suggestion: courseContent.suggestion
+            suggestion: courseContent.suggestion,
         }));
 
         const data = {
+            id, // Include course ID to ensure you're updating the correct course
             name: courseInfo.name,
             description: courseInfo.description,
             price: courseInfo.price,
@@ -118,19 +143,26 @@ const EditCourse: React.FC<Props> = ({ id }) => {
             totalVideos: courseContentData.length,
         };
 
-        setCourseData(data);
+        setCourseData(data); // Set the formatted course data
+        setActive(3); // Move to the CoursePreview step
     };
 
-    const handleCourseCreate = async () => {
-        const result = await createCourse(courseData);
-        if (result.error) {
-            const errorMessage = (result.error as any).data.message || "An error occurred";
-            toast.error(errorMessage);
-        } else {
-            toast.success("Course Created Successfully");
-            redirect('/admin/courses');
+    const handleCourseUpdate = async (e: any) => {
+        if (courseData && !isLoading) {
+            console.log("Updating Course");
+            console.log("ID:", id); // This should show the correct ID
+            console.log("Course Data:", JSON.stringify(courseData, null, 2)); // Log the course data structure
+            await editCourse({ id, data: courseData });
         }
     };
+    
+    
+    
+
+
+    if (isLoading) {
+        return <div>Loading...</div>; // Add a loading state
+    }
 
     return (
         <div className='min-h-screen flex'>
@@ -159,15 +191,16 @@ const EditCourse: React.FC<Props> = ({ id }) => {
                         setActive={setActive}
                         courseContentData={courseContentData}
                         setCourseContentData={setCourseContentData}
-                        handleSubmit={handleSubmit}
+                        handleSubmit={handleSubmit} // Call handleSubmit to prepare course data
                     />
                 )}
                 {active === 3 && (
                     <CoursePreview
                         active={active}
                         setActive={setActive}
-                        courseData={courseData}
-                        handleCourseCreate={handleCourseCreate}
+                        courseData={courseData} // Pass the entire course data to preview
+                        handelCourseCreate={handleCourseUpdate} // Use the updated handler
+                        isEdit={true} // Indicate that this is an edit
                     />
                 )}
             </div>

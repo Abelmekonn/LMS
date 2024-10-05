@@ -49,35 +49,72 @@ export const uploadCourse = CatchAsyncError(
     }
 );
 
-// edit course
+// Edit course
 export const editCourse = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const data = req.body;
-    const thumbnail = data.thumbnail;
-    if (thumbnail) {
-        await cloudinary.v2.uploader.destroy(thumbnail.public_id)
-        const myCloud = cloudinary.v2.uploader.upload(thumbnail, {
-            folder: "courses"
-        })
-        data.thumbnail = {
-            public_id: (await myCloud).public_id,
-            url: (await myCloud).secure_url,
+    const courseId = req.params.id;
+
+    // Ensure course data is retrieved
+    const courseData = await CourseModel.findById(courseId) as any;
+    if (!courseData) {
+        return next(new ErrorHandler('Course not found', 404));
+    }
+
+    try {
+        const thumbnail = data.thumbnail; // Thumbnail from the request body
+
+        if (thumbnail) {
+            if (typeof thumbnail === 'object' && thumbnail.url) {
+                // Check if the existing thumbnail should be deleted
+                if (courseData.thumbnail && courseData.thumbnail.public_id) {
+                    // Delete the old thumbnail from Cloudinary
+                    await cloudinary.v2.uploader.destroy(courseData.thumbnail.public_id);
+                }
+
+                // Upload the new thumbnail to Cloudinary
+                const myCloud = await cloudinary.v2.uploader.upload(thumbnail.url, { 
+                    folder: "courses"
+                });
+
+                // Update thumbnail data in the request body
+                data.thumbnail = {
+                    public_id: myCloud.public_id,
+                    url: myCloud.secure_url,
+                };
+            } else if (typeof thumbnail === 'string' && thumbnail.startsWith("https")) {
+                // Keep the existing thumbnail if it's a URL
+                data.thumbnail = {
+                    public_id: courseData.thumbnail.public_id,
+                    url: courseData.thumbnail.url,
+                };
+            } else {
+                return next(new ErrorHandler("Invalid thumbnail format. Expected a string or an object with a URL.", 400));
+            }
         }
-        const courseId = req.params.id;
+
+        // Find and update the course
         const course = await CourseModel.findByIdAndUpdate(
-            courseId, {
-            $set: data
-        },
-            {
-                new: true
-            })
+            courseId,
+            { $set: data },
+            { new: true, runValidators: true }
+        );
+
+        if (!course) {
+            return next(new ErrorHandler('Course update failed', 500));
+        }
 
         res.status(200).json({
             status: "success",
             data: course
-        })
+        });
 
+    } catch (error: any) {
+        console.error("Error during course editing:", error);
+        return next(new ErrorHandler(error.message, 500));
     }
-})
+});
+
+
 
 // get single course
 export const getSingleCourse = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -374,33 +411,54 @@ export const addReplyToReview = CatchAsyncError(async (req: Request, res: Respon
     }
 })
 
-// get all course for only Admin
+// get all courses for only Admin
 export const getAllCoursesForAdmin = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        getAllCoursesServices
+        // Call the service function
+        await getAllCoursesServices(req, res, next); // Pass the request, response, and next as arguments
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, 400));
     }
-})
-
-// delete course for only admin 
+});
+// Define an interface for the course thumbnail
+interface Thumbnail {
+    public_id: string;
+    url: string;
+}
+interface Course {
+    thumbnail?: Thumbnail; // Make it optional since not all courses may have a thumbnail
+    deleteOne: (query: object) => Promise<void>; // Define deleteOne as a method
+}
+// Delete course for only admin
 export const deleteCourse = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
         const course = await CourseModel.findById(id);
+        
         if (!course) {
-            return next(new ErrorHandler("user not found", 404))
+            return next(new ErrorHandler("Course not found", 404)); // Changed message to 'Course not found'
         }
-        await course.deleteOne({ id })
-        await redis.del(id)
+
+        // Delete the thumbnail from Cloudinary
+        if (course.thumbnail && course.thumbnail.public_id) {
+            await cloudinary.v2.uploader.destroy(course.thumbnail.public_id);
+        }
+
+        // Delete the course from the database
+        await course.deleteOne({ _id: id }); // Ensure you are using the correct property to delete
+
+        // Optionally remove the course from Redis cache
+        await redis.del(id);
+
         res.status(200).json({
             success: true,
-            message: "user deleted successfully"
-        })
+            message: "Course deleted successfully" // Changed message to 'Course deleted successfully'
+        });
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 400))
+        return next(new ErrorHandler(error.message, 400));
     }
-})
+});
+
 
 // Generate video URL
 // Generate video URL
