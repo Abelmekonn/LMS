@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import CourseModel from "../models/course.model";
 import { CatchAsyncError } from "../middleware/catchAsyncError";
-import ErrorHandler from "../utils/ErrorHandler";
 
 
 // Create course

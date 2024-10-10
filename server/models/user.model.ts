@@ -44,8 +44,8 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
             select: false,
         },
         avatar: {
-            public_id: String,
-            url: String,
+            type: String,  // This will store the URL of the profile picture
+            default: 'default_avatar_url',
         },
         role: {
             type: String,

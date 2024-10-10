@@ -5,7 +5,7 @@ import ErrorHandler from "../utils/ErrorHandler";
 import { CatchAsyncError } from "../middleware/catchAsyncError";
 import jwt, { JwtPayload, Secret } from "jsonwebtoken";
 import sendMail from "../utils/sendMail";
-import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt";
+import { sendToken } from "../utils/jwt";
 import { redis } from "../utils/redis";
 import { getAllUsersService, getUserById, updateUserRoleService } from "../services/user.service";
 import cloudinary from "cloudinary"
@@ -127,7 +127,7 @@ export const logoutUser = CatchAsyncError(
             res.cookie("refresh_token", "", { maxAge: 1 });
 
             // Get user ID from request
-            const userId = req.user?._id;
+            const userId = req.user?._id as string;
             if (!userId) {
                 return next(new ErrorHandler("User not found", 400));
             }
