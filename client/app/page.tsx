@@ -13,7 +13,7 @@ const Page: FC<Props> = (Props) => {
   const {user} = useSelector((state:any)=> state.auth)
   console.log(user?.name)
   return (
-    <div className="">
+    <div className="h-screen">
       <Heading
         title="ELearning"
         description="ELearning is a platform for students to learn and get help from teachers"
