@@ -4,6 +4,7 @@ import Image from 'next/image';
 import favicon from "../../../../public/favicon.png"
 import { FaUsers } from "react-icons/fa";
 import { LiaFileInvoiceSolid } from "react-icons/lia";
+import { LiaPagerSolid } from "react-icons/lia";
 import {
     HomeOutlined as HomeOutlinedIcon,
     ArrowBackIos as ArrowBackIosIcon,
@@ -88,6 +89,12 @@ const AdminSidebar: React.FC = () => {
                             <div onClick={() => handleSelect('Course Analytics')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Course Analytics' ? 'bg-blue-200' : ''}`}>
                                 <AnalyticsIcon />
                                 {!isCollapsed && <span className="ml-2">Course Analytics</span>}
+                            </div>
+                        </Link>
+                        <Link href="/admin/hero" passHref>
+                            <div onClick={() => handleSelect('Hero')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Hero' ? 'bg-blue-200' : ''}`}>
+                                <LiaPagerSolid size={30} />
+                                {!isCollapsed && <span className="ml-2">Hero</span>}
                             </div>
                         </Link>
                         <Link href="/admin/order-analytics" passHref>

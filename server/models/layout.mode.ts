@@ -1,5 +1,6 @@
 import { Schema, model, Document } from "mongoose";
 
+// Interfaces
 export interface FaqItem extends Document {
     question: string;
     answer: string;
@@ -25,32 +26,37 @@ interface Layout extends Document {
     };
 }
 
+// Sub-schemas
 const faqSchema = new Schema<FaqItem>({
-    question: { type: String },
-    answer: { type: String },
+    question: { type: String, required: true, trim: true },
+    answer: { type: String, required: true, trim: true },
 });
 
 const categorySchema = new Schema<Category>({
-    title: { type: String },
+    title: { type: String, required: true, trim: true },
 });
 
 const bannerImageSchema = new Schema<BannerImage>({
-    public_id: { type: String },
-    url: { type: String },
+    public_id: { type: String, required: true },
+    url: { type: String, required: true },
 });
 
-
-const layoutSchema = new Schema<Layout>({
-    type: { type: String },
-    faq: [faqSchema],
-    categories: [categorySchema],
-    banner: {
-        image: bannerImageSchema,
-        title: { type: String },
-        subTitle: { type: String },
+// Main schema
+const layoutSchema = new Schema<Layout>(
+    {
+        type: { type: String, required: true, trim: true },
+        faq: { type: [faqSchema], default: [] },
+        categories: { type: [categorySchema], default: [] },
+        banner: {
+            image: { type: bannerImageSchema, required: true },
+            title: { type: String, required: true, trim: true },
+            subTitle: { type: String, required: true, trim: true },
+        },
     },
-});
+    { timestamps: true } // Enable timestamps
+);
 
-const LayoutModel = model<Layout>('Layout', layoutSchema);
+// Model
+const LayoutModel = model<Layout>("Layout", layoutSchema);
 
 export default LayoutModel;
