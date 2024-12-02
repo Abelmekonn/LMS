@@ -13,13 +13,13 @@ const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
     const { user } = useSelector((state: RootState) => state.auth);
 
     return (
-        <div className="flex flex-row h-screen overflow-hidden">
+        <div className="flex flex-row min-h-screen ">
             {/* Sidebar */}
             <aside className="flex-shrink-0">
                 <AdminSidebar />
             </aside>
             {/* Main Content Area */}
-            <div className="flex flex-col flex-1">
+            <div className="flex flex-col flex-1 !h-screen">
                 <header>
                     <AdminHeader user={user} />
                 </header>

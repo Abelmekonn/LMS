@@ -38,7 +38,7 @@ const AdminSidebar: React.FC = () => {
 
     return (
         <div className={`h-screen scrollbar-thin scrollbar-thumb-gray-300 flex overflow-y-auto min-h-screen  transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'} bg-white dark:bg-gray-800 shadow-md  scrollbar-thin scrollbar-thumb-gray-300`}>
-            <div className="flex flex-col w-full dark:text-white h-full">
+            <div className="flex flex-col w-full dark:text-white text-black h-full">
                 <div className='items-center flex flex-col relative'>
                     <div className="flex flex-row items-center justify-between p-4 mb-5">
                         <Image

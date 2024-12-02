@@ -65,60 +65,89 @@ export const createLayout = CatchAsyncError(async (req: Request, res: Response, 
 // edit layout
 export const editLayout = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { type } = req.body
+        const { type } = req.body;
+
         if (type === 'Banner') {
-            const bannerData : any = await LayoutModel.findOne({type: "Banner"})
-            const { image, title, subTitle } = req.body
-            if (bannerData){
-                await cloudinary.v2.uploader.destroy(bannerData.image.public_id);
+            const bannerData: any = await LayoutModel.findOne({ type: "Banner" });
+            const { image, title, subtitle } = req.body;
+
+            // Validate `image` is a string
+            if (!image || typeof image !== "string") {
+                return next(new ErrorHandler("Invalid or missing image field", 400));
             }
 
-            const myCloud = await cloudinary.v2.uploader.upload(image, {
-                folder: 'layout'
-            })
+            const isExistingImage = image.startsWith("https");
+            const data = isExistingImage
+                ? bannerData
+                : await cloudinary.v2.uploader.upload(image, {
+                    folder: "layout",
+                });
+
+            // Construct the new banner object
             const banner = {
+                type: "Banner",
                 image: {
-                    public_id: myCloud.public_id,
-                    url: myCloud.secure_url
+                    public_id: isExistingImage
+                        ? bannerData.image?.public_id
+                        : data.public_id,
+                    url: isExistingImage
+                        ? bannerData.image?.url
+                        : data.secure_url,
                 },
-                title,
-                subTitle
-            }
-            await LayoutModel.findByIdAndUpdate(bannerData._id,{banner})
+                title: title || bannerData.title, // Retain old title if not updated
+                subtitle: subtitle || bannerData.subtitle, // Retain old subtitle if not updated
+            };
+
+            console.log("Updating banner:", banner);  // Log to verify data
+
+            // Update the database
+            await LayoutModel.findByIdAndUpdate(
+                bannerData._id,
+                { $set: banner },  // Update banner directly
+                { new: true }
+            );
         }
+
         if (type === 'FAQ') {
-            const { faq } = req.body
-            const FaqItem = await LayoutModel.findOne({type:'FAQ'})
-            const faqItems = await Promise.all(
-                faq.map(async (item: any) => {
-                    return {
-                        question: item.question,
-                        answer: item.answer
-                    }
-                })
-            )
-            await LayoutModel.findByIdAndUpdate(FaqItem?._id,{ type: "FAQ", faq: faqItems })
+            const { faq } = req.body;
+
+            if (!faq || !Array.isArray(faq)) {
+                return next(new ErrorHandler("Invalid FAQ data", 400));
+            }
+
+            const FaqItem = await LayoutModel.findOne({ type: 'FAQ' });
+            const faqItems = faq.map((item: any) => ({
+                question: item.question,
+                answer: item.answer,
+            }));
+
+            await LayoutModel.findByIdAndUpdate(FaqItem?._id, { type: "FAQ", faq: faqItems });
         }
+
         if (type === "Categories") {
-            const { categories } = req.body
-            const Category = await LayoutModel.findOne({type : "categories"})
-            const categoriesItems = await Promise.all(
-                categories.map(async (item: any) => {
-                    return {
-                        title: item.title,
-                    }
-                })
-            )
-            await LayoutModel.findByIdAndUpdate(Category?._id,{type:"categories",categories:categoriesItems})
+            const { categories } = req.body;
+
+            if (!categories || !Array.isArray(categories)) {
+                return next(new ErrorHandler("Invalid categories data", 400));
+            }
+
+            const Category = await LayoutModel.findOne({ type: "categories" });
+            const categoriesItems = categories.map((item: any) => ({
+                title: item.title,
+            }));
+
+            await LayoutModel.findByIdAndUpdate(Category?._id, { type: "categories", categories: categoriesItems });
         }
+
         res.status(200).json({
             success: true,
-            message: "successfully updated "
-        })
+            message: "Successfully updated"
+        });
     } catch (error: any) {
-        return next(new ErrorHandler(error.message, 500))
+        return next(new ErrorHandler(error.message, 500));
     }
-})
+});
+
 
 export const getLayoutByType = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
