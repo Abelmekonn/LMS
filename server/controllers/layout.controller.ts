@@ -45,6 +45,7 @@ export const createLayout = CatchAsyncError(async (req: Request, res: Response, 
         }
 
         if (type === "Categories") {
+            
             const categoriesItems = categories.map((item: any) => ({
                 title: item.title,
             }));
@@ -97,9 +98,6 @@ export const editLayout = CatchAsyncError(async (req: Request, res: Response, ne
                 title: title || bannerData.title, // Retain old title if not updated
                 subtitle: subtitle || bannerData.subtitle, // Retain old subtitle if not updated
             };
-
-            console.log("Updating banner:", banner);  // Log to verify data
-
             // Update the database
             await LayoutModel.findByIdAndUpdate(
                 bannerData._id,
@@ -131,7 +129,7 @@ export const editLayout = CatchAsyncError(async (req: Request, res: Response, ne
                 return next(new ErrorHandler("Invalid categories data", 400));
             }
 
-            const Category = await LayoutModel.findOne({ type: "categories" });
+            const Category = await LayoutModel.findOne({ type: "Categories" });
             const categoriesItems = categories.map((item: any) => ({
                 title: item.title,
             }));

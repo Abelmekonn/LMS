@@ -5,6 +5,9 @@ import favicon from "../../../../public/favicon.png"
 import { FaUsers } from "react-icons/fa";
 import { LiaFileInvoiceSolid } from "react-icons/lia";
 import { LiaPagerSolid } from "react-icons/lia";
+import QuizIcon from '@mui/icons-material/Quiz';
+
+
 import {
     HomeOutlined as HomeOutlinedIcon,
     ArrowBackIos as ArrowBackIosIcon,
@@ -95,6 +98,18 @@ const AdminSidebar: React.FC = () => {
                             <div onClick={() => handleSelect('Hero')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Hero' ? 'bg-blue-200' : ''}`}>
                                 <LiaPagerSolid size={30} />
                                 {!isCollapsed && <span className="ml-2">Hero</span>}
+                            </div>
+                        </Link>
+                        <Link href="/admin/faq" passHref>
+                            <div onClick={() => handleSelect('Hero')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Hero' ? 'bg-blue-200' : ''}`}>
+                                <QuizIcon  />
+                                {!isCollapsed && <span className="ml-2">FQA</span>}
+                            </div>
+                        </Link>
+                        <Link href="/admin/categories" passHref>
+                            <div onClick={() => handleSelect('Category')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Hero' ? 'bg-blue-200' : ''}`}>
+                                <CategoryIcon  />
+                                {!isCollapsed && <span className="ml-2">Categories</span>}
                             </div>
                         </Link>
                         <Link href="/admin/order-analytics" passHref>

@@ -41,20 +41,37 @@ const bannerImageSchema = new Schema<BannerImage>({
     url: { type: String, required: true },
 });
 
-// Main schema
 const layoutSchema = new Schema<Layout>(
     {
         type: { type: String, required: true, trim: true },
         faq: { type: [faqSchema], default: [] },
         categories: { type: [categorySchema], default: [] },
         banner: {
-            image: { type: bannerImageSchema, required: true },
-            title: { type: String, required: true, trim: true },
-            subTitle: { type: String, required: true, trim: true },
+            image: { type: bannerImageSchema },
+            title: { type: String, trim: true },
+            subTitle: { type: String, trim: true },
         },
     },
-    { timestamps: true } // Enable timestamps
+    { timestamps: true }
 );
+
+// Add a pre-validation hook to enforce conditional validation
+layoutSchema.pre("validate", function (next) {
+    if (this.type === "Banner" && (!this.banner || !this.banner.image || !this.banner.title || !this.banner.subTitle)) {
+        return next(new Error("Missing required fields for Banner layout"));
+    }
+
+    if (this.type === "FAQ" && (!this.faq || this.faq.length === 0)) {
+        return next(new Error("FAQ items are required for FAQ layout"));
+    }
+
+    if (this.type === "Categories" && (!this.categories || this.categories.length === 0)) {
+        return next(new Error("Categories are required for Categories layout"));
+    }
+
+    next();
+});
+
 
 // Model
 const LayoutModel = model<Layout>("Layout", layoutSchema);
