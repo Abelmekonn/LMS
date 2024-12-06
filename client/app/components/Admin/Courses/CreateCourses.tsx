@@ -7,7 +7,7 @@ import CoursePreview from "./CoursePreview"
 import { useCreateCourseMutation } from '../../../../redux/features/courses/coursesApi';
 import toast from 'react-hot-toast';
 import { redirect } from 'next/navigation';
-import { error } from 'console';
+
 type CourseInfo = {
     name: string;
     description: string;
@@ -18,6 +18,8 @@ type CourseInfo = {
     level: string;
     demoUrl: string;
     thumbnail: string;
+    categories:string;
+    videoLength:number
 };
 
 type CourseContentData = {
@@ -55,9 +57,13 @@ const CreateCourses: React.FC = () => {
         category: "",
         tags: "",
         level: "",
+        categories: "",
         demoUrl: "",
-        thumbnail: ""
+        thumbnail: "",
+        videoLength: 0,
     });
+
+    console.log(courseInfo)
 
     const [benefits, setBenefits] = useState([{ title: "" }]);
     const [prerequisites, setPrerequisites] = useState([{ title: "" }]);
@@ -66,6 +72,7 @@ const CreateCourses: React.FC = () => {
         videoUrl: "",
         description: "",
         videoDescription: "",
+        videoLength : "",
         videoSection: "Untitled Section",
         links: [{ title: "", url: "" }],
         suggestion: ""
@@ -81,14 +88,14 @@ const CreateCourses: React.FC = () => {
         const formattedCourseContent = courseContentData.map((courseContent) => ({
             title: courseContent.title,
             videoUrl: courseContent.videoUrl,
-            videoThumbnail: {},  // Add your video thumbnail logic if needed
+            videoThumbnail: {}, // Add logic if needed
             description: courseContent.description,
             videoSection: courseContent.videoSection,
-            videoLength: 0,      // Placeholder for video length, update as necessary
-            videoPlayer: "",     // Placeholder for video player, update as necessary
+            videoLength: courseContent.videoLength,
+            videoPlayer: "", // Placeholder for video player
             links: courseContent.links.map((link) => ({ title: link.title, url: link.url })),
             suggestion: courseContent.suggestion,
-            questions: []        // You can later handle adding questions here
+            questions: [], // Placeholder for questions
         }));
         
         console.log("formatted course content" , formattedCourseContent)
@@ -103,7 +110,7 @@ const CreateCourses: React.FC = () => {
             thumbnail: courseInfo.thumbnail,
             benefits: formattedBenefit,
             prerequisites: formattedPrerequisite,
-            courseData: formattedCourseContent, // Map course content to `courseData`
+            courseData: formattedCourseContent,
             level: courseInfo.level,
             demoUrl: courseInfo.demoUrl,
             purchased: 0,        // Default value for purchased

@@ -129,7 +129,7 @@ export const editLayout = CatchAsyncError(async (req: Request, res: Response, ne
                 return next(new ErrorHandler("Invalid categories data", 400));
             }
 
-            const Category = await LayoutModel.findOne({ type: "Categories" });
+            const Category = await LayoutModel.findOne({ type: "categories" });
             const categoriesItems = categories.map((item: any) => ({
                 title: item.title,
             }));

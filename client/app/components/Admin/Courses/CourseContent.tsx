@@ -17,6 +17,7 @@ type CourseContentItem = {
     description: string;
     videoUrl: string;
     links: Link[];
+    videoLength :number
 };
 
 type Props = {
@@ -111,7 +112,8 @@ const CourseContent: FC<Props> = ({
             title: "",
             description: "",
             videoUrl: "",
-            links: [{ title: "", url: "" }], // Start with one empty link
+            links: [{ title: "", url: "" }],
+            videoLength: ''
         };
 
         // Add the new section to courseContentData
@@ -151,6 +153,7 @@ const CourseContent: FC<Props> = ({
                 {courseContentData.map((item, index) => {
                     const showSectionInput =
                         index === 0 || item.videoSection !== courseContentData[index - 1].videoSection;
+                    // eslint-disable-next-line react-hooks/rules-of-hooks
                     const inputRef = useRef<HTMLInputElement>(null);
                     return (
                         <div
@@ -234,6 +237,20 @@ const CourseContent: FC<Props> = ({
                                             onChange={(e) => {
                                                 const updatedData = [...courseContentData];
                                                 updatedData[index].videoUrl = e.target.value;
+                                                setCourseContentData(updatedData);
+                                            }}
+                                        />
+                                    </div>
+                                    <div className='mb-3'>
+                                        <label className={styles.label}>Video Length</label>
+                                        <input
+                                            type="number"
+                                            placeholder='20'
+                                            className={`${styles.input}`}
+                                            value={item.videoLength || ""}
+                                            onChange={(e) => {
+                                                const updatedData = [...courseContentData];
+                                                updatedData[index].videoLength = e.target.value;
                                                 setCourseContentData(updatedData);
                                             }}
                                         />

@@ -41,20 +41,20 @@ const CoursePreview: FC<Props> = ({
             title={courseData?.title}
           />
         </div>
-        <div className="flex items-center">
-          <h1 className="pt-5 text-[25px] ">
+        <div className="flex items-center ">
+          <h1 className="pt-5 text-[25px] dark:text-white text-black">
             {courseData?.price === 0 ? "Free" : courseData?.price + "$"}
           </h1>
-          <h5 className='pl-3 text-[20px] mt-2 line-through opacity-80'>
+          <h5 className='pl-3 text-[20px] mt-2 line-through opacity-80 dark:text-white text-black'>
             {courseData?.estimatedPrice} $
           </h5>
-          <h4 className='pl-5 pt-4 text-[22px]'>
+          <h4 className='pl-5 pt-4 text-[22px] dark:text-white text-black'>
             {discountPercentagePrice}% off
           </h4>
         </div>
         <div className="flex items-center">
           <div
-            className={` flex-row my-3 justify-content-center text-center text-white !w-[180px] justify-center py-3 rounded-3xl font-Poppins !bg-[crimson] cursor-not-allowed`}
+            className={` flex-row my-3 justify-content-center text-center dark:text-white text-black !w-[180px] justify-center py-3 rounded-3xl font-Poppins !bg-[crimson] cursor-not-allowed`}
           >
             Buy Now {courseData?.price}$
           </div>
@@ -65,34 +65,34 @@ const CoursePreview: FC<Props> = ({
             placeholder='Discount code..'
             className={`${styles.input} 2xl:!w-[50%] xl:w-[60%] ml-3 !mt-0`}
           />
-          <div className={`flex-row justify-content-center text-center text-white rounded-3xl bg-blue-400 py-2 !w-[120px] my-3 ml-4 font-Poppins cursor-pointer`}>
+          <div className={`flex-row justify-content-center text-center dark:text-white text-black rounded-3xl bg-blue-400 py-2 !w-[120px] my-3 ml-4 font-Poppins cursor-pointer`}>
             Apply
           </div>
         </div>
-        <p className="text-[18px] dark:text-white flex items-center pb-1"><MdDoubleArrow size={20} /> Source code included</p>
-        <p className="text-[18px] dark:text-white flex items-center pb-1"><MdDoubleArrow size={20}/> Full lifetime access</p>
-        <p className="text-[18px] dark:text-white flex items-center pb-1"><MdDoubleArrow size={20}/> Certificate of completion</p>
-        <p className='text-[18px] dark:text-white pb-3 flex items-center md:pb-1'><MdDoubleArrow size={20}/> Premium Support</p>
+        <p className="text-[18px] dark:text-white text-black flex items-center pb-1"><MdDoubleArrow size={20} /> Source code included</p>
+        <p className="text-[18px] dark:text-white text-black flex items-center pb-1"><MdDoubleArrow size={20}/> Full lifetime access</p>
+        <p className="text-[18px] dark:text-white text-black flex items-center pb-1"><MdDoubleArrow size={20}/> Certificate of completion</p>
+        <p className='text-[18px] dark:text-white text-black pb-3 flex items-center md:pb-1'><MdDoubleArrow size={20}/> Premium Support</p>
       </div>
       <div className="w-full">
         <div className="w-full md:pr-5">
-          <h1 className="font-Poppins dark:text-white text-[25px] font-[600]">
+          <h1 className="font-Poppins dark:text-white text-black text-[25px] font-[600]">
             {courseData?.name}
           </h1>
-          <div className="flex items-center dark:text-white justify-between pt-3">
-            <div className="flex items-center dark:text-white">
+          <div className="flex items-center dark:text-white text-black justify-between pt-3">
+            <div className="flex items-center dark:text-white text-black">
               <Rating rating={0} />
               <h5>0 Reviews</h5>
             </div>
             <h5>0 Students</h5>
           </div>
           <br />
-          <h1 className='text-[25px] font-Poppins dark:text-white font-[600]'>
+          <h1 className='text-[25px] font-Poppins dark:text-white text-black font-[600]'>
             What you will learn from this course?
           </h1>
         </div>
         {courseData?.benefits?.map((item: any, index: number) => (
-          <div className="w-full flex dark:text-white md:items-center py-2" key={index}>
+          <div className="w-full flex dark:text-white text-black md:items-center py-2" key={index}>
             <div className="w-[15px] mr-1">
               <IoCheckmarkDoneOutline size={20} className="dark:text-white" />
             </div>
@@ -100,19 +100,19 @@ const CoursePreview: FC<Props> = ({
           </div>
         ))}
         <br />
-        <h1 className='text-[25px] font-Poppins dark:text-white font-[600]'>
+        <h1 className='text-[25px] font-Poppins dark:text-white text-black font-[600]'>
           What are the prerequisites for starting this course?
         </h1>
         {courseData?.prerequisites?.map((item: any, index: number) => (
-          <div className="w-full flex dark:text-white md:items-center py-2" key={index}>
+          <div className="w-full flex dark:text-white text-black md:items-center py-2" key={index}>
             <div className="w-[15px] mr-1">
-              <IoCheckmarkDoneOutline size={20} className="dark:text-white" />
+              <IoCheckmarkDoneOutline size={20} className="dark:text-white text-black" />
             </div>
             <p className='pl-2'>{item.title}</p>
           </div>
         ))}
-        <div className="w-full dark:text-white">
-          <h1 className="text-[25px] dark:text-white font-Poppins font-[600]">
+        <div className="w-full dark:text-white text-black">
+          <h1 className="text-[25px] dark:text-white text-black font-Poppins font-[600]">
             Course Details
           </h1>
           {courseData?.description}
@@ -120,12 +120,12 @@ const CoursePreview: FC<Props> = ({
       </div>
       <br /><br />
       <div className="w-full flex justify-between items-center">
-        <div className="w-full md:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] rounded text-center text-[#fff] mt-8 cursor-pointer"
+        <div className="w-full md:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] rounded text-center dark:text-white text-black mt-8 cursor-pointer"
           onClick={() => prevButton()}
         >
           Prev
         </div>
-        <div className="w-full md:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] rounded text-center text-[#fff] mt-8 cursor-pointer"
+        <div className="w-full md:w-[180px] flex items-center justify-center h-[40px] bg-[#37a39a] rounded text-center dark:text-white text-black mt-8 cursor-pointer"
           onClick={() => createCourse()}
         >
           {

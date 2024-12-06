@@ -1,5 +1,6 @@
-import React, { FC, useState, ChangeEvent, DragEvent, FormEvent, Dispatch, SetStateAction } from 'react';
+import React, { FC, useState, ChangeEvent, DragEvent, FormEvent, Dispatch, SetStateAction, useEffect } from 'react';
 import { styles } from '../../../styles/style';
+import { useGetHeroDataQuery } from "../../../../redux/features/layout/layoutApi";
 
 type CourseInfoType = {
     name: string;
@@ -7,6 +8,7 @@ type CourseInfoType = {
     price: string;
     estimatePrice: string;
     tags: string;
+    category:string
     level: string;
     demoUrl: string;
     thumbnail: string | null;
@@ -14,13 +16,23 @@ type CourseInfoType = {
 
 type Props = {
     courseInfo: CourseInfoType;
-    setCourseInfo: (CourseInfoType :CourseInfoType) => void;  // Use React's Dispatch typing for state setter
+    setCourseInfo: (CourseInfoType: CourseInfoType) => void;  // Use React's Dispatch typing for state setter
     active: number;
     setActive: (active: number) => void;
 }
 
 const CourseInformation: FC<Props> = ({ courseInfo, setCourseInfo, setActive, active }) => {
     const [dragging, setDragging] = useState(false);
+    const { data, } = useGetHeroDataQuery("categories", {});
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        if (data) {
+            setCategories(data?.layout?.categories)
+        }
+    }, [data])
+
+    console.log(categories)
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
@@ -120,21 +132,40 @@ const CourseInformation: FC<Props> = ({ courseInfo, setCourseInfo, setActive, ac
                 </div>
                 <br />
                 {/* Course Category */}
-                
+
                 <br />
-                {/* Course Tags */}
-                <div>
-                    <label htmlFor="tags">Course Tags</label>
-                    <input
-                        type="text"
-                        id="tags"
-                        required
-                        value={courseInfo.tags}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) => setCourseInfo({ ...courseInfo, tags: e.target.value })}
-                        placeholder='MERN stack, LMS platform, etc.'
-                        className={`${styles.input}`}
-                    />
+                <div className='w-full flex justify-between'>
+                    <div className="w-[45%]">
+                        <label htmlFor="tags">Course Tags</label>
+                        <input
+                            type="text"
+                            id="tags"
+                            required
+                            value={courseInfo.tags}
+                            onChange={(e: ChangeEvent<HTMLInputElement>) => setCourseInfo({ ...courseInfo, tags: e.target.value })}
+                            placeholder='MERN stack, LMS platform, etc.'
+                            className={`${styles.input}`}
+                        />
+                    </div>
+                    <div className="w-[45%] dark:bg-black">
+                        <label className={`${styles.label} w-[50%]`}>Course Categories</label>
+                        <select 
+                            name="" 
+                            id="" 
+                            className={`${styles.input} 
+                            dark:bg-black`}
+                            onChange={(e : any ) => setCourseInfo({ ...courseInfo, category: e.target.value })}
+                            >
+                            <option value="" className='dark:bg-black'>Select a category</option>
+                            {categories.map((item: any) => (
+                                <option value={item.value} key={item._id} className='dark:bg-black'>
+                                    {item.title}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
+                {/* Course Tags */}
                 <br />
                 {/* Course Level and Demo URL */}
                 <div className='w-full flex justify-between'>

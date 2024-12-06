@@ -38,7 +38,7 @@ const CoursePlayer: FC<Props> = ({ videoUrl}) => {
   }, [videoUrl]);
 
   return (
-    <div style={{ position: 'relative', paddingTop: '41%' /* 16:9 Aspect Ratio */ }}>
+    <div className='dark:text-white text-black' style={{ position: 'relative', paddingTop: '41%' /* 16:9 Aspect Ratio */ }}>
       {error && <p>{error}</p>}
       {videoData.otp && videoData.playbackInfo && (
         <iframe
