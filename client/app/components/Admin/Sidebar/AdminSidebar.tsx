@@ -6,7 +6,7 @@ import { FaUsers } from "react-icons/fa";
 import { LiaFileInvoiceSolid } from "react-icons/lia";
 import { LiaPagerSolid } from "react-icons/lia";
 import QuizIcon from '@mui/icons-material/Quiz';
-
+import { TbReportAnalytics } from "react-icons/tb";
 
 import {
     HomeOutlined as HomeOutlinedIcon,
@@ -92,6 +92,12 @@ const AdminSidebar: React.FC = () => {
                             <div onClick={() => handleSelect('Course Analytics')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Course Analytics' ? 'bg-blue-200' : ''}`}>
                                 <AnalyticsIcon />
                                 {!isCollapsed && <span className="ml-2">Course Analytics</span>}
+                            </div>
+                        </Link>
+                        <Link href="/admin/user-analytics" passHref>
+                            <div onClick={() => handleSelect('User Analytics')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Course Analytics' ? 'bg-blue-200' : ''}`}>
+                                <TbReportAnalytics size={25}/>
+                                {!isCollapsed && <span className="ml-2">User Analytics</span>}
                             </div>
                         </Link>
                         <Link href="/admin/hero" passHref>

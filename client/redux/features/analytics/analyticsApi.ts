@@ -18,7 +18,7 @@ export const analyticsApi = apiSlice.injectEndpoints({
         }),
         getUserAnalytics : builder.query({
             query : () => ({
-                url : "get-courses-analytics",
+                url : "get-users-analytics",
                 method : "GET",
                 credentials : 'include' as const
             })
@@ -26,4 +26,4 @@ export const analyticsApi = apiSlice.injectEndpoints({
     })
 })
 
-export const {useGetCourseAnalyticsQuery} = analyticsApi
+export const {useGetCourseAnalyticsQuery,useGetUserAnalyticsQuery,useGetOrderAnalyticsQuery} = analyticsApi
