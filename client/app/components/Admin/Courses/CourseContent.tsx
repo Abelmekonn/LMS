@@ -82,6 +82,7 @@ const CourseContent: FC<Props> = ({
             description: "",
             videoUrl: "",
             links: [{ title: "", url: "" }],
+            videoLength: 0
         };
 
         // Add the new content to courseContentData
