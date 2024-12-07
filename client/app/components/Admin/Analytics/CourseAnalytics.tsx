@@ -12,16 +12,13 @@ const CourseAnalytics = (props: Props) => {
 
   console.log(data)
 
-  const analyticsData = [
-    {name: "Jun 2023" , uv:3},
-    {name: "Jul 2023" , uv:2},
-    {name: "Aug 2023" , uv:4},
-    {name: "Sep 2023" , uv:1},
-    {name: "Oct 2023" , uv:5},
-    {name: "Aug 2023" , uv:4},
-    {name: "Sep 2023" , uv:1},
-    {name: "Oct 2023" , uv:5},
-  ]
+  const analyticsData : any = [];
+  
+  data && 
+    data.courses.last12Month.forEach((item : any) => {
+      analyticsData.push({name:item.month , uv : item.count})
+    });
+
   const minValue = 0;
   return (
     <>
