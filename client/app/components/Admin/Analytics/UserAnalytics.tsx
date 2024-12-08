@@ -6,22 +6,18 @@ import { useGetUserAnalyticsQuery } from '../../../../redux/features/analytics/a
 import { styles } from '@/app/styles/style'
 
 type Props = {
-    isDashboard: true
+    isDashboard: boolean
 }
 
-const analyticsData = [
-    { name: "january 2023", count: 404 },
-    { name: "february 2023", count: 500 },
-    { name: "march 2023", count: 600 },
-    { name: "april 2023", count: 700 },
-    { name: "may 2023", count: 800 },
-    { name: "jun 2023", count: 900 },
-    { name: "july 2023", count: 1000 },
-    { name: "august 2023", count: 1100 },
-    { name: "september 2023", count: 1200 },
-]
+const UserAnalytics = ({ isDashboard }: Props) => {
+    const { data, isLoading, error } = useGetUserAnalyticsQuery({})
+    const analyticsData : any = []
+    console.log(data)
+    data && 
+        data.users.last12Month.forEach((items : any) => {
+            analyticsData.push({ name: items.month, count: items.count })
+        })
 
-const userAnalytics = ({ isDashboard }: Props) => {
     return (
         <>
             {
@@ -69,4 +65,4 @@ const userAnalytics = ({ isDashboard }: Props) => {
     )
 }
 
-export default userAnalytics
+export default UserAnalytics

@@ -3,8 +3,7 @@ import React, { FC, useState, useEffect } from 'react';
 import Heading from '../utils/Heading'; // Update to match your directory structure
 import AdminProtected from '../hooks/adminProtected'; // Update to match your directory structure
 import AdminLayout from '../components/Admin/adminLayout/AdminLayout'; // Update to match your directory structure
-import AdminSidebar from '../components/Admin/Sidebar/AdminSidebar';
-import AdminDashboard from '../components/Admin/AdminDashboard/AdminDashboard';
+import DashboardHero from '../components/Admin/AdminDashboard/DashboardHero';
 
 const Page: FC = () => {
 
@@ -17,7 +16,7 @@ const Page: FC = () => {
                 keywords="ELearning, education"
             />
             <AdminLayout >
-                <AdminDashboard />
+                <DashboardHero isDashboard = {true} />
             </AdminLayout>
         </AdminProtected>
     );

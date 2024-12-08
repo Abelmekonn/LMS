@@ -1,4 +1,4 @@
-import AdminDashboard from '../../../app/components/Admin/AdminDashboard/AdminDashboard'
+import AdminDashboard from '../../components/Admin/AdminDashboard/DashboardHero'
 import AdminLayout from '../../../app/components/Admin/adminLayout/AdminLayout'
 import AdminProtected from '../../../app/hooks/adminProtected'
 import Heading from '../../../app/utils/Heading'

@@ -11,7 +11,7 @@ export const analyticsApi = apiSlice.injectEndpoints({
         }),
         getOrderAnalytics : builder.query({
             query : () => ({
-                url : "get-courses-analytics",
+                url : "get-orders-analytics",
                 method : "GET",
                 credentials : 'include' as const
             })

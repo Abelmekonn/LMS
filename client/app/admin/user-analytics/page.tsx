@@ -2,8 +2,7 @@ import React from 'react';
 import AdminLayout from '../../../app/components/Admin/adminLayout/AdminLayout';
 import AdminProtected from '../../../app/hooks/adminProtected';
 import Heading from '../../../app/utils/Heading';
-import UserAnalytics from '../../../app/components/Admin/Analytics/userAnalytics'; // Notice the capitalization here
-
+import UserAnalytics from '@/app/components/Admin/Analytics/UserAnalytics';
 type Props = {};
 
 const Page = (props: Props) => {
@@ -16,7 +15,7 @@ const Page = (props: Props) => {
                     keywords="ELearning, education"
                 />
                 <AdminLayout>
-                    <UserAnalytics />
+                    <UserAnalytics isDashboard={false} />
                 </AdminLayout>
             </AdminProtected>
         </div>

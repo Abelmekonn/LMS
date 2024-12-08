@@ -6,7 +6,7 @@ import CourseModel from "../models/course.model";
 import UserModel from "../models/user.model";
 import sendMail from "../utils/sendMail";
 import NotificationModel from "../models/notfication.model";
-import { getAllOrders, getAllOrdersService, newOrder } from "../services/order.service";
+import {getAllOrdersService, newOrder } from "../services/order.service";
 
 export const createOrder = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     const { courseId, payment_info } = req.body as IOrder;

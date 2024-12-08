@@ -96,8 +96,14 @@ const AdminSidebar: React.FC = () => {
                         </Link>
                         <Link href="/admin/user-analytics" passHref>
                             <div onClick={() => handleSelect('User Analytics')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Course Analytics' ? 'bg-blue-200' : ''}`}>
-                                <TbReportAnalytics size={25}/>
+                                <TbReportAnalytics size={25} />
                                 {!isCollapsed && <span className="ml-2">User Analytics</span>}
+                            </div>
+                        </Link>
+                        <Link href="/admin/order-analytics" passHref>
+                            <div onClick={() => handleSelect('Order Analytics')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Order Analytics' ? 'bg-blue-200' : ''}`}>
+                                <AnalyticsIcon />
+                                {!isCollapsed && <span className="ml-2">Order Analytics</span>}
                             </div>
                         </Link>
                         <Link href="/admin/hero" passHref>
@@ -108,26 +114,14 @@ const AdminSidebar: React.FC = () => {
                         </Link>
                         <Link href="/admin/faq" passHref>
                             <div onClick={() => handleSelect('Hero')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Hero' ? 'bg-blue-200' : ''}`}>
-                                <QuizIcon  />
+                                <QuizIcon />
                                 {!isCollapsed && <span className="ml-2">FQA</span>}
                             </div>
                         </Link>
                         <Link href="/admin/categories" passHref>
                             <div onClick={() => handleSelect('Category')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Hero' ? 'bg-blue-200' : ''}`}>
-                                <CategoryIcon  />
+                                <CategoryIcon />
                                 {!isCollapsed && <span className="ml-2">Categories</span>}
-                            </div>
-                        </Link>
-                        <Link href="/admin/order-analytics" passHref>
-                            <div onClick={() => handleSelect('Order Analytics')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Order Analytics' ? 'bg-blue-200' : ''}`}>
-                                <AnalyticsIcon />
-                                {!isCollapsed && <span className="ml-2">Order Analytics</span>}
-                            </div>
-                        </Link>
-                        <Link href="/admin/user-analytics" passHref>
-                            <div onClick={() => handleSelect('User Analytics')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'User Analytics' ? 'bg-blue-200' : ''}`}>
-                                <AnalyticsIcon />
-                                {!isCollapsed && <span className="ml-2">User Analytics</span>}
                             </div>
                         </Link>
                         <Link href="/admin/team" passHref>
@@ -136,12 +130,7 @@ const AdminSidebar: React.FC = () => {
                                 {!isCollapsed && <span className="ml-2">Manage Team</span>}
                             </div>
                         </Link>
-                        <Link href="/admin/categories" passHref>
-                            <div onClick={() => handleSelect('Categories')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Categories' ? 'bg-blue-200' : ''}`}>
-                                <CategoryIcon />
-                                {!isCollapsed && <span className="ml-2">Categories</span>}
-                            </div>
-                        </Link>
+                        
                         <Link href="/admin/settings" passHref>
                             <div onClick={() => handleSelect('Settings')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Settings' ? 'bg-blue-200' : ''}`}>
                                 <SettingsIcon />

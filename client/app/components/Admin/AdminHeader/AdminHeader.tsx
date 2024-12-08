@@ -29,37 +29,15 @@ const AdminHeader: FC<Props> = ({ user }) => {
     }, [user.avatar]);
 
     return (
-        <Box className="flex items-center justify-between h-20 shadow-md  relative   top-0 w-full  px-6 py-4 bg-white dark:bg-gray-800">
+        <Box className="flex items-center justify-end h-20  relative   top-0 w-full  px-6 py-4">
             {/* Logo */}
-            <Box className='flex justify-end'>
-                <Image
-                    src={favicon.src}
-                    alt="Admin Avatar"
-                    className='w-[40px] h-[40px] rounded-lg cursor-pointer'
-                    width={30}
-                    height={30}
-                />
-                <Link href={"/"} className={`text-[25px] font-Poppins font-[500] text-black dark:text-white`}>
-                    ELearning
-                </Link>
-            </Box>
+            
             {/* Right Icons */}
-            <Box className="flex items-center gap-4">
+            <Box className="flex items-center gap-3">
                 <IconButton>
                     <Notifications className="text-black dark:text-white" />
                 </IconButton>
-                <Box className="flex items-center gap-2">
-                    <Image
-                        src={user.avatar ? user.avatar.url : avatarDefault}
-                        alt="Admin Avatar"
-                        className='w-[30px] h-[30px] rounded-full cursor-pointer'
-                        width={30}
-                        height={30}
-                    />
-                    <Typography className="ml-2 text-[18px] font-Poppins text-black dark:text-white">
-                        {user.name}
-                    </Typography>
-                </Box>
+                
                 <ThemeSwitcher />
             </Box>
         </Box>
