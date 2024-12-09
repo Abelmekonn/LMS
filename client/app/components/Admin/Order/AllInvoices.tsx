@@ -45,6 +45,8 @@ const AllInvoices = ({ isDashboard }: Props) => {
         }
     }, [orderData, userData, courseData]);
 
+    console.log(processedOrders)
+
     const columns = [
         ...(isDashboard
             ? [{ field: 'id', headerName: 'ID', flex: 0.3 }]

@@ -1,3 +1,4 @@
+import { useGetHeroDataQuery } from "../../../redux/features/layout/layoutApi";
 import Image from "next/image";
 import Link from "next/link";
 import React, { FC } from "react";
@@ -6,12 +7,16 @@ import { BiSearch } from "react-icons/bi";
 type Props = {};
 
 export const Hero: FC<Props> = (props) => {
+    const { data, refetch } = useGetHeroDataQuery("Banner", {
+        refetchOnMountOrArgChange: true,
+    });
+    console.log(data)
     return (
         <div className="w-full flex flex-col justify-evenly md:flex-row items-center dark:bg-gradient-to-b text-black dark:text-white">
             {/* Image Container */}
             <div className="mt-10 mx-[5%] relative top-[100px] md:top-[unset] w-[400px] h-[400px] 2xl:w-[500px] 2xl:h-[500px] lg:w-[450px] lg:h-[450px] hero_animation  rounded-full overflow-hidden flex items-center justify-center">
                 <Image
-                    src={require("../../../public/assets/10001.jpg")}
+                    src={data?.layout?.banner.image.url}
                     alt="Hero Image"
                     className="object-cover w-full h-full"
                     layout="fill"
@@ -21,12 +26,11 @@ export const Hero: FC<Props> = (props) => {
             {/* Text Container */}
             <div className="md:w-[50%] flex flex-col items-center md:items-start text-center md:text-left mt-[250px] md:mt-[60px] px-4 md:px-0">
                 <h2 className="dark:text-white text-[#000000c7] text-[30px]  md:text-[60px] font-Josefin pt-2 leading-snug md:leading-[75px] ">
-                    Improve your online Learning Experience Better Instance
+                    {data?.layout?.banner.title}
                 </h2>
                 <br />
                 <p className="dark:text-[#cdfff4] text-[#000000ac] font-Josefin font-[600] text-[18px] 1500px:w-[55%] 1100px:w-[78%]">
-                    We have 40+ Online course & 500k+ online registered student. Find your
-                    desired course from them.
+                    {data?.layout?.banner.subTitle}
                 </p>
                 <br /><br />
                 <div className="1500px:w-[55%] 1100px:w-[70%] w-[92%] h-[50px] bg-transparent relative mt-[-35px]">
