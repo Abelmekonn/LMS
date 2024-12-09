@@ -27,6 +27,7 @@ const Page: FC<Props> = (Props) => {
       />
       <Hero />
       <Courses />
+      
     </div>
   )
 }

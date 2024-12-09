@@ -7,28 +7,30 @@ type Props = {};
 const Courses = (props: Props) => {
     const { data } = useGetUsersAllCoursesQuery({});
     const [courses, setCourses] = useState<any[]>([]);
+    console.log(data?.data)
 
     useEffect(() => {
-        setCourses(data?.courses || []); // Ensure courses defaults to an empty array if data is undefined
+        setCourses(data?.data|| []); // Ensure courses defaults to an empty array if data is undefined
     }, [data]);
+
+    console.log(courses)
+
 
     return (
         <div>
-            <div className={`w-[90%] 800px:w-[80%] m-auto`}>
-                <h1 className="text-center font-Poppins text-[25px] leading-[35px] sm:text-3xl lg-text-4xl dark:text-white 800px:!leading-[60px] text-[#000] font-[700] tracking-tight">
+            <div className={`w-[90%] 800px:w-[80%] m-auto `}>
+                <h1 className="text-center mt-8 font-Poppins text-[25px] leading-[35px] sm:text-3xl lg-text-4xl dark:text-white 800px:!leading-[60px] text-[#000] font-[700] tracking-tight">
                     Expand Your Career{" "}
-                    <span className='text-gradient'>Opportunity</span> <br />
+                    <span className='text-gradient bg-gradient-to-r from-[#427BFC] via-[#427BFC] to-[#2E3FAB] bg-clip-text text-transparent'>Opportunity</span> <br />
                     Opportunity With Our Courses
                 </h1>
                 <br />
                 <br />
-                <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] 1500px:grid-cols-4 1500px:gap-[35px] mb-12 border-0">
+                <div className="w-[70%] mx-auto md:w-full grid grid-cols-1 gap-[20px] md:grid-cols-3 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] xl:grid-cols-4 1500px:gap-[35px] mb-12 border-0">
                     {courses?.map((item: any, index: number) => (
-                        <CourseCard
-                            item={item}
-                            key={index}
-                            isProfile={false} // Assuming `isProfile` needs a value
-                        />
+                        <>
+                        <CourseCard item={item} key={index} isProfile={false} />
+                        </>
                     ))}
                 </div>
             </div>
