@@ -32,7 +32,7 @@ export const reviews = [
         avatar: "https://randomuser.me/api/portraits/men/2.jpg",
         profession: "Digital Marketer",
         comment: "I've seen significant improvement in my team's productivity. Thank you!",
-        rating: 5
+        rating: 1
     },
     {
         name: "Emily Davis",
@@ -53,7 +53,7 @@ export const reviews = [
         avatar: "https://randomuser.me/api/portraits/women/4.jpg",
         profession: "Web Developer",
         comment: "The tools and features are incredibly intuitive. Great job!",
-        rating: 4.5
+        rating: 2
     },
     {
         name: "James Anderson",
