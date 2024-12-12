@@ -16,6 +16,7 @@ const ReviewCard = ({ item }: Props) => {
                     height={50}
                     className='w-[50px] h-[50px] rounded-full object-cover' 
                     alt={''} 
+                    layout=''
                 />
                 <div className="md:flex justify-between w-full hidden">
                     <div className="pl-4">
