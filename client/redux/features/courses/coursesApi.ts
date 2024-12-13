@@ -1,4 +1,5 @@
 import { apiSlice } from "../api/apiSlice";
+
 export const courseApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         createCourse: builder.mutation({
@@ -6,8 +7,8 @@ export const courseApi = apiSlice.injectEndpoints({
                 url: "create-course",
                 method: "POST",
                 body: data,
-                credentials: "include" as const
-            })
+                credentials: "include" as const,
+            }),
         }),
         getAllCourses: builder.query({
             query: () => ({
@@ -20,39 +21,39 @@ export const courseApi = apiSlice.injectEndpoints({
             query: (id) => ({
                 url: `delete-course/${id}`,
                 method: "DELETE",
-                credentials: "include" as const
-            })
+                credentials: "include" as const,
+            }),
         }),
         editCourse: builder.mutation({
             query: ({ id, data }) => ({
-                url: `edit-course/${id}`, // Ensure id is used here correctly
+                url: `edit-course/${id}`,
                 method: "PUT",
                 body: data,
-                credentials: "include" as const
-            })
+                credentials: "include" as const,
+            }),
         }),
-        getUsersAllCourses:builder.query({
+        getUsersAllCourses: builder.query({
             query: () => ({
-                url : "get-courses",
-                method : "GET" , 
-                credentials : "include" as const
-            })
+                url: "get-courses",
+                method: "GET",
+                credentials: "include" as const,
+            }),
         }),
-        getCourseDetail:builder.query({
-            query: () => ({
-                url : `get-courses/:${id}`,
-                method : "GET" , 
-                credentials : "include" as const
-            })
-        })
-    })
-})
+        getCourseDetail: builder.query({
+            query: (id) => ({
+                url: `get-course/${id}`, // Fixed URL with dynamic id
+                method: "GET",
+                credentials: "include" as const,
+            }),
+        }),
+    }),
+});
 
 export const { 
     useCreateCourseMutation, 
-    useGetAllCoursesQuery,
-    useDeleteCourseMutation,
-    useEditCourseMutation,
-    useGetUsersAllCoursesQuery,
-    useGetCourseDetailQuery
+    useGetAllCoursesQuery, 
+    useDeleteCourseMutation, 
+    useEditCourseMutation, 
+    useGetUsersAllCoursesQuery, 
+    useGetCourseDetailQuery 
 } = courseApi;
