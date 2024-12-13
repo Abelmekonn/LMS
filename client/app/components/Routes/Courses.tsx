@@ -13,7 +13,6 @@ const Courses = (props: Props) => {
         setCourses(data?.data|| []); // Ensure courses defaults to an empty array if data is undefined
     }, [data]);
 
-    console.log(courses)
 
 
     return (

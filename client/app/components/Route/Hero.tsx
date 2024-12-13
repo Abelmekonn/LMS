@@ -10,7 +10,6 @@ export const Hero: FC<Props> = (props) => {
     const { data, refetch } = useGetHeroDataQuery("Banner", {
         refetchOnMountOrArgChange: true,
     });
-    console.log(data)
     return (
         <div className="w-full flex flex-col justify-evenly md:flex-row items-center dark:bg-gradient-to-b text-black dark:text-white">
             {/* Image Container */}

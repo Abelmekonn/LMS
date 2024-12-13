@@ -49,7 +49,6 @@ const EditHero: FC = () => {
             return toast.error("Please fill all fields and upload an image.");
         }
 
-        console.log({ type: "Banner", title, subtitle, image });
 
         await editLayout({
             type: "Banner",

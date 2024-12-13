@@ -32,7 +32,6 @@ const CourseInformation: FC<Props> = ({ courseInfo, setCourseInfo, setActive, ac
         }
     }, [data])
 
-    console.log(categories)
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();

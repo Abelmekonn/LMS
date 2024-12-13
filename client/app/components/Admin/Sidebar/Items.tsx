@@ -14,6 +14,7 @@ interface ItemProps {
 }
 
 const Item: React.FC<ItemProps> = ({ title, to, icon, selected, setSelected, collapsed, onClick }) => {
+
     const handleClick = useCallback(() => {
         setSelected(title);
         if (onClick) {

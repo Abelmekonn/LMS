@@ -63,7 +63,6 @@ const CreateCourses: React.FC = () => {
         videoLength: 0,
     });
 
-    console.log(courseInfo)
 
     const [benefits, setBenefits] = useState([{ title: "" }]);
     const [prerequisites, setPrerequisites] = useState([{ title: "" }]);

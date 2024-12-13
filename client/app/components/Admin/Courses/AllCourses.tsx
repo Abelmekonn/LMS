@@ -21,7 +21,6 @@ const AllCourses = (props: Props) => {
     const [open, setOpen] = useState(false);
     const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
 
-    console.log(data)
 
     // Defining the columns for the DataGrid
     const columns = [

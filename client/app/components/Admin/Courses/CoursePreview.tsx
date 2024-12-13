@@ -31,7 +31,6 @@ const CoursePreview: FC<Props> = ({
   const createCourse = () => {
     handelCourseCreate();
   }
-  console.log("preview data ",courseData)
   return (
     <div className='W-[90%] m-auto py-5 mb-5'>
       <div className="w-full relative">

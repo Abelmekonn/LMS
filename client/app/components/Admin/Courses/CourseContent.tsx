@@ -146,7 +146,6 @@ const CourseContent: FC<Props> = ({
         }
     }
 
-    console.log(courseContentData)
 
     return (
         <div className='w-[80%] m-auto p-3'>
