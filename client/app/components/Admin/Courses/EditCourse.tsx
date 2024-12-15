@@ -18,6 +18,7 @@ type CourseInfo = {
     level: string;
     demoUrl: string;
     thumbnail: string;
+    categories:string
 };
 
 type CourseContentData = {
@@ -73,7 +74,8 @@ const EditCourse: React.FC<Props> = ({ id }) => {
         tags: "",
         level: "",
         demoUrl: "",
-        thumbnail: ""
+        thumbnail: "",
+        categories:""
     });
 
     const [benefits, setBenefits] = useState([{ title: "" }]);
@@ -93,6 +95,7 @@ const EditCourse: React.FC<Props> = ({ id }) => {
     useEffect(() => {
         if (!isLoading && data && Array.isArray(data.courses)) {
             const editCourseData = data.courses.find((course: any) => course._id === id);
+            console.log(editCourseData)
             if (editCourseData) {
                 setCourseInfo({
                     name: editCourseData.name,
@@ -102,7 +105,8 @@ const EditCourse: React.FC<Props> = ({ id }) => {
                     tags: editCourseData.tags,
                     level: editCourseData.level,
                     demoUrl: editCourseData.demoUrl,
-                    thumbnail: editCourseData?.thumbnail?.url
+                    thumbnail: editCourseData?.thumbnail?.url,
+                    categories:editCourseData?.categories,
                 });
                 setBenefits(editCourseData.benefits);
                 setPrerequisites(editCourseData.prerequisites);
@@ -149,15 +153,10 @@ const EditCourse: React.FC<Props> = ({ id }) => {
 
     const handleCourseUpdate = async (e: any) => {
         if (courseData && !isLoading) {
-            console.log("Updating Course");
-            console.log("ID:", id); // This should show the correct ID
             console.log("Course Data:", JSON.stringify(courseData, null, 2)); // Log the course data structure
             await editCourse({ id, data: courseData });
         }
     };
-    
-    
-    
 
 
     if (isLoading) {

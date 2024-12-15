@@ -114,35 +114,42 @@ export const editCourse = CatchAsyncError(async (req: Request, res: Response, ne
     }
 });
 
-
-
 // get single course
 export const getSingleCourse = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const courseId = req.params.id;
 
-        const isCatchExist = await redis.get(courseId)
-        if (isCatchExist) {
-            const course = JSON.parse(isCatchExist)
-            res.status(200).json({
-                success: true,
-                course
-            });
-        } else {
-            // Find the course by ID and exclude certain fields
-            const course = await CourseModel.findById(courseId)
-                .select("-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links");
+        // Validate the course ID
+        if (!mongoose.Types.ObjectId.isValid(courseId)) {
+            return next(new ErrorHandler("Invalid course ID format", 400));
+        }
 
-            if (!course) {
-                return next(new ErrorHandler("Course not found", 404));
-            }
-            await redis.set(courseId, JSON.stringify(course), "EX", 604800)
-            res.status(200).json({
+        // Check Redis cache
+        const cachedCourse = await redis.get(courseId);
+        if (cachedCourse) {
+            const course = JSON.parse(cachedCourse);
+            return res.status(200).json({
                 success: true,
-                course
+                course,
             });
         }
 
+        // Find the course by ID and exclude certain fields
+        const course = await CourseModel.findById(courseId).select(
+            "-courseData.videoUrl -courseData.suggestion -courseData.questions -courseData.links"
+        );
+
+        if (!course) {
+            return next(new ErrorHandler("Course not found", 404));
+        }
+
+        // Cache the course data in Redis for 7 days (604800 seconds)
+        await redis.set(courseId, JSON.stringify(course), "EX", 604800);
+
+        res.status(200).json({
+            success: true,
+            course,
+        });
     } catch (error: any) {
         console.error("Error fetching course:", error);
         return next(new ErrorHandler("An error occurred while fetching the course", 500));

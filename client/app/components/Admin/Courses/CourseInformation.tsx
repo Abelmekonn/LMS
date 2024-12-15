@@ -8,7 +8,7 @@ type CourseInfoType = {
     price: string;
     estimatePrice: string;
     tags: string;
-    category:string
+    categories: string
     level: string;
     demoUrl: string;
     thumbnail: string | null;
@@ -71,6 +71,8 @@ const CourseInformation: FC<Props> = ({ courseInfo, setCourseInfo, setActive, ac
             reader.readAsDataURL(file);
         }
     };
+
+    console.log(courseInfo)
 
 
     return (
@@ -148,16 +150,18 @@ const CourseInformation: FC<Props> = ({ courseInfo, setCourseInfo, setActive, ac
                     </div>
                     <div className="w-[45%] dark:bg-black">
                         <label className={`${styles.label} w-[50%]`}>Course Categories</label>
-                        <select 
-                            name="" 
-                            id="" 
-                            className={`${styles.input} 
-                            dark:bg-black`}
-                            onChange={(e : any ) => setCourseInfo({ ...courseInfo, category: e.target.value })}
-                            >
-                            <option value="" className='dark:bg-black'>Select a category</option>
+                        <select
+                            name="categories"
+                            id="categories"
+                            className={`${styles.input} dark:bg-black`}
+                            value={courseInfo.categories} // Bind the value to courseInfo.categories
+                            onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                                setCourseInfo({ ...courseInfo, categories: e.target.value })
+                            }
+                        >
+                            <option value="" className="dark:bg-black">Select a category</option>
                             {categories.map((item: any) => (
-                                <option value={item.value} key={item._id} className='dark:bg-black'>
+                                <option value={item.value} key={item._id} className="dark:bg-black">
                                     {item.title}
                                 </option>
                             ))}

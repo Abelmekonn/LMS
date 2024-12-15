@@ -8,7 +8,7 @@ const courseRouter = express.Router();
 courseRouter.post("/create-course",updateAccessToken ,isAuthenticated, authorizeRoles("admin"), uploadCourse);
 courseRouter.post("/getVdoCipherOtp",updateAccessToken,generateVideoUrl)
 
-courseRouter.get("/get-course/:id", updateAccessToken, getSingleCourse);
+courseRouter.get("/get-course/:id", getSingleCourse);
 courseRouter.get("/get-admin-course",isAuthenticated,authorizeRoles("admin"),getAllCoursesForAdmin)
 courseRouter.get("/get-courses",updateAccessToken,getAllCourse);
 courseRouter.get("/get-course-by-user/:id",updateAccessToken,isAuthenticated,getCourseByUser)

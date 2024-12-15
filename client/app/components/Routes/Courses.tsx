@@ -7,7 +7,6 @@ type Props = {};
 const Courses = (props: Props) => {
     const { data } = useGetUsersAllCoursesQuery({});
     const [courses, setCourses] = useState<any[]>([]);
-    console.log(data?.data)
 
     useEffect(() => {
         setCourses(data?.data|| []); // Ensure courses defaults to an empty array if data is undefined

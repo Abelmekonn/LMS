@@ -40,10 +40,10 @@ export const courseApi = apiSlice.injectEndpoints({
             }),
         }),
         getCourseDetail: builder.query({
-            query: (id) => ({
-                url: `get-course/${id}`, // Fixed URL with dynamic id
+            query: ({ id }: { id: string }) => ({
+                url: `get-course/${id}`, // Ensure this matches the backend route
                 method: "GET",
-                credentials: "include" as const,
+                credentials: "include",
             }),
         }),
     }),

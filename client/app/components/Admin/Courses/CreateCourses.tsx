@@ -13,16 +13,16 @@ type CourseInfo = {
     description: string;
     price: string;
     estimatePrice: string;
-    category: string;
+    categories: string;
     tags: string;
     level: string;
     demoUrl: string;
     thumbnail: string;
-    categories:string;
-    videoLength:number
+    videoLength: number
 };
 
 type CourseContentData = {
+    videoLength: any;
     title: string;
     videoUrl: string;
     description: string;
@@ -54,10 +54,9 @@ const CreateCourses: React.FC = () => {
         description: "",
         price: "",
         estimatePrice: "",
-        category: "",
+        categories: "",
         tags: "",
         level: "",
-        categories: "",
         demoUrl: "",
         thumbnail: "",
         videoLength: 0,
@@ -71,7 +70,7 @@ const CreateCourses: React.FC = () => {
         videoUrl: "",
         description: "",
         videoDescription: "",
-        videoLength : "",
+        videoLength: "",
         videoSection: "Untitled Section",
         links: [{ title: "", url: "" }],
         suggestion: ""
@@ -80,25 +79,27 @@ const CreateCourses: React.FC = () => {
     const [courseData, setCourseData] = useState({});
 
     const handelSubmit = async () => {
+
         const formattedBenefit = benefits.map((benefit) => ({ title: benefit.title }));
+        console.log("formattedBenefit", formattedBenefit)
         const formattedPrerequisite = prerequisites.map((prerequisite) => ({ title: prerequisite.title }));
-        console.log("course content" , courseContentData)
+        console.log("course content", courseContentData)
         // Map course content data to the expected format
         const formattedCourseContent = courseContentData.map((courseContent) => ({
             title: courseContent.title,
             videoUrl: courseContent.videoUrl,
-            videoThumbnail: {}, // Add logic if needed
+            videoThumbnail: {},
             description: courseContent.description,
             videoSection: courseContent.videoSection,
             videoLength: courseContent.videoLength,
-            videoPlayer: "", // Placeholder for video player
+            videoPlayer: "",
             links: courseContent.links.map((link) => ({ title: link.title, url: link.url })),
             suggestion: courseContent.suggestion,
-            questions: [], // Placeholder for questions
+            questions: [],
         }));
-        
-        console.log("formatted course content" , formattedCourseContent)
-        
+
+        console.log("formatted course content", formattedCourseContent)
+
         // Structure the final data object to send
         const data = {
             name: courseInfo.name,
@@ -112,12 +113,15 @@ const CreateCourses: React.FC = () => {
             courseData: formattedCourseContent,
             level: courseInfo.level,
             demoUrl: courseInfo.demoUrl,
-            purchased: 0,        // Default value for purchased
+            purchased: 0, // Default value for purchased
+            categories: courseInfo.categories, // Add this line
         };
-    
+
+        console.log(data)
+
         setCourseData(data);
     };
-    
+
 
     const handelCourseCreate = async (e: any) => {
         const data = courseData;
@@ -162,8 +166,8 @@ const CreateCourses: React.FC = () => {
                         active={active}
                         setActive={setActive}
                         courseData={courseData}
-                        handelCourseCreate={handelCourseCreate} 
-                        isEdit={false}                    />
+                        handelCourseCreate={handelCourseCreate}
+                        isEdit={false} />
                 )}
             </div>
             <div className="w-[20%] mt-[100px] h-screen relative z-[-1] top-18 right-0">
