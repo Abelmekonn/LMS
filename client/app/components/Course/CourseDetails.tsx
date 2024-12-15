@@ -1,10 +1,14 @@
+"use client"
+import { styles } from '@/app/styles/style';
 import CoursePlayer from '@/app/utils/CoursePlayer';
 import Rating from '@/app/utils/Rating';
+import Link from 'next/link';
 import React from 'react'
 import { IoCheckmarkCircleOutline } from 'react-icons/io5';
+import { PiDot } from 'react-icons/pi';
 import { useSelector } from 'react-redux';
 import format from "timeago.js"
-
+import CourseContentList from "../Course/CourseContentList"
 
 type Props = {
     data: any;
@@ -75,9 +79,14 @@ const CourseDetails = ({ data }: Props) => {
                             <br />
                             <br />
                         </div>
-                        <h1 className='text-[25px] font-Poppins font-[600] text-black dark:text-white'>
-                            Course Overview
-                        </h1>
+                        <div>
+                            <h1 className='text-[25px] font-Poppins font-[600] text-black dark:text-white'>
+                                Course Overview
+                            </h1>
+                            <CourseContentList 
+                                data={data?.courseData}
+                            />
+                        </div>
                         <br />
                         <br />
                         <div className="w-full">
@@ -140,7 +149,39 @@ const CourseDetails = ({ data }: Props) => {
                                 videoUrl={data?.demoUrl}
                                 title={data?.title}
                             />
-                            <div className="flex items-center "></div>
+                            <div className="flex items-center ">
+                                <h1 className="pt-5 text-[25px] text-black dark:text-white">
+                                    {data.price === 0 ? "Free" : data.price + "$"}
+                                </h1>
+                                <h5 className="pt-5 text-[20px] mt-2 line-through opacity-80 text-black dark:text-white">
+                                    {data.estimatedPrice}$
+                                </h5>
+                                <h4 className='pl-5 pt-4 text-[22px] text-black dark:text-white'>
+                                    {discountPercentagePrice}% off
+                                </h4>
+                            </div>
+                            <div className="flex items-center">
+                                {isPurchased ? (
+                                    <Link
+                                        className={`flex flex-row justify-content-center item-center py-3 px-6 rounded-full  min-h min-h-[45px]  text-[26px]  font-semibold !w-[220px] my-3 font-Poppins cursor-pointer !bg-[crimson]`}
+                                        href={`/course-access/${data._id}`}
+                                    >
+                                        Enter to course
+                                    </Link>
+                                ) : (
+                                    <div
+                                        className={`flex flex-row justify-content-center item-center py-3 px-6 rounded-full  min-h min-h-[45px]  text-[26px]  font-semibold !w-[220px] my-3 font-Poppins cursor-pointer !bg-[crimson]`}
+                                        onClick={handleOrder}
+                                    >
+                                        Buy Now {data.price}$
+                                    </div>
+                                )}
+                            </div>
+                            <br />
+                            <p className="pb-1 text-lg text-black dark:text-white flex items-center"><PiDot size={40} /> Source code included</p>
+                            <p className="pb-1 text-lg text-black dark:text-white flex items-center"><PiDot size={40} /> Full lifetime access</p>
+                            <p className="pb-1 text-lg text-black dark:text-white flex items-center"><PiDot size={40} /> Certificate of completion</p>
+                            <p className="pb-1 text-lg text-black dark:text-white flex items-center"><PiDot size={40} /> Premium support</p>
                         </div>
                     </div>
                 </div>
