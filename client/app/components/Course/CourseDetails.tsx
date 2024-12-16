@@ -9,7 +9,7 @@ import { PiDot } from 'react-icons/pi';
 import { useSelector } from 'react-redux';
 import format from "timeago.js"
 import CourseContentList from "../Course/CourseContentList"
-import { Elements } from "@stripe/react-stripe-js"
+import {Elements} from "@stripe/react-stripe-js"
 import CheckoutForm from "../Payment/CheckoutForm"
 
 type Props = {
@@ -18,9 +18,9 @@ type Props = {
     stripePromise: any;
 }
 
-const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
+const CourseDetails = ({ data,clientSecret,stripePromise }: Props) => {
     const user = useSelector((state: any) => state.auth);
-    const [open, setOpen] = useState(false)
+    const [open , setOpen] = useState(false)
     const discountPercentage =
         ((data?.estimatedPrice - data?.price) / data?.estimatedPrice) * 100;
 
@@ -89,7 +89,7 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                             <h1 className='text-[25px] font-Poppins font-[600] text-black dark:text-white'>
                                 Course Overview
                             </h1>
-                            <CourseContentList
+                            <CourseContentList 
                                 data={data?.courseData}
                                 isDemo={true}
                             />
@@ -199,18 +199,24 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                         <div className="w-full h-screen bg-[#00000036] fixed top-0 left-0 z-50 flex items-center justify-center">
                             <div className="w-[500px] min-h-[500px] bg-white rounded-xl shadow p-3">
                                 <div className="w-full flex justify-end">
-                                    <IoCloseOutline
+                                    <IoCloseOutline 
                                         size={40}
                                         className='text-black cursor-pointer'
                                         onClick={() => setOpen(false)}
                                     />
                                 </div>
-                                <div className="w-full">
-                                    {stripePromise && clientSecret && (
-                                        <Elements stripe={stripePromise} options={{ clientSecret }}>
-                                            <CheckoutForm />
-                                        </Elements>
-                                    )}
+                                
+                                <div className="w-full bg-black">
+                                    {
+                                        stripePromise && clientSecret && (
+                                            <Elements
+                                                stripe={stripePromise}
+                                                options={{clientSecret}}
+                                            >
+                                                <CheckoutForm  setOpen={setOpen} data={data}/>
+                                            </Elements>
+                                        )
+                                    }
                                 </div>
                             </div>
                         </div>

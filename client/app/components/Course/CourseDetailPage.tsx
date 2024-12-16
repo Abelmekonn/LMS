@@ -27,6 +27,7 @@ const CourseDetailPage = ({id}: Props) => {
         }
     }, [config]);
     
+    
     useEffect(() => {
         if (data?.course?.price) {
             const amount = Math.round(data.course.price * 100);
@@ -37,9 +38,11 @@ const CourseDetailPage = ({id}: Props) => {
     useEffect(() => {
         if (paymentIntentData?.client_secret) {
             setClientSecret(paymentIntentData.client_secret);
-        }
+        } 
     }, [paymentIntentData]);
     
+    console.log(paymentIntentData)
+    console.log(clientSecret)
 
 
     return (
