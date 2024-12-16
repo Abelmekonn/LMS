@@ -1,10 +1,13 @@
 import { useGetCourseDetailQuery } from '@/redux/features/courses/coursesApi'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Loader from '../loader'
 import Heading from '@/app/utils/Heading'
 import Header from '../Header'
 import CourseDetails from '../../components/Course/CourseDetails'
 import Footer from '../Footer'
+import { useCreatePaymentIntentMutation, useGetStripPublishedKeyQuery } from '@/redux/features/orders/ordersApi'
+import { loadStripe } from '@stripe/stripe-js'
+
 type Props = {
     id: string
 }
@@ -13,7 +16,32 @@ const CourseDetailPage = ({id}: Props) => {
     const [route , setRoute] = useState('Login')
     const [open , setOpen] = useState(false)
     const { data, isLoading, error } = useGetCourseDetailQuery({ id });
-    console.log(data)
+    const {data: config } = useGetStripPublishedKeyQuery({})
+    const [createPaymentIntent, {data:paymentIntentData}] = useCreatePaymentIntentMutation();
+    const [stripPromise,setStripePromise] = useState<any>(null)
+    const [clientSecret, setClientSecret] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (config?.publishableKey) {
+            setStripePromise(loadStripe(config.publishableKey));
+        }
+    }, [config]);
+    
+    useEffect(() => {
+        if (data?.course?.price) {
+            const amount = Math.round(data.course.price * 100);
+            createPaymentIntent(amount);
+        }
+    }, [createPaymentIntent, data]);
+    
+    useEffect(() => {
+        if (paymentIntentData?.client_secret) {
+            setClientSecret(paymentIntentData.client_secret);
+        }
+    }, [paymentIntentData]);
+    
+
+
     return (
         <>
         {
@@ -35,7 +63,11 @@ const CourseDetailPage = ({id}: Props) => {
                         setOpen={setOpen}
                         activeItem={1}
                     />
-                    <CourseDetails data={data.course}/>
+                    {
+                        stripPromise && (
+                            <CourseDetails data={data.course} stripePromise={stripPromise} clientSecret={clientSecret} />
+                        )
+                    }
                     <Footer />
                 </div>
             )

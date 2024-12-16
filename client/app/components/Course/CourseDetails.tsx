@@ -3,19 +3,24 @@ import { styles } from '@/app/styles/style';
 import CoursePlayer from '@/app/utils/CoursePlayer';
 import Rating from '@/app/utils/Rating';
 import Link from 'next/link';
-import React from 'react'
-import { IoCheckmarkCircleOutline } from 'react-icons/io5';
+import React, { useState } from 'react'
+import { IoCheckmarkCircleOutline, IoCloseOutline } from 'react-icons/io5';
 import { PiDot } from 'react-icons/pi';
 import { useSelector } from 'react-redux';
 import format from "timeago.js"
 import CourseContentList from "../Course/CourseContentList"
+import { Elements } from "@stripe/react-stripe-js"
+import CheckoutForm from "../Payment/CheckoutForm"
 
 type Props = {
     data: any;
+    clientSecret: any;
+    stripePromise: any;
 }
 
-const CourseDetails = ({ data }: Props) => {
+const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
     const user = useSelector((state: any) => state.auth);
+    const [open, setOpen] = useState(false)
     const discountPercentage =
         ((data?.estimatedPrice - data?.price) / data?.estimatedPrice) * 100;
 
@@ -24,8 +29,9 @@ const CourseDetails = ({ data }: Props) => {
     const isPurchased = user && user?.courses?.find((item: any) => item.id === data.id);
 
     const handleOrder = (e: any) => (
-        e.preventDefault(),
+        setOpen(true)
     )
+
 
     return (
         <div>
@@ -40,7 +46,7 @@ const CourseDetails = ({ data }: Props) => {
                                 <Rating rating={data.rating} />
                                 <h5 className="text-black dark:text-white ">{data.reviews?.length}</h5>
                             </div>
-                            <h5 className='text-black dark:text-white'>{data.purchased}</h5>
+                            <h5 className='text-black dark:text-white'>{data.purchased} Students</h5>
                         </div>
                         <br />
                         <h1 className='text-[25px] font-Poppins font-[600] text-black dark:text-white'>
@@ -83,8 +89,9 @@ const CourseDetails = ({ data }: Props) => {
                             <h1 className='text-[25px] font-Poppins font-[600] text-black dark:text-white'>
                                 Course Overview
                             </h1>
-                            <CourseContentList 
+                            <CourseContentList
                                 data={data?.courseData}
+                                isDemo={true}
                             />
                         </div>
                         <br />
@@ -186,6 +193,30 @@ const CourseDetails = ({ data }: Props) => {
                     </div>
                 </div>
             </div>
+            <>
+                {
+                    open && (
+                        <div className="w-full h-screen bg-[#00000036] fixed top-0 left-0 z-50 flex items-center justify-center">
+                            <div className="w-[500px] min-h-[500px] bg-white rounded-xl shadow p-3">
+                                <div className="w-full flex justify-end">
+                                    <IoCloseOutline
+                                        size={40}
+                                        className='text-black cursor-pointer'
+                                        onClick={() => setOpen(false)}
+                                    />
+                                </div>
+                                <div className="w-full">
+                                    {stripePromise && clientSecret && (
+                                        <Elements stripe={stripePromise} options={{ clientSecret }}>
+                                            <CheckoutForm />
+                                        </Elements>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+            </>
         </div>
     )
 }
