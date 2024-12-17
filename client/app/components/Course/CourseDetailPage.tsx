@@ -1,82 +1,73 @@
-import { useGetCourseDetailQuery } from '@/redux/features/courses/coursesApi'
-import React, { useEffect, useState } from 'react'
-import Loader from '../loader'
-import Heading from '@/app/utils/Heading'
-import Header from '../Header'
-import CourseDetails from '../../components/Course/CourseDetails'
-import Footer from '../Footer'
-import { useCreatePaymentIntentMutation, useGetStripPublishedKeyQuery } from '@/redux/features/orders/ordersApi'
-import { loadStripe } from '@stripe/stripe-js'
+import React, { useEffect, useState } from "react";
+import { useGetCourseDetailQuery } from "@/redux/features/courses/coursesApi";
+import { useCreatePaymentIntentMutation, useGetStripPublishedKeyQuery } from "@/redux/features/orders/ordersApi";
+import { loadStripe, Stripe } from "@stripe/stripe-js";
+import Loader from "../loader";
+import Heading from "@/app/utils/Heading";
+import Header from "../Header";
+import Footer from "../Footer";
+import CourseDetails from "../../components/Course/CourseDetails";
 
 type Props = {
-    id: string
-}
+    id: string;
+};
 
-const CourseDetailPage = ({id}: Props) => {
-    const [route , setRoute] = useState('Login')
-    const [open , setOpen] = useState(false)
-    const { data, isLoading, error } = useGetCourseDetailQuery({ id });
-    const {data: config } = useGetStripPublishedKeyQuery({})
-    const [createPaymentIntent, {data:paymentIntentData}] = useCreatePaymentIntentMutation();
-    const [stripPromise,setStripePromise] = useState<any>(null)
+const CourseDetailPage: React.FC<Props> = ({ id }) => {
+    const [route, setRoute] = useState("Login");
+    const [open, setOpen] = useState(false);
+    const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
     const [clientSecret, setClientSecret] = useState<string | null>(null);
+
+    const { data, isLoading, error } = useGetCourseDetailQuery({ id });
+    const { data: config } = useGetStripPublishedKeyQuery({});
+    const [createPaymentIntent, { data: paymentIntentData }] = useCreatePaymentIntentMutation();
 
     useEffect(() => {
         if (config?.publishableKey) {
             setStripePromise(loadStripe(config.publishableKey));
         }
     }, [config]);
-    
-    
+
     useEffect(() => {
         if (data?.course?.price) {
             const amount = Math.round(data.course.price * 100);
-            createPaymentIntent(amount);
+            createPaymentIntent({ amount }); // Ensure correct parameter structure
         }
     }, [createPaymentIntent, data]);
-    
+
     useEffect(() => {
         if (paymentIntentData?.client_secret) {
             setClientSecret(paymentIntentData.client_secret);
-        } 
+        }
     }, [paymentIntentData]);
-    
-    console.log(paymentIntentData)
-    console.log(clientSecret)
 
+    if (isLoading) return <Loader />;
+    if (error) return <p>Error: Unable to fetch course details</p>;
 
     return (
-        <>
-        {
-            isLoading ? (
-                <Loader />
-            ):(
-                <div>
-                    <Heading
-                        title={data.course.name + "- ELearning"}
-                        description={
-                            "ELearning is a programming community which is developed by a group of passionate developers"
-                        }
-                        keywords={data?.course?.tags}
-                    />
-                    <Header 
-                        route={route}
-                        setRoute={setRoute}
-                        open={open}
-                        setOpen={setOpen}
-                        activeItem={1}
-                    />
-                    {
-                        stripPromise && (
-                            <CourseDetails data={data.course} stripePromise={stripPromise} clientSecret={clientSecret} />
-                        )
-                    }
-                    <Footer />
-                </div>
-            )
-        }
-        </>
-    )
-}
+        <div>
+            <Heading
+                title={`${data?.course?.name} - ELearning`}
+                description="ELearning is a programming community developed by passionate developers."
+                keywords={data?.course?.tags || []}
+            />
+            <Header
+                route={route}
+                setRoute={setRoute}
+                open={open}
+                setOpen={setOpen}
+                activeItem={1}
+            />
+            {stripePromise && clientSecret && data?.course && (
+                <CourseDetails
+                    data={data.course}
+                    stripePromise={stripePromise}
+                    clientSecret={clientSecret}
+                />
+            )}
+            <Footer />
+        </div>
+    );
+};
 
-export default CourseDetailPage
+export default CourseDetailPage;

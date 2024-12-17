@@ -12,8 +12,6 @@ const Courses = (props: Props) => {
         setCourses(data?.data|| []); // Ensure courses defaults to an empty array if data is undefined
     }, [data]);
 
-
-
     return (
         <div>
             <div className={`w-[90%] 800px:w-[80%] m-auto `}>
