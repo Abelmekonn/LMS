@@ -30,16 +30,18 @@ const CourseDetailPage: React.FC<Props> = ({ id }) => {
 
     useEffect(() => {
         if (data?.course?.price) {
-            const amount = Math.round(data.course.price * 100);
-            createPaymentIntent({ amount }); // Ensure correct parameter structure
+            const amount = Math.round(data.course.price * 100); // Convert to cents
+            createPaymentIntent({ amount }); // Ensure the payload matches backend expectations
         }
-    }, [createPaymentIntent, data]);
+    }, [createPaymentIntent, data]);    
 
     useEffect(() => {
         if (paymentIntentData?.client_secret) {
             setClientSecret(paymentIntentData.client_secret);
         }
     }, [paymentIntentData]);
+
+    console.log(clientSecret);
 
     if (isLoading) return <Loader />;
     if (error) return <p>Error: Unable to fetch course details</p>;
@@ -58,7 +60,7 @@ const CourseDetailPage: React.FC<Props> = ({ id }) => {
                 setOpen={setOpen}
                 activeItem={1}
             />
-            {stripePromise && clientSecret && data?.course && (
+            {stripePromise && data?.course && (
                 <CourseDetails
                     data={data.course}
                     stripePromise={stripePromise}

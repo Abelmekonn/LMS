@@ -53,9 +53,10 @@ const CheckoutForm = ({ setOpen, data }: Props) => {
     };
 
     return (
-        <div>
+        <div className="">
+
             <form onSubmit={handleSubmit}>
-                <h2 className="text-lg font-bold mb-4">Complete Payment</h2>
+                <h2 className="text-lg font-bold mb-4 text-black">Complete Payment</h2>
                 <PaymentElement />
                 {message && <p className="text-red-500 mt-2">{message}</p>}
                 <button

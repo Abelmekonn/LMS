@@ -43,9 +43,9 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                         <div className='flex items-center justify-between pt-3'>
                             <div className="flex items-center">
                                 <Rating rating={data.rating} />
-                                <h5 className="text-black dark:text-white ">{data.reviews?.length}</h5>
+                                <h5 className="text-black text-[18px] dark:text-white ">{data.reviews?.length}</h5>
                             </div>
-                            <h5 className='text-black dark:text-white'>{data.purchased} Students</h5>
+                            <h5 className='text-black dark:text-white mr-10'>{data.purchased} Students</h5>
                         </div>
                         <br />
                         <h1 className='text-[25px] font-Poppins font-[600] text-black dark:text-white'>
@@ -205,7 +205,7 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                                     />
                                 </div>
                                 <div className="w-full">
-                                    {stripePromise && clientSecret && (
+                                    {stripePromise && (
                                         <Elements stripe={stripePromise} options={{ clientSecret }}>
                                             <CheckoutForm setOpen={setOpen} data={data} />
                                         </Elements>
