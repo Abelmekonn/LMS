@@ -16,11 +16,11 @@ const CourseDetailPage: React.FC<Props> = ({ id }) => {
     const [route, setRoute] = useState("Login");
     const [open, setOpen] = useState(false);
     const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
-    const [clientSecret, setClientSecret] = useState<string | null>(null);
+    const [clientSecret, setClientSecret] = useState<string>("");
 
     const { data, isLoading, error } = useGetCourseDetailQuery({ id });
     const { data: config } = useGetStripPublishedKeyQuery({});
-    const [createPaymentIntent, { data: paymentIntentData }] = useCreatePaymentIntentMutation();
+    const [createPaymentIntent, { data: paymentIntentData }] = useCreatePaymentIntentMutation({});
 
     useEffect(() => {
         if (config?.publishableKey) {
@@ -30,18 +30,19 @@ const CourseDetailPage: React.FC<Props> = ({ id }) => {
 
     useEffect(() => {
         if (data?.course?.price) {
-            const amount = Math.round(data.course.price * 100); // Convert to cents
-            createPaymentIntent({ amount }); // Ensure the payload matches backend expectations
+            const amount = Math.round(data.course.price); // Convert to cents
+            console.log("Amount being sent to paymentIntent:", amount);
+            createPaymentIntent( amount );
         }
-    }, [createPaymentIntent, data]);    
+    }, [createPaymentIntent, data]);
 
     useEffect(() => {
+        console.log("Payment Intent Data:", paymentIntentData);
         if (paymentIntentData?.client_secret) {
             setClientSecret(paymentIntentData.client_secret);
         }
-    }, [paymentIntentData]);
+    }, [paymentIntentData]);    
 
-    console.log(clientSecret);
 
     if (isLoading) return <Loader />;
     if (error) return <p>Error: Unable to fetch course details</p>;

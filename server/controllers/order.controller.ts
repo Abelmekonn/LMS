@@ -134,7 +134,7 @@ export const newPayment = CatchAsyncError(async (req: Request, res: Response, ne
         // Ensure the amount is provided in the request and is valid
         const amountInCents = Math.round(req.body.amount * 100); // Convert dollars to cents (e.g., $0.50 → 50 cents)
 
-        if (amountInCents < 50) {
+        if (amountInCents < 0.5) {
             return next(new ErrorHandler("Amount must be at least $0.50", 400));
         }
 

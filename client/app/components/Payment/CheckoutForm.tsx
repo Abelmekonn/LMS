@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
+import { PaymentElement, useStripe, useElements, LinkAuthenticationElement } from "@stripe/react-stripe-js";
 import { useCreateOrderMutation } from "@/redux/features/orders/ordersApi";
 
 type Props = {
@@ -34,6 +34,7 @@ const CheckoutForm = ({ setOpen, data }: Props) => {
 
         if (error) {
             setMessage(error.message || "An unexpected error occurred.");
+            setIsLoading(false)
         } else if (paymentIntent && paymentIntent.status === "succeeded") {
             await createOrder({
                 courseId: data.id,
@@ -55,19 +56,24 @@ const CheckoutForm = ({ setOpen, data }: Props) => {
     return (
         <div className="">
 
-            <form onSubmit={handleSubmit}>
-                <h2 className="text-lg font-bold mb-4 text-black">Complete Payment</h2>
-                <PaymentElement />
-                {message && <p className="text-red-500 mt-2">{message}</p>}
-                <button
-                    type="submit"
-                    disabled={!stripe || isLoading}
-                    className={`mt-4 py-2 px-4 rounded bg-blue-500 text-white font-semibold ${
-                        isLoading ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
-                >
-                    {isLoading ? "Processing..." : "Pay Now"}
+            <form id="payment-form" onSubmit={handleSubmit}>
+                <LinkAuthenticationElement id="link-authentication-element"
+                // Access the email value like so:
+                // onChange={(event) => {
+                //  setEmail(event.value.email);
+                // }}
+                //
+                // Prefill the email field like so:
+                // options={{defaultValues: {email: 'foo@bar.com'}}}
+                />
+                <PaymentElement id="payment-element" />
+                <button className="bg-blue-500 text-white py-2 px-4 rounded-md mt-5 self-center " disabled={isLoading || !stripe || !elements} id="submit">
+                    <span id="button-text text-black">
+                        {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
+                    </span>
                 </button>
+                {/* Show any error or success messages */}
+                {message && <div id="payment-message">{message}</div>}
             </form>
         </div>
     );

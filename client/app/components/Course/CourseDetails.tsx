@@ -196,11 +196,11 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                 {
                     open && (
                         <div className="w-full h-screen bg-[#00000036] fixed top-0 left-0 z-50 flex items-center justify-center">
-                            <div className="w-[500px] min-h-[500px] bg-white rounded-xl shadow p-3">
+                            <div className="w-[500px] min-h-[500px] bg-white dark:bg-black rounded-xl shadow p-3">
                                 <div className="w-full flex justify-end">
                                     <IoCloseOutline
                                         size={40}
-                                        className="text-black cursor-pointer"
+                                        className="text-black cursor-pointer dark:text-white"
                                         onClick={() => setOpen(false)}
                                     />
                                 </div>
