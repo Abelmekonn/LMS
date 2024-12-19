@@ -49,7 +49,6 @@ const CheckoutForm = ({ setOpen, data }: Props) => {
         } else {
             setMessage("Payment could not be completed.");
         }
-
         setIsLoading(false);
     };
 
