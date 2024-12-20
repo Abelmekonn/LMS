@@ -23,10 +23,9 @@ export interface CustomRequest extends Request {
 // Create Order
 export const createOrder = CatchAsyncError(async (req: CustomRequest, res: Response, next: NextFunction) => {
     const { courseId, payment_info } = req.body as IOrder;
-
     // Verify payment information
-    if (payment_info?.id) {
-        const paymentIntentId = payment_info.id;
+    if (payment_info?._id) {
+        const paymentIntentId = payment_info._id;
 
         try {
             const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);

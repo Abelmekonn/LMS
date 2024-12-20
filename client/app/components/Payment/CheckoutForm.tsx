@@ -1,6 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { PaymentElement, useStripe, useElements, LinkAuthenticationElement } from "@stripe/react-stripe-js";
 import { useCreateOrderMutation } from "@/redux/features/orders/ordersApi";
+import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
+import { useRouter } from "next/navigation"; // Import useRouter for App Router
+import toast from "react-hot-toast";
 
 type Props = {
     setOpen: (state: boolean) => void;
@@ -10,68 +13,84 @@ type Props = {
 const CheckoutForm = ({ setOpen, data }: Props) => {
     const stripe = useStripe();
     const elements = useElements();
+    const router = useRouter(); // Use router from next/navigation
     const [message, setMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [createOrder] = useCreateOrderMutation();
+    const [createOrder, { data: orderData, error }] = useCreateOrderMutation();
+    const [loadUser, setLoadUser] = useState(false);
+
+    const { data: userData } = useLoadUserQuery({ skip: !loadUser });
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setIsLoading(true);
-
+    
         if (!stripe || !elements) {
-            setMessage("Stripe is not properly initialized.");
+            setMessage("Stripe.js has not loaded properly.");
             setIsLoading(false);
             return;
         }
-
-        const { error, paymentIntent } = await stripe.confirmPayment({
-            elements,
-            confirmParams: {
-                return_url: window.location.href,
-            },
-            redirect: "if_required", // Prevents automatic redirection
-        });
-
-        if (error) {
-            setMessage(error.message || "An unexpected error occurred.");
-            setIsLoading(false)
-        } else if (paymentIntent && paymentIntent.status === "succeeded") {
-            await createOrder({
-                courseId: data.id,
-                payment_info: {
-                    id: paymentIntent.id,
-                    status: paymentIntent.status,
+    
+        try {
+            const { error, paymentIntent } = await stripe.confirmPayment({
+                elements,
+                confirmParams: {
+                    // Ensure you pass correct return URL
+                    return_url: window.location.href,
                 },
+                redirect: "if_required", // Prevents automatic redirection
             });
-
-            setMessage("Payment successful! Order created.");
-            setOpen(false);
-        } else {
-            setMessage("Payment could not be completed.");
+    
+            if (error) {
+                console.error("Stripe error:", error);
+                setMessage(error.message || "An unexpected error occurred.");
+            } else if (paymentIntent && paymentIntent.status === "succeeded") {
+                await createOrder({
+                    courseId: data.id,
+                    payment_info: paymentIntent,
+                });
+                setMessage("Payment successful! Order created.");
+                setOpen(false);
+            } else {
+                setMessage("Payment could not be completed.");
+            }
+        } catch (err) {
+            console.error("Request failed:", err);
+            setMessage("An error occurred while processing your payment.");
+        } finally {
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
+    
+
+    useEffect(() => {
+        if (orderData) {
+            setLoadUser(true);
+            console.log(data)
+            router.push(`/course-access/${data._id}`); // Use router.push for navigation
+        }
+        if (error) {
+            if ("data" in error) {
+                const errorMessage = error as any;
+                toast.error(errorMessage);
+            }
+        }
+    }, [orderData, error, router, data]);
 
     return (
         <div className="">
-
             <form id="payment-form" onSubmit={handleSubmit}>
-                <LinkAuthenticationElement id="link-authentication-element"
-                // Access the email value like so:
-                // onChange={(event) => {
-                //  setEmail(event.value.email);
-                // }}
-                //
-                // Prefill the email field like so:
-                // options={{defaultValues: {email: 'foo@bar.com'}}}
-                />
+                <LinkAuthenticationElement id="link-authentication-element" />
                 <PaymentElement id="payment-element" />
-                <button className="bg-blue-500 text-white py-2 px-4 rounded-md mt-5 self-center " disabled={isLoading || !stripe || !elements} id="submit">
+                <button
+                    className="bg-blue-500 text-white py-2 px-4 rounded-md mt-5 self-center"
+                    disabled={isLoading || !stripe || !elements}
+                    id="submit"
+                >
                     <span id="button-text text-black">
                         {isLoading ? <div className="spinner" id="spinner"></div> : "Pay now"}
                     </span>
                 </button>
-                {/* Show any error or success messages */}
                 {message && <div id="payment-message">{message}</div>}
             </form>
         </div>

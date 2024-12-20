@@ -5,7 +5,7 @@ import { userLogin } from "../auth/authSlice";
 
 export const apiSlice = createApi({
     reducerPath: 'api',
-    baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_SERVICE_URI }),
+    baseQuery: fetchBaseQuery({ baseUrl: process.env.NEXT_PUBLIC_SERVICE_URI , credentials: "include" }),
     endpoints: (builder) => ({
         refreshToken: builder.query({
             query: (data) => ({
