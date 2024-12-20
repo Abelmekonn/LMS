@@ -21,13 +21,11 @@ const CheckoutForm = ({ setOpen, data }: Props) => {
 
     const { data: userData } = useLoadUserQuery({ skip: !loadUser });
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e:any) => {
         e.preventDefault();
         setIsLoading(true);
     
         if (!stripe || !elements) {
-            setMessage("Stripe.js has not loaded properly.");
-            setIsLoading(false);
             return;
         }
     
@@ -46,7 +44,7 @@ const CheckoutForm = ({ setOpen, data }: Props) => {
                 setMessage(error.message || "An unexpected error occurred.");
             } else if (paymentIntent && paymentIntent.status === "succeeded") {
                 await createOrder({
-                    courseId: data.id,
+                    courseId: data._id,
                     payment_info: paymentIntent,
                 });
                 setMessage("Payment successful! Order created.");

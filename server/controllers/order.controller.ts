@@ -14,18 +14,14 @@ require("dotenv").config();
 // Initialize Stripe
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-export interface CustomRequest extends Request {
-    user?: {
-        _id: string; // Or ObjectId based on your database setup
-    };
-}
-
 // Create Order
-export const createOrder = CatchAsyncError(async (req: CustomRequest, res: Response, next: NextFunction) => {
+export const createOrder = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.body);
     const { courseId, payment_info } = req.body as IOrder;
+
     // Verify payment information
-    if (payment_info?._id) {
-        const paymentIntentId = payment_info._id;
+    if (payment_info?.id) {
+        const paymentIntentId = payment_info.id;
 
         try {
             const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
@@ -104,9 +100,17 @@ export const createOrder = CatchAsyncError(async (req: CustomRequest, res: Respo
     course.purchased = (course.purchased || 0) + 1;
     await course.save();
 
-    // Create new order
-    return newOrder(data, res, next);
+    // Create and save the order
+    const order = await OrderModel.create(data);
+
+    // Return the order details
+    res.status(201).json({
+        success: true,
+        message: "Order created successfully",
+        order,
+    });
 });
+
 
 // Get All Orders
 export const getOrders = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {

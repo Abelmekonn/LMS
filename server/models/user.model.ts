@@ -44,8 +44,14 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
             select: false,
         },
         avatar: {
-            type: String,  // This will store the URL of the profile picture
-            default: 'default_avatar_url',
+            type: {
+                public_id: String,
+                url: String,
+            },
+            default: {
+                public_id: "",
+                url: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+            },
         },
         role: {
             type: String,
@@ -57,7 +63,11 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
         },
         courses: [
             {
-                courseId: String,
+                courseId: {
+                    type: mongoose.Schema.Types.ObjectId, // Store ObjectId type for courseId
+                    ref: 'Course',
+                    required: true,
+                },
             },
         ],
     },
