@@ -4,6 +4,7 @@ import { useCreateOrderMutation } from "@/redux/features/orders/ordersApi";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import { useRouter } from "next/navigation"; // Import useRouter for App Router
 import toast from "react-hot-toast";
+import { useSelector } from "react-redux";
 
 type Props = {
     setOpen: (state: boolean) => void;
@@ -11,6 +12,7 @@ type Props = {
 };
 
 const CheckoutForm = ({ setOpen, data }: Props) => {
+    const { user } = useSelector((state: any) => state.auth);
     const stripe = useStripe();
     const elements = useElements();
     const router = useRouter(); // Use router from next/navigation
@@ -20,6 +22,7 @@ const CheckoutForm = ({ setOpen, data }: Props) => {
     const [loadUser, setLoadUser] = useState(false);
 
     const { data: userData } = useLoadUserQuery({ skip: !loadUser });
+    const userId=user?._id
 
     const handleSubmit = async (e:any) => {
         e.preventDefault();
@@ -46,6 +49,7 @@ const CheckoutForm = ({ setOpen, data }: Props) => {
                 await createOrder({
                     courseId: data._id,
                     payment_info: paymentIntent,
+                    userId:userId
                 });
                 setMessage("Payment successful! Order created.");
                 setOpen(false);

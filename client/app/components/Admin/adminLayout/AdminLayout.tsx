@@ -3,14 +3,13 @@ import React, { FC, ReactNode } from 'react';
 import AdminHeader from '../AdminHeader/AdminHeader';
 import AdminSidebar from '../Sidebar/AdminSidebar';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store';
 
 interface AdminLayoutProps {
     children: ReactNode;
 }
 
 const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
-    const { user } = useSelector((state: RootState) => state.auth);
+    const { user } = useSelector((state: any) => state.auth);
 
     return (
         <div className="flex flex-row min-h-screen ">
