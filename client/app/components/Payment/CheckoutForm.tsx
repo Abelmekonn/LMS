@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { PaymentElement, useStripe, useElements, LinkAuthenticationElement } from "@stripe/react-stripe-js";
 import { useCreateOrderMutation } from "@/redux/features/orders/ordersApi";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
-import { useRouter } from "next/navigation"; // Import useRouter for App Router
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation"; // Ensure correct import
 
 type Props = {
     setOpen: (state: boolean) => void;
@@ -15,16 +15,16 @@ const CheckoutForm = ({ setOpen, data }: Props) => {
     const { user } = useSelector((state: any) => state.auth);
     const stripe = useStripe();
     const elements = useElements();
-    const router = useRouter(); // Use router from next/navigation
     const [message, setMessage] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const [createOrder, { data: orderData, error }] = useCreateOrderMutation();
+    const [createOrder, { data: orderData, error, isSuccess }] = useCreateOrderMutation();
     const [loadUser, setLoadUser] = useState(false);
 
     const { data: userData } = useLoadUserQuery({ skip: !loadUser });
+    const router = useRouter();
     const userId=user?._id
 
-    const handleSubmit = async (e:any) => {
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         setIsLoading(true);
     
@@ -36,40 +36,42 @@ const CheckoutForm = ({ setOpen, data }: Props) => {
             const { error, paymentIntent } = await stripe.confirmPayment({
                 elements,
                 confirmParams: {
-                    // Ensure you pass correct return URL
                     return_url: window.location.href,
                 },
-                redirect: "if_required", // Prevents automatic redirection
+                redirect: "if_required",
             });
     
             if (error) {
-                console.error("Stripe error:", error);
                 setMessage(error.message || "An unexpected error occurred.");
             } else if (paymentIntent && paymentIntent.status === "succeeded") {
-                await createOrder({
+                const response = await createOrder({
                     courseId: data._id,
                     payment_info: paymentIntent,
-                    userId:userId
-                });
-                setMessage("Payment successful! Order created.");
-                setOpen(false);
+                    userId: userId,
+                }).unwrap(); // Use `.unwrap()` to get the response
+    
+                if (response) {
+                    setMessage("Payment successful! Order created.");
+                    setOpen(false);
+                    router.push(`/course-access/${data._id}`); 
+                }
             } else {
                 setMessage("Payment could not be completed.");
             }
         } catch (err) {
-            console.error("Request failed:", err);
+            console.error("Error:", err);
             setMessage("An error occurred while processing your payment.");
         } finally {
             setIsLoading(false);
         }
     };
-    
 
     useEffect(() => {
         if (orderData) {
             setLoadUser(true);
+            console.log(orderData)
             console.log(data)
-            router.push(`/course-access/${data._id}`); // Use router.push for navigation
+            redirect(`/course-access/${data._id}`); // Use router.push for navigation
         }
         if (error) {
             if ("data" in error) {
@@ -77,7 +79,7 @@ const CheckoutForm = ({ setOpen, data }: Props) => {
                 toast.error(errorMessage);
             }
         }
-    }, [orderData, error, router, data]);
+    }, [orderData, error, data]);
 
     return (
         <div className="">

@@ -22,36 +22,31 @@ export interface IOrder {
 }
 // Create Order
 export const createOrder = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
-    const { courseId, payment_info,userId } = req.body;
-    console.log(payment_info.id);
+    const { courseId, payment_info, userId } = req.body;
     // Verify payment information
 
     const paymentIntent = await stripe.paymentIntents.retrieve(payment_info.id);
     if (paymentIntent.status !== "succeeded") {
         return next(new ErrorHandler("Payment not successful", 400));
     }
-    console.log(paymentIntent)
 
     // Fetch user
-    console.log(userId)
     const user = await UserModel.findById(userId);
     if (!user) {
         return next(new ErrorHandler("User not found", 404));
     }
-    console.log(user)
-
 
     // Fetch course
     const course = await CourseModel.findById(courseId);
     if (!course) {
         return next(new ErrorHandler("Course not found", 404));
     }
-    console.log(course);
 
     // Check if user already owns the course
     const courseExistInUser = user.courses.some((userCourse) =>
         userCourse.courseId.toString() === courseId
     );
+
     if (courseExistInUser) {
         return next(new ErrorHandler("You have already purchased this course", 400));
     }
@@ -62,24 +57,58 @@ export const createOrder = CatchAsyncError(async (req: Request, res: Response, n
         payment_info,
     } as IOrder;
 
+    // console.log("data", data);
 
     // Update user's courses and save
     user.courses.push({ courseId: courseId });
+    await redis.set(userId, JSON.stringify(user));
     await user.save();
 
-    // Increment course purchase count and save
-    course.purchased = (course.purchased || 0) + 1;
-    await course.save();
+    // Increment course purchase count atomically
+    const updatedCourse = await CourseModel.findByIdAndUpdate(
+        courseId,
+        { $inc: { purchased: 1 } },
+        { new: true }
+    );
+    await redis.set(courseId, JSON.stringify(updatedCourse));
+
+    if (!updatedCourse) {
+        return next(new ErrorHandler("Failed to update course purchase count", 500));
+    }
 
     // Create notification
     await NotificationModel.create({
+        user: userId,
         title: "New Order",
         message: `You have a new order for the course: ${course.name}`,
     });
 
     // Create and save the order
-    console.log(data);
     const order = await OrderModel.create(data);
+
+    const mailData = {
+        order:{
+            _id:courseId,
+            name:course.name,
+            price:course.price,
+            date:new Date().toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            }),
+        }
+    }
+
+    try {
+        await sendMail({
+            email: user.email,
+            subject: "Order Confirmation",
+            template: "order-conformation.ejs", // Pass the template name
+            data:mailData,
+        });
+    } catch (error: any) {
+        return next(new ErrorHandler(error.message, 400));
+    }
 
     // Return the order details
     res.status(201).json({
@@ -88,8 +117,6 @@ export const createOrder = CatchAsyncError(async (req: Request, res: Response, n
         order,
     });
 });
-
-
 
 
 // Get All Orders

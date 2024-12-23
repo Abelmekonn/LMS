@@ -35,6 +35,9 @@ export const orderApi = apiSlice.injectEndpoints({
                     userId
                 },
                 method: "POST",
+                headers: {
+                    "Content-Type": "application/json", 
+                },
                 credentials: "include" as const
             })
         })
