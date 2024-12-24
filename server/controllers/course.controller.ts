@@ -182,23 +182,24 @@ export const getCourseByUser = CatchAsyncError(async (req: Request, res: Respons
         const userCourseList = req.user?.courses;
         const courseId = req.params.id;
 
-        const courseExist = userCourseList?.find((course: any) => course._id.toString() === courseId)
+        const courseExist = userCourseList?.some((item: any) => item.courseId === courseId);
 
         if (!courseExist) {
-            next(new ErrorHandler("you are not eligible to access this course", 404))
+            return next(new ErrorHandler("You are not eligible to access this course", 404));
         }
 
-        const course = await CourseModel.findById(courseId)
-        const content = course?.courseData
+        const course = await CourseModel.findById(courseId);
+        const content = course?.courseData;
 
         res.status(200).json({
             success: true,
-            data: content,
+            data: content ? [content] : [], // Wrap content in an array
         });
     } catch (error: any) {
         return next(new ErrorHandler("An error occurred while fetching courses", 500));
     }
-})
+});
+
 
 // add question in the course
 interface IQuestionData {

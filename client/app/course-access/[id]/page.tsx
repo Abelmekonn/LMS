@@ -1,12 +1,13 @@
 "use client";
-
+import Loader from '@/app/components/loader';
 import { useLoadUserQuery } from '@/redux/features/api/apiSlice';
 import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
+import CourseContent from '../../components/Course/CourseContent';
 
 type Props = {
-    params:any
-}
+    params: { id: string };
+};
 
 const Page = ({ params }: Props) => {
     const { id } = params;
@@ -14,21 +15,29 @@ const Page = ({ params }: Props) => {
     const { isLoading, error, data } = useLoadUserQuery(undefined, {});
     const router = useRouter();
 
-    useEffect(()=>{
-        if (data) {
-            const isPurchased = data.user.courses.find((item:any)=>item._id === id);
-            if (!isPurchased) { 
-                router.push(``);
+    useEffect(() => {
+        if (!isLoading && data) {
+            const isPurchased = data.user.courses.some((item: any) => item.courseId === id);
+
+            if (!isPurchased) {
+                router.push('/'); 
+            }
+            if (error) {
+                console.log('error');
             }
         }
-    })
 
-    if (isLoading) return <div>Loading...</div>;
+        if (error) {
+            console.error('Error loading user data:', error);
+        }
+    }, [isLoading, data, error, id, router]);
+
+    if (isLoading) return <div><Loader /></div>;
     if (error) return <div>Error: {JSON.stringify(error)}</div>;
 
     return (
         <div>
-            page
+            <CourseContent id={id} />
         </div>
     );
 };

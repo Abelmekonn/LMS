@@ -43,7 +43,14 @@ export const courseApi = apiSlice.injectEndpoints({
             query: ({ id }: { id: string }) => ({
                 url: `get-course/${id}`, // Ensure this matches the backend route
                 method: "GET",
-                credentials: "include",
+                credentials: "include" as const,
+            }),
+        }),
+        getCourseContent: builder.query({
+            query: ({ id }: { id: string }) => ({
+                url: `get-course-by-user/${id}`,
+                method: "GET",
+                credentials: "include" as const,
             }),
         }),
     }),
@@ -55,5 +62,6 @@ export const {
     useDeleteCourseMutation, 
     useEditCourseMutation, 
     useGetUsersAllCoursesQuery, 
-    useGetCourseDetailQuery 
+    useGetCourseDetailQuery,
+    useGetCourseContentQuery
 } = courseApi;
