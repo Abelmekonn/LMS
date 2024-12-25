@@ -4,6 +4,7 @@ import Loader from '../loader';
 import Heading from '@/app/utils/Heading';
 import Header from '../Header';
 import CourseContentMedia from "./CourseContentMedia"
+import CourseContentList from './CourseContentList';
 type Props = {
     id: string;
 };
@@ -38,16 +39,22 @@ const CourseContent = ({ id }: Props) => {
                         description="ELearning is a programming community developed by passionate developers."
                         keywords={data?.tags || []}
                     />
-                    <div className="col-span-2">
+                    <div className="col-span-7">
                         <CourseContentMedia
                             id={id}
                             activeVideo={activeVideo}
                             setActiveVideo={setActiveVideo}
                             data={data}
-
                         />
                     </div>
-
+                    <div className="hidden md:block md:col-span-3">
+                        <CourseContentList
+                            setActiveVideo={setActiveVideo}
+                            data={data}
+                            activeVideo={activeVideo}
+                            isDemo={false}
+                        />
+                    </div>
                 </>
             )}
         </>
