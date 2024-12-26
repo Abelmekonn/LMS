@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FC, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect, useRef } from 'react';
 import SideBarProfile from './SideBarProfile';
 import avatarPlaceholder from '../../../public/assets/avatar.jpg';
 import { useLogOutMutation } from '../../../redux/features/auth/authApi';
@@ -24,14 +24,14 @@ const Profile: FC<Props> = ({ user }) => {
   const [avatar, setAvatar] = useState<string>(avatarPlaceholder.src);
   const [active, setActive] = useState(1);
   const [logOut] = useLogOutMutation(); // Use mutation hook
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const router = useRouter(); // Correctly use useRouter for App Router
 
   const logOutHandler = async () => {
     try {
-      await logOut(); // Trigger the logout mutation
-      await signOut({ redirect: false }); // Prevent automatic redirection
-      router.push('/'); // Manual redirection
+      await logOut({}); // Add empty object as argument
+      router.push('/');
     } catch (error) {
       console.error('Logout error:', error);
     }

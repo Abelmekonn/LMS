@@ -7,9 +7,10 @@ import CourseContentMedia from "./CourseContentMedia"
 import CourseContentList from './CourseContentList';
 type Props = {
     id: string;
+    user: any;
 };
 
-const CourseContent = ({ id }: Props) => {
+const CourseContent = ({ id, user }: Props) => {
     const [activeVideo, setActiveVideo] = useState(0)
     const [open, setOpen] = useState(false)
     const [route, setRoute] = useState("Login");
@@ -34,26 +35,29 @@ const CourseContent = ({ id }: Props) => {
                         route={route}
                         setRoute={setRoute}
                     />
-                    <Heading
-                        title={`${data[activeVideo]?.title} - ELearning`}
-                        description="ELearning is a programming community developed by passionate developers."
-                        keywords={data?.tags || []}
-                    />
-                    <div className="col-span-7">
-                        <CourseContentMedia
-                            id={id}
-                            activeVideo={activeVideo}
-                            setActiveVideo={setActiveVideo}
-                            data={data}
+                    <div className="w-full grid md:grid-cols-10">
+                        <Heading
+                            title={data && data[activeVideo] ? `${data[activeVideo].title} - ELearning` : "ELearning"}
+                            description="ELearning is a programming community developed by passionate developers."
+                            keywords={data?.tags || []}
                         />
-                    </div>
-                    <div className="hidden md:block md:col-span-3">
-                        <CourseContentList
-                            setActiveVideo={setActiveVideo}
-                            data={data}
-                            activeVideo={activeVideo}
-                            isDemo={false}
-                        />
+                        <div className="col-span-7">
+                            <CourseContentMedia
+                                id={id}
+                                activeVideo={activeVideo}
+                                setActiveVideo={setActiveVideo}
+                                data={data}
+                                user={user}
+                            />
+                        </div>
+                        <div className="hidden md:block md:col-span-3">
+                            <CourseContentList
+                                setActiveVideo={setActiveVideo}
+                                data={data}
+                                activeVideo={activeVideo}
+                                isDemo={false}
+                            />
+                        </div>
                     </div>
                 </>
             )}

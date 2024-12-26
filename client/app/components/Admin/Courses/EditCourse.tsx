@@ -17,8 +17,8 @@ type CourseInfo = {
     tags: string;
     level: string;
     demoUrl: string;
-    thumbnail: string;
-    categories:string
+    thumbnail: string | null;
+    categories: string;
 };
 
 type CourseContentData = {
@@ -29,6 +29,7 @@ type CourseContentData = {
     videoSection: string;
     links: Array<{ title: string; url: string }>;
     suggestion: string;
+    videoLength: number;
 };
 
 type CourseDataType = {
@@ -37,7 +38,7 @@ type CourseDataType = {
     price: string;
     estimatedPrice: string;
     tags: string;
-    thumbnail: string;
+    thumbnail: string | null;
     benefits: Array<{ title: string }>;
     prerequisites: Array<{ title: string }>;
     courseData: CourseContentData[];
@@ -74,7 +75,7 @@ const EditCourse: React.FC<Props> = ({ id }) => {
         tags: "",
         level: "",
         demoUrl: "",
-        thumbnail: "",
+        thumbnail: null,
         categories:""
     });
 
@@ -87,7 +88,8 @@ const EditCourse: React.FC<Props> = ({ id }) => {
         videoDescription: "",
         videoSection: "Untitled Section",
         links: [{ title: "", url: "" }],
-        suggestion: ""
+        suggestion: "",
+        videoLength: 0
     }]);
 
     const [courseData, setCourseData] = useState<CourseDataType | null>(null);
@@ -125,10 +127,11 @@ const EditCourse: React.FC<Props> = ({ id }) => {
             title: courseContent.title,
             videoUrl: courseContent.videoUrl,
             description: courseContent.description,
-            videoDescription: courseContent.videoDescription || "", // Default value if empty
+            videoDescription: courseContent.videoDescription || "",
             videoSection: courseContent.videoSection || "Untitled Section",
             links: courseContent.links.map((link) => ({ title: link.title, url: link.url })),
             suggestion: courseContent.suggestion,
+            videoLength: courseContent.videoLength || 0
         }));
 
         const data = {
@@ -190,7 +193,7 @@ const EditCourse: React.FC<Props> = ({ id }) => {
                         setActive={setActive}
                         courseContentData={courseContentData}
                         setCourseContentData={setCourseContentData}
-                        handleSubmit={handleSubmit} // Call handleSubmit to prepare course data
+                        handelSubmit={handleSubmit}
                     />
                 )}
                 {active === 3 && (

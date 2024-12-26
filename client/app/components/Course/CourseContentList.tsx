@@ -36,7 +36,7 @@ const CourseContentList: FC<Props> = ({ data, activeVideo, setActiveVideo, isDem
     };
 
     return (
-        <div className={`mt-[15px] w-full ${!isDemo && 'ml-[-30px]  sticky top-24 left-0 z-30'}`}>
+        <div className={`mt-[15px] w-full ${!isDemo && 'ml-[-10px]  sticky top-24 left-0 z-30'}`}>
             {videoSections.map((section, sectionIndex) => {
                 const isSectionVisible = visibleSections.has(section);
 
@@ -55,7 +55,7 @@ const CourseContentList: FC<Props> = ({ data, activeVideo, setActiveVideo, isDem
                 const sectionContentHours: number = sectionVideoLength / 60;
 
                 return (
-                    <div className={`${!isDemo && 'border-b border-[#ffffff8e] pb-2'}`} key={section}>
+                    <div className={`${!isDemo && 'border-b border-gray-600 dark:border-[#ffffff8e] pb-2'}`} key={section}>
                         <div className="w-full flex">
                             <div className="w-full flex justify-between items-center">
                                 <h2 className="text-[22px] text-black dark:text-white">{section}</h2>
@@ -84,7 +84,7 @@ const CourseContentList: FC<Props> = ({ data, activeVideo, setActiveVideo, isDem
                                 const contentLength: number = item.videoLength / 60;
                                 return (
                                     <div
-                                        className={`w-full ${videoIndex === activeVideo ? "bg-slate-800" : ""
+                                        className={`w-full ${videoIndex === activeVideo ? "dark:bg-slate-800 bg-gray-300" : ""
                                             } cursor-pointer transition-all p-2`}
                                         key={item._id}
                                         onClick={() => !isDemo && setActiveVideo && setActiveVideo(videoIndex)}

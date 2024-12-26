@@ -16,8 +16,10 @@ type CourseContentItem = {
     title: string;
     description: string;
     videoUrl: string;
+    videoLength: number;
+    videoDescription: string;
+    suggestion: string;
     links: Link[];
-    videoLength :number
 };
 
 type Props = {
@@ -36,7 +38,8 @@ const CourseContent: FC<Props> = ({
     handelSubmit: handelCourseSubmit// Renamed prop handler
 }) => {
     const [isCollapsed, setIsCollapsed] = useState<boolean[]>(Array(courseContentData.length).fill(false));
-    const [activeSection, setActiveSection] = useState(1)
+    const [activeSection, setActiveSection] = useState(1);
+    const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
     const handelSubmit = (e: any) => {
         e.preventDefault();
@@ -69,7 +72,8 @@ const CourseContent: FC<Props> = ({
             item.description === "" ||
             item.videoUrl === "" ||
             item.links[0].title === "" ||
-            item.links[0].url === ""
+            item.links[0].url === "" ||
+            item.videoLength === 0 
         ) {
             toast.error("Fill all the fields");
             return; // Early return on validation failure
@@ -82,7 +86,9 @@ const CourseContent: FC<Props> = ({
             description: "",
             videoUrl: "",
             links: [{ title: "", url: "" }],
-            videoLength: 0
+            videoLength: 0,
+            videoDescription: "",
+            suggestion: ""
         };
 
         // Add the new content to courseContentData
@@ -109,12 +115,14 @@ const CourseContent: FC<Props> = ({
         setActiveSection(activeSection + 1)
         // Define a new section structure
         const newSection: CourseContentItem = {
-            videoSection: `Untitled Section ${activeSection}`, // Default name for new section
+            videoSection: `Untitled Section ${activeSection}`,
             title: "",
             description: "",
             videoUrl: "",
             links: [{ title: "", url: "" }],
-            videoLength: ''
+            videoLength: 0,
+            videoDescription: "",
+            suggestion: ""
         };
 
         // Add the new section to courseContentData
@@ -135,7 +143,8 @@ const CourseContent: FC<Props> = ({
             lastItem.description === "" ||
             lastItem.videoUrl === "" ||
             lastItem.links[0].title === "" ||
-            lastItem.links[0].url === ""
+            lastItem.links[0].url === "" ||
+            lastItem.videoLength === 0
         ) {
             toast.error("section can't be empty");
             return; // Early return if validation fails
@@ -153,8 +162,7 @@ const CourseContent: FC<Props> = ({
                 {courseContentData.map((item, index) => {
                     const showSectionInput =
                         index === 0 || item.videoSection !== courseContentData[index - 1].videoSection;
-                    // eslint-disable-next-line react-hooks/rules-of-hooks
-                    const inputRef = useRef<HTMLInputElement>(null);
+                    
                     return (
                         <div
                             key={index} // Key added for React to uniquely identify the elements
@@ -167,18 +175,22 @@ const CourseContent: FC<Props> = ({
                                         className={`text-[20px] mb-3 ${item.videoSection === "Untitled Section " ? "w-[170px]" : "w-max"} font-Poppins cursor-pointer dark:text-white text-black bg-transparent outline-none`}
                                         value={item.videoSection}
                                         onChange={(e) => {
-                                            const updatedData = [...courseContentData];
-                                            updatedData[index].videoSection = e.target.value;
+                                            const updatedData = courseContentData.map((item, i) => {
+                                                if (i === index) {
+                                                    return { ...item, videoSection: e.target.value };
+                                                }
+                                                return item;
+                                            });
                                             setCourseContentData(updatedData);
                                         }}
-                                        ref={inputRef} // Attach the ref to the input element
+                                        ref={el => inputRefs.current[index] = el}
                                     />
                                     <BiSolidPencil
                                         className='cursor-pointer dark:text-white text-black'
                                         onClick={() => {
                                             // Focus and select the input when the icon is clicked
-                                            inputRef.current?.focus();
-                                            inputRef.current?.select();
+                                            inputRefs.current[index]?.focus();
+                                            inputRefs.current[index]?.select();
                                         }}
                                     />
                                 </div>
@@ -221,8 +233,12 @@ const CourseContent: FC<Props> = ({
                                             className={`${styles.input}`}
                                             value={item.title || ""}
                                             onChange={(e) => {
-                                                const updatedData = [...courseContentData];
-                                                updatedData[index].title = e.target.value;
+                                                const updatedData = courseContentData.map((item, i) => {
+                                                    if (i === index) {
+                                                        return { ...item, title: e.target.value };
+                                                    }
+                                                    return item;
+                                                });
                                                 setCourseContentData(updatedData);
                                             }}
                                         />
@@ -249,8 +265,15 @@ const CourseContent: FC<Props> = ({
                                             className={`${styles.input}`}
                                             value={item.videoLength || ""}
                                             onChange={(e) => {
-                                                const updatedData = [...courseContentData];
-                                                updatedData[index].videoLength = e.target.value;
+                                                const updatedData = courseContentData.map((item, i) => {
+                                                    if (i === index) {
+                                                        return { 
+                                                            ...item, 
+                                                            videoLength: e.target.value === "" ? 0 : parseInt(e.target.value, 10) || 0 
+                                                        };
+                                                    }
+                                                    return item;
+                                                });
                                                 setCourseContentData(updatedData);
                                             }}
                                         />
@@ -300,8 +323,18 @@ const CourseContent: FC<Props> = ({
                                                 value={link.url}
                                                 placeholder='Source code... (link url)'
                                                 onChange={(e) => {
-                                                    const updatedData = [...courseContentData];
-                                                    updatedData[index].links[linkIndex].url = e.target.value; // Update link url
+                                                    const updatedData = courseContentData.map((item, i) => {
+                                                        if (i === index) {
+                                                            const updatedLinks = item.links.map((link, j) => {
+                                                                if (j === linkIndex) {
+                                                                    return { ...link, url: e.target.value };
+                                                                }
+                                                                return link;
+                                                            });
+                                                            return { ...item, links: updatedLinks };
+                                                        }
+                                                        return item;
+                                                    });
                                                     setCourseContentData(updatedData);
                                                 }}
                                             />
