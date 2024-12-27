@@ -116,6 +116,9 @@ export const loginUser = CatchAsyncError(async (req: Request, res: Response, nex
         return next(new ErrorHandler("Invalid email or password", 400));
     }
 
+    // Remove the password field before sending the token or response
+    user.password = undefined;
+
     sendToken(user, 200, res);
 });
 

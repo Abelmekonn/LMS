@@ -212,13 +212,11 @@ export const addQuestion = CatchAsyncError(async (req: Request, res: Response, n
     try {
         const { question, courseId, contentId }: IQuestionData = req.body
         const course = await CourseModel.findById(courseId)
-        console.log(course)
         if (!mongoose.Types.ObjectId.isValid(contentId)) {
             return next(new ErrorHandler("invalid content id", 400))
         }
 
         const courseContent = course?.courseData?.find((item: any) => item._id.equals(contentId))
-        console.log(courseContent)
         if (!courseContent) {
             return next(new ErrorHandler("content not found", 404))
         }
@@ -234,8 +232,8 @@ export const addQuestion = CatchAsyncError(async (req: Request, res: Response, n
         courseContent?.questions.push(newQuestion)
 
         await NotificationModel.create({
-            user: req.user?._id,
-            title: "New Order",
+            user: req.user?.name,
+            title: "New Question",
             message: `You have a new question for this ${courseContent.title}`,
         });
 
