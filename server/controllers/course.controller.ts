@@ -278,6 +278,8 @@ export const addAnswer = CatchAsyncError(async (req: Request, res: Response, nex
         const newAnswer: any = {
             user: req.user,
             answer,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
         }
 
         // add this answer to our course content 
@@ -399,6 +401,8 @@ export const addReplyToReview = CatchAsyncError(async (req: Request, res: Respon
         const replyData: any = {
             user: req.user,
             comment,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
         }
         if (!review.commentReplies) {
             review.commentReplies = []
@@ -406,6 +410,12 @@ export const addReplyToReview = CatchAsyncError(async (req: Request, res: Respon
         review.commentReplies?.push(replyData)
 
         await course.save()
+
+        await NotificationModel.create({
+            user: req.user?._id,
+            title: "New Reply Question Received",
+            message: `You have a reply for this ${course?.name}`,
+        });
 
         res.status(201).json({
             success: true,

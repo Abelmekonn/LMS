@@ -1,11 +1,12 @@
 import { styles } from '@/app/styles/style';
 import CoursePlayer from '@/app/utils/CoursePlayer';
-import { useAddAnswerMutation, useAddNewQuestionMutation } from '@/redux/features/courses/coursesApi';
+import { useAddAnswerMutation, useAddNewQuestionMutation, useAddReviewMutation, useAddReviewMutation } from '@/redux/features/courses/coursesApi';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { AiFillStar, AiOutlineArrowLeft, AiOutlineArrowRight, AiOutlineStar } from 'react-icons/ai';
 import { BiMessage } from 'react-icons/bi';
+import { VscVerifiedFilled } from 'react-icons/vsc';
 import { format } from 'timeago.js';
 
 type Props = {
@@ -26,6 +27,7 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
     const [questionId, setQuestionId] = useState("");
     const [replyActive, setReplyActive] = useState(false);
     const [addAnswer, { isLoading: answerCreationLoading, error: answerCreationError, data: answerCreationData, isSuccess: answerCreationSuccess }] = useAddAnswerMutation();
+    const [addReview, { isLoading: reviewCreationLoading, error: reviewCreationError, data: reviewCreationData, isSuccess: reviewCreationSuccess }] = useAddReviewMutation();
 
     const [addNewQuestion, { isLoading: questionCreationLoading, error, data: questionCreationData, isSuccess }] = useAddNewQuestionMutation();
 
@@ -69,10 +71,31 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
                 toast.error("Something went wrong");
             }
         }
-    }, [isSuccess, error, answerCreationSuccess, answerCreationError])
+        if (reviewCreationError) {
+            if ("data" in reviewCreationError) {
+                const errorMessage = reviewCreationError.data as any;
+                toast.error(errorMessage.message);
+            }
+        }
+        if (reviewCreationSuccess) {
+            toast.success("Review added successfully");
+            refetch();
+            setReview("");
+            setRating(1);
+        }
+    }, [isSuccess, error, answerCreationSuccess, answerCreationError, reviewCreationSuccess, reviewCreationError])
 
     const handleReplySubmit = () => {
         addAnswer({ answer, courseId: id, contentId: data[activeVideo]._id, questionId: questionId });
+    };
+
+    const handleReviewSubmit = () => {
+        if(review.length === 0){
+            toast.error("Review can't be empty");
+        }
+        else{
+            addReview({ rating, review, courseId: id });
+        }
     };
 
     return (
@@ -240,14 +263,21 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
                                     </div>
                                     <div className="w-full flex justify-end">
                                         <div className={`${styles.button
-                                            } !w-[120px] !h-[40px] !text-[18px] mt-5`}
+                                            } !w-[120px] !h-[40px] !text-[18px] mt-5 ${reviewCreationLoading && "cursor-no-drop"}`}
+                                            onClick={reviewCreationLoading ? () => { } : handleReviewSubmit}
                                         >
                                             Submit
                                         </div>
                                     </div>
                                 </>
-                            )
-                        }
+                            )}
+                            <br />
+                            <div className="w-full h-[1px] bg-[#ffffff3b]"></div>
+                            <div className="w-full">
+                                {(course?.reviews && [...course.reviews].reverse()).map((item: any, index: number) => (
+                                    div.w
+                                ))}
+                            </div>
                     </>
                 )
             }
@@ -357,8 +387,10 @@ const CommentItem = ({
                                         />
                                     </div>
                                     <div className="pl-2">
-                                        <h5 className="text-[20px]">{item.user.name}</h5>
-                                        <p className="text-[16px]">{item.reply}</p>
+                                        <div className="flex item-center">
+                                            <h5 className="text-[20px]">{item.user.name}</h5><VscVerifiedFilled fill='#50c750' className='text-blue-500 bg ml-2 text-[20px]' />
+                                        </div>
+                                        <p className="text-[16px]">{item.answer}</p>
                                         <small className='text-[#ffffff83]'>{format(item.createdAt).toString()}</small>
                                     </div>
                                 </div>
@@ -369,7 +401,7 @@ const CommentItem = ({
                                         type="text"
                                         value={answer}
                                         onChange={(e) => setAnswer(e.target.value)}
-                                        className={`block md:ml-12 mt-2 outline-none bg-transparent border-b border-[#00000027] dark:text-white text-black dark:border-[#fff] w-[90%] p-[5px] ${answer === "" || answerCreationLoading && "cursor-not-allowed opacity-50" }`}
+                                        className={`block md:ml-12 mt-2 outline-none bg-transparent border-b border-[#00000027] dark:text-white text-black dark:border-[#fff] w-[90%] p-[5px] ${answer === "" || answerCreationLoading && "cursor-not-allowed opacity-50"}`}
                                         placeholder='Write your reply here...'
                                     />
                                     <button

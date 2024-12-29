@@ -36,7 +36,7 @@ const Page = ({ params }: Props) => {
     if (error) return <div>Error: {JSON.stringify(error)}</div>;
 
     return (
-        <div>
+        <div className='min-h-screen'>
             <CourseContent id={id} user={data?.user} />
         </div>
     );
