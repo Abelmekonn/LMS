@@ -1,6 +1,7 @@
 import { styles } from '@/app/styles/style';
 import CoursePlayer from '@/app/utils/CoursePlayer';
-import { useAddAnswerMutation, useAddNewQuestionMutation, useAddReviewMutation, useAddReviewMutation } from '@/redux/features/courses/coursesApi';
+import Rating from '@/app/utils/Rating';
+import { useAddAnswerMutation, useAddNewQuestionMutation, useAddReviewMutation, useGetCourseDetailQuery } from '@/redux/features/courses/coursesApi';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
@@ -26,12 +27,14 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
     const [answer, setAnswer] = useState("");
     const [questionId, setQuestionId] = useState("");
     const [replyActive, setReplyActive] = useState(false);
+
+    const { data: course } = useGetCourseDetailQuery(id);
+
     const [addAnswer, { isLoading: answerCreationLoading, error: answerCreationError, data: answerCreationData, isSuccess: answerCreationSuccess }] = useAddAnswerMutation();
     const [addReview, { isLoading: reviewCreationLoading, error: reviewCreationError, data: reviewCreationData, isSuccess: reviewCreationSuccess }] = useAddReviewMutation();
-
     const [addNewQuestion, { isLoading: questionCreationLoading, error, data: questionCreationData, isSuccess }] = useAddNewQuestionMutation();
 
-    const isReviewExists = data?.reviews?.find((item: any) => item.user === user._id);
+    const isReviewExists = course?.reviews?.find((item: any) => item.user === user._id);
 
     const handleQuestion = () => {
         if (question.length === 0) {
@@ -90,10 +93,10 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
     };
 
     const handleReviewSubmit = () => {
-        if(review.length === 0){
+        if (review.length === 0) {
             toast.error("Review can't be empty");
         }
-        else{
+        else {
             addReview({ rating, review, courseId: id });
         }
     };
@@ -131,9 +134,8 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
             <div className="w-full p-4 flex dark:text-white text-black items-center justify-between bg-slate-500 bg-opacity-20 backdrop-blur shadow-[bg-slate-700] rounded shadow-inner">
                 {["Overview", "Resources", "Q&A", "Reviews"].map((text, index) => (
                     <h5
-                        key={index}
-                        className={`800px:text-[20px] cursor-pointer ${activeBar === index ? "text-red-500" : "dark:text-white text-black"
-                            }`}
+                        key={`tab-${index}`}
+                        className={`800px:text-[20px] cursor-pointer ${activeBar === index ? "text-red-500" : "dark:text-white text-black"}`}
                         onClick={() => setActiveBar(index)}
                     >
                         {text}
@@ -271,13 +273,31 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
                                     </div>
                                 </>
                             )}
-                            <br />
-                            <div className="w-full h-[1px] bg-[#ffffff3b]"></div>
-                            <div className="w-full">
-                                {(course?.reviews && [...course.reviews].reverse()).map((item: any, index: number) => (
-                                    div.w
-                                ))}
-                            </div>
+                        <br />
+                        <div className="w-full h-[1px] bg-[#ffffff3b]"></div>
+                        <div className="w-full">
+                            {course?.reviews ? [...course.reviews].reverse().map((item: any, index: number) => (
+                                <div className="w-full my-5" key={item._id || index}>
+                                    <div className="w-full flex">
+                                        <div>
+                                            <Image
+                                                src={item?.user?.avatar?.url || "https://randomuser.me/api/portraits/men/5.jpg"}
+                                                alt=''
+                                                width={50}
+                                                height={50}
+                                                className='rounded-full object-cover w-[50px] h-[50px]'
+                                            />
+                                        </div>
+                                        <div className="ml-2">
+                                            <h1 className="text-[18px]">{item?.user?.name}</h1>
+                                            <Rating rating={item?.rating} />
+                                            <p>{item?.review || "No review"}</p>
+                                            <small className='text-[#ffffff83]'>{format(item?.createdAt).toString()}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            )) : <p>No reviews yet</p>}
+                        </div>
                     </>
                 )
             }
