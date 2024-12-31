@@ -26,7 +26,6 @@ const Page = ({ params }: Props) => {
                 console.log('error');
             }
         }
-
         if (error) {
             console.error('Error loading user data:', error);
         }

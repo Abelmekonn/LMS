@@ -7,11 +7,11 @@ import React, { useState } from 'react'
 import { IoCheckmarkCircleOutline, IoCloseOutline } from 'react-icons/io5';
 import { PiDot } from 'react-icons/pi';
 import { useSelector } from 'react-redux';
-import format from "timeago.js"
 import CourseContentList from "../Course/CourseContentList"
 import { Elements } from "@stripe/react-stripe-js"
 import CheckoutForm from "../Payment/CheckoutForm"
 import { useLoadUserQuery } from '@/redux/features/api/apiSlice';
+import { format } from 'timeago.js';
 
 type Props = {
     data: any;
@@ -139,7 +139,7 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                                                 </div>
                                                 <p className="text-black dark:text-white ">{item.comment}</p>
                                                 <small className="text-[#000000d1] dark:text-[#ffffff83]">
-                                                    {format(item.createdAt)}
+                                                    {format(item.createdAt).toString()}
                                                 </small>
                                             </div>
                                             <div className="pl-2 flex md:hidden items-center ">

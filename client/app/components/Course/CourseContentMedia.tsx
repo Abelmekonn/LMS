@@ -27,14 +27,18 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
     const [answer, setAnswer] = useState("");
     const [questionId, setQuestionId] = useState("");
     const [replyActive, setReplyActive] = useState(false);
+    const [isReviewReply, setIsReviewReply] = useState(false);
 
-    const { data: course } = useGetCourseDetailQuery(id);
+    const { data: course , refetch:courseRefetch } = useGetCourseDetailQuery({ id },{ refetchOnMountOrArgChange: true });
 
     const [addAnswer, { isLoading: answerCreationLoading, error: answerCreationError, data: answerCreationData, isSuccess: answerCreationSuccess }] = useAddAnswerMutation();
     const [addReview, { isLoading: reviewCreationLoading, error: reviewCreationError, data: reviewCreationData, isSuccess: reviewCreationSuccess }] = useAddReviewMutation();
     const [addNewQuestion, { isLoading: questionCreationLoading, error, data: questionCreationData, isSuccess }] = useAddNewQuestionMutation();
 
     const isReviewExists = course?.reviews?.find((item: any) => item.user === user._id);
+
+    const courseData = course?.course
+    console.log(courseData)
 
     const handleQuestion = () => {
         if (question.length === 0) {
@@ -82,7 +86,7 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
         }
         if (reviewCreationSuccess) {
             toast.success("Review added successfully");
-            refetch();
+            courseRefetch();
             setReview("");
             setRating(1);
         }
@@ -276,7 +280,7 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
                         <br />
                         <div className="w-full h-[1px] bg-[#ffffff3b]"></div>
                         <div className="w-full">
-                            {course?.reviews ? [...course.reviews].reverse().map((item: any, index: number) => (
+                            {courseData?.reviews ? [...courseData.reviews].reverse().map((item: any, index: number) => (
                                 <div className="w-full my-5" key={item._id || index}>
                                     <div className="w-full flex">
                                         <div>
@@ -291,13 +295,28 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
                                         <div className="ml-2">
                                             <h1 className="text-[18px]">{item?.user?.name}</h1>
                                             <Rating rating={item?.rating} />
-                                            <p>{item?.review || "No review"}</p>
+                                            <p>{item?.comment || "No review"}</p>
                                             <small className='text-[#ffffff83]'>{format(item?.createdAt).toString()}</small>
                                         </div>
                                     </div>
+                                    {
+                                        user.role === "admin" && (
+                                            <span>
+                                                Add Reply <BiMessage size={20} className='cursor-pointer text-[#000000b8] dark:text-[#ffffff83]' />
+                                            </span>
+                                        )
+                                    }
                                 </div>
                             )) : <p>No reviews yet</p>}
                         </div>
+                        <br />
+                        {
+                            isReviewReply && (
+                                <input type="text" name='' id=''
+                                    className={styles.input}
+                                />
+                            )
+                        }
                     </>
                 )
             }

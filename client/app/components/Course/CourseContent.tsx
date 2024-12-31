@@ -20,7 +20,7 @@ const CourseContent = ({ id, user }: Props) => {
         { id }, 
         { refetchOnMountOrArgChange: true }
     );
-    console.log(contentData);
+    
     const data = contentData?.data[0];
 
 
