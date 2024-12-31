@@ -333,11 +333,11 @@ export const addReview = CatchAsyncError(async (req: Request, res: Response, nex
     try {
         const userCourseList = req.user?.courses
         const courseId = req.params.id
-
+        
         // check course already exist
-        const courseExist = userCourseList?.some((course: any) => course._id.toString() === courseId.toString());
+        const courseExist = userCourseList?.some((course: any) => course.courseId.toString() === courseId.toString());
         if (!courseExist) {
-            return next(new ErrorHandler("You are bot eligible to access", 404))
+            return next(new ErrorHandler("You are not eligible to access", 404))
         }
 
         const course = await CourseModel.findById(courseId)
@@ -368,6 +368,7 @@ export const addReview = CatchAsyncError(async (req: Request, res: Response, nex
         });
 
         course?.save()
+        await redis.set(courseId, JSON.stringify(course), "EX", 604800);
 
         res.status(201).json({
             success: true,
