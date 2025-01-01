@@ -29,6 +29,8 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
     const [replyActive, setReplyActive] = useState(false);
     const [isReviewReply, setIsReviewReply] = useState(false);
 
+    console.log(user)
+
     const { data: course , refetch:courseRefetch } = useGetCourseDetailQuery({ id },{ refetchOnMountOrArgChange: true });
 
     const [addAnswer, { isLoading: answerCreationLoading, error: answerCreationError, data: answerCreationData, isSuccess: answerCreationSuccess }] = useAddAnswerMutation();

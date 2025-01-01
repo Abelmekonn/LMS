@@ -22,6 +22,7 @@ const CourseContent = ({ id, user }: Props) => {
     );
     
     const data = contentData?.data[0];
+    console.log(data)
 
 
 
