@@ -1,3 +1,4 @@
+"useClient";
 import { useGetCourseContentQuery } from '@/redux/features/courses/coursesApi';
 import React, { useEffect, useState } from 'react';
 import Loader from '../loader';
@@ -18,9 +19,11 @@ const CourseContent = ({ id, user }: Props) => {
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { data: contentData, isLoading, error, refetch } = useGetCourseContentQuery(
-        { id }, 
+        { id },
         { refetchOnMountOrArgChange: true }
     );
+
+    console.log(contentData);
 
     useEffect(() => {
         if (error) {
