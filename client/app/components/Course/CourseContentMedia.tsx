@@ -29,7 +29,6 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
     const [replyActive, setReplyActive] = useState(false);
     const [isReviewReply, setIsReviewReply] = useState(false);
 
-    console.log(user)
 
     const { data: course , refetch:courseRefetch } = useGetCourseDetailQuery({ id },{ refetchOnMountOrArgChange: true });
 
@@ -92,7 +91,7 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
             setReview("");
             setRating(1);
         }
-    }, [isSuccess, error, answerCreationSuccess, answerCreationError, reviewCreationSuccess, reviewCreationError])
+    }, [isSuccess, error, answerCreationSuccess, answerCreationError, reviewCreationSuccess, reviewCreationError, refetch, courseRefetch])
 
     const handleReplySubmit = () => {
         addAnswer({ answer, courseId: id, contentId: data[activeVideo]._id, questionId: questionId });
@@ -103,9 +102,10 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
             toast.error("Review can't be empty");
         }
         else {
-            addReview({ rating, review, courseId: id });
+            addReview({ rating, review, courseId: id, contentId: data[activeVideo]._id });
         }
     };
+    console.log(data)
 
     return (
         <div className="w-[95%] 800px:w-[86%] mx-auto py-4">
@@ -303,7 +303,7 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
                                     </div>
                                     {
                                         user.role === "admin" && (
-                                            <span>
+                                            <span className='text-black dark:text-white cursor-pointer ml-16 md:pl-16'>
                                                 Add Reply <BiMessage size={20} className='cursor-pointer text-[#000000b8] dark:text-[#ffffff83]' />
                                             </span>
                                         )

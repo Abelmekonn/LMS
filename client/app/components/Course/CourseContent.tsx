@@ -1,5 +1,5 @@
 import { useGetCourseContentQuery } from '@/redux/features/courses/coursesApi';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Loader from '../loader';
 import Heading from '@/app/utils/Heading';
 import Header from '../Header';
@@ -11,8 +11,9 @@ type Props = {
 };
 
 const CourseContent = ({ id, user }: Props) => {
-    const [activeVideo, setActiveVideo] = useState(0)
-    const [open, setOpen] = useState(false)
+    console.log(id)
+    const [activeVideo, setActiveVideo] = useState(0);
+    const [open, setOpen] = useState(false);
     const [route, setRoute] = useState("Login");
 
     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -20,11 +21,15 @@ const CourseContent = ({ id, user }: Props) => {
         { id }, 
         { refetchOnMountOrArgChange: true }
     );
-    
+
+    useEffect(() => {
+        if (error) {
+            console.error('Error fetching course content:', error);
+        }
+    }, [error]);
+
     const data = contentData?.data[0];
-    console.log(data)
-
-
+    console.log(contentData);
 
     return (
         <>

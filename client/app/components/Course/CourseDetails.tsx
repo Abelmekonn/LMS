@@ -20,9 +20,9 @@ type Props = {
 }
 
 const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
-    const {data:userData} = useLoadUserQuery(undefined , {})
-    const user  = userData?.user
-    
+    const { data: userData } = useLoadUserQuery(undefined, {})
+    const user = userData?.user
+
     const [open, setOpen] = useState(false)
     const discountPercentage =
         ((data?.estimatedPrice - data?.price) / data?.estimatedPrice) * 100;
@@ -106,16 +106,18 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                                 {data.description}
                             </p>
                         </div>
-                        <div className="w-full">
-                            <div className="md:flex items-center">
-                                <Rating rating={data?.ratings} />
-                                <div className="mb-2 800px:mb-[unset]">
-                                    <h5 className="text-[25px] font-Poppins text-black dark:text-white">
-                                        {Number.isInteger(data?.ratings)
-                                            ? data?.ratings.toFixed(1)
-                                            : data?.ratings.toFixed(2)}{""}
-                                        Course Rating . {data?.reviews?.length} Reviews
-                                    </h5>
+                        <div className="w-full mt-8">
+                            <div className="flex flex-col">
+                                <div className='flex items-center gap-3'>
+                                    <Rating rating={data?.ratings} />
+                                    <div className="mb-2 800px:mb-[unset]">
+                                        <h5 className="text-[25px] font-Poppins text-black dark:text-white">
+                                            {Number.isInteger(data?.ratings)
+                                                ? data?.ratings.toFixed(1)
+                                                : data?.ratings.toFixed(2)}{""}
+                                            Course Rating . {data?.reviews?.length} Reviews
+                                        </h5>
+                                    </div>
                                 </div>
                                 <br />
                                 {(

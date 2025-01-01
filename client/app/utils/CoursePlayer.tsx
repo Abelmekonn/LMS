@@ -6,6 +6,7 @@ type Props = {
 };
 
 const CoursePlayer: FC<Props> = ({ videoUrl, title }) => {
+  console.log(videoUrl)
   // Extract the YouTube video ID from the URL
   const getYouTubeVideoId = (url: string): string | null => {
     const regex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
