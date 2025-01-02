@@ -182,14 +182,20 @@ export const getCourseByUser = CatchAsyncError(async (req: Request, res: Respons
         const userCourseList = req.user?.courses;
         const courseId = req.params.id;
 
-        const courseExist = userCourseList?.some((item: any) => item.courseId === courseId);
+        console.log(courseId);
+        console.log(userCourseList);
+
+        const courseExist = userCourseList?.some((item: any) => item._id.toString() === courseId.toString());
 
         if (!courseExist) {
+            console.log("object");
             return next(new ErrorHandler("You are not eligible to access this course", 404));
         }
 
         const course = await CourseModel.findById(courseId);
         const content = course?.courseData;
+
+        console.log(content);
 
         res.status(200).json({
             success: true,

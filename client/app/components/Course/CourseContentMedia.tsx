@@ -16,10 +16,9 @@ type Props = {
     setActiveVideo: (activeVideo: number) => void;
     data: any;
     user: any;
-    refetch: any;
 }
 
-const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refetch }: Props) => {
+const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user }: Props) => {
     const [activeBar, setActiveBar] = useState(0);
     const [question, setQuestion] = useState("");
     const [rating, setRating] = useState(0);
@@ -53,12 +52,11 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user, refet
     useEffect(() => {
         if (isSuccess) {
             toast.success("Question added successfully");
-            refetch();
+
             setQuestion("");
         }
         if (answerCreationSuccess) {
             toast.success("Answer added successfully");
-            refetch();
             setAnswer("");
         }
         if (error) {
