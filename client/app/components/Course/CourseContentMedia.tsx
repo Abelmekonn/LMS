@@ -28,6 +28,8 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user }: Pro
     const [replyActive, setReplyActive] = useState(false);
     const [isReviewReply, setIsReviewReply] = useState(false);
 
+    console.log("user", user)
+
 
     const { data: course , refetch:courseRefetch } = useGetCourseDetailQuery({ id },{ refetchOnMountOrArgChange: true });
 
@@ -38,7 +40,6 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user }: Pro
     const isReviewExists = course?.reviews?.find((item: any) => item.user === user._id);
 
     const courseData = course?.course
-    console.log(courseData)
 
     const handleQuestion = () => {
         if (question.length === 0) {
@@ -89,7 +90,7 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user }: Pro
             setReview("");
             setRating(1);
         }
-    }, [isSuccess, error, answerCreationSuccess, answerCreationError, reviewCreationSuccess, reviewCreationError, refetch, courseRefetch])
+    }, [isSuccess, error, answerCreationSuccess, answerCreationError, reviewCreationSuccess, reviewCreationError, courseRefetch])
 
     const handleReplySubmit = () => {
         addAnswer({ answer, courseId: id, contentId: data[activeVideo]._id, questionId: questionId });
@@ -103,7 +104,6 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user }: Pro
             addReview({ rating, review, courseId: id, contentId: data[activeVideo]._id });
         }
     };
-    console.log(data)
 
     return (
         <div className="w-[95%] 800px:w-[86%] mx-auto py-4">

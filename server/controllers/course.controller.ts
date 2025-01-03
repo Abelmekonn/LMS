@@ -185,7 +185,7 @@ export const getCourseByUser = CatchAsyncError(async (req: Request, res: Respons
         console.log(courseId);
         console.log(userCourseList);
 
-        const courseExist = userCourseList?.some((item: any) => item._id.toString() === courseId.toString());
+        const courseExist = userCourseList?.some((item: any) => item.courseId.toString() === courseId.toString());
 
         if (!courseExist) {
             console.log("object");
