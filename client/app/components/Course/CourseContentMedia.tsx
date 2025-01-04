@@ -1,7 +1,7 @@
 import { styles } from '@/app/styles/style';
 import CoursePlayer from '@/app/utils/CoursePlayer';
 import Rating from '@/app/utils/Rating';
-import { useAddAnswerMutation, useAddNewQuestionMutation, useAddReviewMutation, useGetCourseDetailQuery } from '@/redux/features/courses/coursesApi';
+import { useAddAnswerMutation, useAddNewQuestionMutation, useAddReplyReviewMutation, useAddReviewMutation, useGetCourseDetailQuery } from '@/redux/features/courses/coursesApi';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
@@ -16,27 +16,27 @@ type Props = {
     setActiveVideo: (activeVideo: number) => void;
     data: any;
     user: any;
+    refetch: any;
 }
 
-const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user }: Props) => {
+const CourseContentMedia = ({ id, activeVideo, setActiveVideo, refetch, data, user }: Props) => {
     const [activeBar, setActiveBar] = useState(0);
+    const [replyStates, setReplyStates] = useState<{ [key: string]: boolean }>({});
     const [question, setQuestion] = useState("");
     const [rating, setRating] = useState(0);
     const [review, setReview] = useState("");
+    const [reviewId, setReviewId] = useState("");
     const [answer, setAnswer] = useState("");
     const [questionId, setQuestionId] = useState("");
-    const [replyActive, setReplyActive] = useState(false);
+    const [reply, setReply] = useState("");
     const [isReviewReply, setIsReviewReply] = useState(false);
 
-    console.log("user", user)
-
-
-    const { data: course , refetch:courseRefetch } = useGetCourseDetailQuery({ id },{ refetchOnMountOrArgChange: true });
+    const { data: course, refetch: courseRefetch } = useGetCourseDetailQuery({ id }, { refetchOnMountOrArgChange: true });
 
     const [addAnswer, { isLoading: answerCreationLoading, error: answerCreationError, data: answerCreationData, isSuccess: answerCreationSuccess }] = useAddAnswerMutation();
     const [addReview, { isLoading: reviewCreationLoading, error: reviewCreationError, data: reviewCreationData, isSuccess: reviewCreationSuccess }] = useAddReviewMutation();
     const [addNewQuestion, { isLoading: questionCreationLoading, error, data: questionCreationData, isSuccess }] = useAddNewQuestionMutation();
-
+    const [addReplyReview, { isLoading: reviewReplyCreationLoading, error: reviewReplyCreationError, data: reviewReplyCreationData, isSuccess: reviewReplyCreationSuccess }] = useAddReplyReviewMutation();
     const isReviewExists = course?.reviews?.find((item: any) => item.user === user._id);
 
     const courseData = course?.course
@@ -53,11 +53,12 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user }: Pro
     useEffect(() => {
         if (isSuccess) {
             toast.success("Question added successfully");
-
+            refetch()
             setQuestion("");
         }
         if (answerCreationSuccess) {
             toast.success("Answer added successfully");
+            refetch();
             setAnswer("");
         }
         if (error) {
@@ -90,7 +91,21 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user }: Pro
             setReview("");
             setRating(1);
         }
-    }, [isSuccess, error, answerCreationSuccess, answerCreationError, reviewCreationSuccess, reviewCreationError, courseRefetch])
+        if (reviewReplyCreationSuccess) {
+            toast.success("Reply added successfully");
+            refetch();
+            setReply("");
+        }
+        if(reviewReplyCreationError) {
+            if ("data" in reviewReplyCreationError) {
+                const errorMessage = reviewReplyCreationError.data as any;
+                toast.error(errorMessage.message);
+            }
+            else {
+                toast.error("Something went wrong");
+            }
+        }
+    }, [isSuccess, error, answerCreationSuccess, answerCreationError, reviewCreationSuccess, reviewCreationError, reviewReplyCreationSuccess, reviewReplyCreationError, courseRefetch, refetch])
 
     const handleReplySubmit = () => {
         addAnswer({ answer, courseId: id, contentId: data[activeVideo]._id, questionId: questionId });
@@ -104,6 +119,19 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user }: Pro
             addReview({ rating, review, courseId: id, contentId: data[activeVideo]._id });
         }
     };
+    console.log(data)
+
+    const toggleReply = (reviewId: string) => {
+        setReplyStates((prev) => ({ ...prev, [reviewId]: !prev[reviewId] }));
+    };
+
+    const handelReviewReplySubmit = () => {
+        if (reply === "") {
+            toast.error("Reply can't be empty")
+        } else {
+            addReplyReview({ reviewId, comment: reply, courseId: id })
+        }
+    }
 
     return (
         <div className="w-[95%] 800px:w-[86%] mx-auto py-4">
@@ -262,7 +290,7 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user }: Pro
                                                 onChange={(e) => setReview(e.target.value)}
                                                 cols={40}
                                                 rows={5}
-                                                className='outline-none bg-transparent ml-3 border-2 border-gray-400 dark:border-[#ffffff57] md:w-full w-[90%] font-Poppins md:text-[18px] text-[16px] rounded-md p-2'
+                                                className='text-black dark:text-white outline-none bg-transparent ml-3 border-2 border-gray-400 dark:border-[#ffffff57] md:w-full w-[90%] font-Poppins md:text-[18px] text-[16px] rounded-md p-2'
                                                 placeholder='Write your review here...'
                                             />
                                         </div>
@@ -280,43 +308,65 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, data, user }: Pro
                         <br />
                         <div className="w-full h-[1px] bg-[#ffffff3b]"></div>
                         <div className="w-full">
-                            {courseData?.reviews ? [...courseData.reviews].reverse().map((item: any, index: number) => (
-                                <div className="w-full my-5" key={item._id || index}>
-                                    <div className="w-full flex">
-                                        <div>
-                                            <Image
-                                                src={item?.user?.avatar?.url || "https://randomuser.me/api/portraits/men/5.jpg"}
-                                                alt=''
-                                                width={50}
-                                                height={50}
-                                                className='rounded-full object-cover w-[50px] h-[50px]'
-                                            />
+                            {courseData?.reviews?.length > 0 ? (
+                                [...courseData.reviews].reverse().map((item: any) => (
+                                    <div className="w-full my-5" key={item._id}>
+                                        <div className="w-full flex">
+                                            <div>
+                                                <Image
+                                                    src={item?.user?.avatar?.url || "https://randomuser.me/api/portraits/men/5.jpg"}
+                                                    alt={`${item?.user?.name || 'User'}'s avatar`}
+                                                    width={50}
+                                                    height={50}
+                                                    className="rounded-full object-cover w-[50px] h-[50px]"
+                                                />
+                                            </div>
+                                            <div className="ml-2 text-black dark:text-white">
+                                                <h1 className="text-[18px]">{item?.user?.name}</h1>
+                                                <Rating rating={item?.rating} />
+                                                <p>{item?.comment || "No review"}</p>
+                                                <small className="dark:text-[#ffffff83]">
+                                                    {format(new Date(item?.createdAt), "PPpp")}
+                                                </small>
+                                            </div>
                                         </div>
-                                        <div className="ml-2">
-                                            <h1 className="text-[18px]">{item?.user?.name}</h1>
-                                            <Rating rating={item?.rating} />
-                                            <p>{item?.comment || "No review"}</p>
-                                            <small className='text-[#ffffff83]'>{format(item?.createdAt).toString()}</small>
-                                        </div>
-                                    </div>
-                                    {
-                                        user.role === "admin" && (
-                                            <span className='text-black dark:text-white cursor-pointer ml-16 md:pl-16'>
-                                                Add Reply <BiMessage size={20} className='cursor-pointer text-[#000000b8] dark:text-[#ffffff83]' />
+                                        {user.role === "admin" && (
+                                            <span
+                                                className={`${styles.label} text-black dark:text-white cursor-pointer ml-16 md:pl-16`}
+                                                onClick={() => {
+                                                    toggleReply(item._id),
+                                                        setReviewId(item._id)
+                                                }}
+
+                                            >
+                                                Add Reply
                                             </span>
-                                        )
-                                    }
-                                </div>
-                            )) : <p>No reviews yet</p>}
+                                        )}
+                                        {replyStates[item._id] && (
+                                            <div className="w-full flex relative">
+                                                <input
+                                                    type="text"
+                                                    placeholder="Write your reply..."
+                                                    value={reply}
+                                                    onChange={(e) => setReply(e.target.value)}
+                                                    className={`${styles.input} !border-[0px] w-[90%] ml-[10%] rounded-none !border-b  `}
+                                                />
+                                                <button
+                                                    type='submit'
+                                                    className='absolute right-0 bottom-0'
+                                                    onClick={handelReviewReplySubmit}
+                                                >
+                                                    Submit
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))
+                            ) : (
+                                <p>No reviews yet</p>
+                            )}
                         </div>
-                        <br />
-                        {
-                            isReviewReply && (
-                                <input type="text" name='' id=''
-                                    className={styles.input}
-                                />
-                            )
-                        }
+
                     </>
                 )
             }

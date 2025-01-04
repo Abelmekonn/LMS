@@ -17,7 +17,7 @@ const CourseContent = ({ id, user }: Props) => {
     const [open, setOpen] = useState(false);
     const [route, setRoute] = useState("Login");
 
-    const { data: contentData, isLoading, error } = useGetCourseContentQuery({ id });
+    const { data: contentData, isLoading, error,refetch } = useGetCourseContentQuery({ id },{ refetchOnMountOrArgChange: true });
 
     console.log(contentData);
 
@@ -56,6 +56,7 @@ const CourseContent = ({ id, user }: Props) => {
                                 setActiveVideo={setActiveVideo}
                                 data={data}
                                 user={user}
+                                refetch={refetch}
                             />
                         </div>
                         <div className="hidden md:block md:col-span-3">

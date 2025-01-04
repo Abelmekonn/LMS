@@ -182,8 +182,7 @@ export const getCourseByUser = CatchAsyncError(async (req: Request, res: Respons
         const userCourseList = req.user?.courses;
         const courseId = req.params.id;
 
-        console.log(courseId);
-        console.log(userCourseList);
+        
 
         const courseExist = userCourseList?.some((item: any) => item.courseId.toString() === courseId.toString());
 
@@ -195,7 +194,6 @@ export const getCourseByUser = CatchAsyncError(async (req: Request, res: Respons
         const course = await CourseModel.findById(courseId);
         const content = course?.courseData;
 
-        console.log(content);
 
         res.status(200).json({
             success: true,
@@ -418,6 +416,8 @@ export const addReplyToReview = CatchAsyncError(async (req: Request, res: Respon
 
         await course.save()
 
+        await redis.set(courseId, JSON.stringify(course), "EX", 604800);
+
         await NotificationModel.create({
             user: req.user?._id,
             title: "New Reply Question Received",
@@ -456,7 +456,7 @@ interface Course {
 export const deleteCourse = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { id } = req.params;
-        const course = await CourseModel.findById(id);
+        const course = await CourseModel.findById(id) as any;
         
         if (!course) {
             return next(new ErrorHandler("Course not found", 404)); // Changed message to 'Course not found'
