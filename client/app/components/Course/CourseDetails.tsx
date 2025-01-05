@@ -3,7 +3,7 @@ import { styles } from '@/app/styles/style';
 import CoursePlayer from '@/app/utils/CoursePlayer';
 import Rating from '@/app/utils/Rating';
 import Link from 'next/link';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { IoCheckmarkCircleOutline, IoCloseOutline } from 'react-icons/io5';
 import { PiDot } from 'react-icons/pi';
 import { useSelector } from 'react-redux';
@@ -25,7 +25,11 @@ type Props = {
 
 const CourseDetails = ({ data, clientSecret, stripePromise , setRoute ,setOpen:openAuthMode }: Props) => {
     const { data: userData } = useLoadUserQuery(undefined, {})
-    const user = userData?.user
+    const [user , setUser] = useState<any>()
+
+    useEffect(()=>{
+        setUser(userData?.user)
+    },[userData])
 
     const [open, setOpen] = useState(false)
     const discountPercentage =
@@ -39,8 +43,7 @@ const CourseDetails = ({ data, clientSecret, stripePromise , setRoute ,setOpen:o
         if(user){
             setOpen(true)
         } else {
-            console.log("clicked")
-            setRoute("Login")
+            setRoute("login")
             openAuthMode(true)
         }
     }

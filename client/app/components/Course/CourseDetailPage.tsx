@@ -13,7 +13,7 @@ type Props = {
 };
 
 const CourseDetailPage: React.FC<Props> = ({ id }) => {
-    const [route, setRoute] = useState("Login");
+    const [route, setRoute] = useState("login");
     const [open, setOpen] = useState(false);
     const [stripePromise, setStripePromise] = useState<Promise<Stripe | null> | null>(null);
     const [clientSecret, setClientSecret] = useState<string>("");

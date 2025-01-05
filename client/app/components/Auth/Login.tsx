@@ -45,6 +45,7 @@ const Login: FC<Props> = ({setRoute,setOpen}) => {
     useEffect(() => {
         if (isSuccess) {
             toast.success("Login successfully!");
+            window.location.reload();  
             setOpen(false);
         }
         if (error) {

@@ -6,9 +6,13 @@ import { ThemeProvider } from "./utils/theme-provider";
 import { Providers } from "./Provider"; // Ensure this path is correct
 import { SessionProvider } from "next-auth/react";
 import "./globals.css";
-import React from "react";
+import React, { useEffect } from "react";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import Loader from "../app/components/loader";
+import socketId from "socket.io-client";
+
+const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVICE_URI || "";
+const socket = socketId(ENDPOINT, {transports: ['websocket']});
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -48,13 +52,19 @@ export default function RootLayout({
 const Custom: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isLoading } = useLoadUserQuery({});
 
+  useEffect(() => {
+    socket.on('connection', () => {
+      console.log('socket connected');
+    });
+  },[])
+
   if (isLoading) {
-    return <div className="w-full h-screen absolute"><Loader /></div>; 
+    return <div className="w-full h-screen items-center flex flex-col justify-center absolute"><Loader /></div>; 
   }
 
   return (
     <>
       {children}
     </>
-  );
+  ); 
 };
