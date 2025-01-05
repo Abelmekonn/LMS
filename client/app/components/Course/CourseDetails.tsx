@@ -19,9 +19,11 @@ type Props = {
     data: any;
     clientSecret: any;
     stripePromise: any;
+    setOpen: any;
+    setRoute: any;
 }
 
-const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
+const CourseDetails = ({ data, clientSecret, stripePromise , setRoute ,setOpen:openAuthMode }: Props) => {
     const { data: userData } = useLoadUserQuery(undefined, {})
     const user = userData?.user
 
@@ -33,9 +35,15 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
 
     const isPurchased = user && user?.courses?.find((item: any) => item.id === data.id);
 
-    const handleOrder = (e: any) => (
-        setOpen(true)
-    )
+    const handleOrder = (e: any) => {
+        if(user){
+            setOpen(true)
+        } else {
+            console.log("clicked")
+            setRoute("Login")
+            openAuthMode(true)
+        }
+    }
 
     return (
         <div>

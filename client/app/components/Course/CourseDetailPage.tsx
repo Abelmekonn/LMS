@@ -31,17 +31,15 @@ const CourseDetailPage: React.FC<Props> = ({ id }) => {
     useEffect(() => {
         if (data?.course?.price) {
             const amount = Math.round(data.course.price); // Convert to cents
-            console.log("Amount being sent to paymentIntent:", amount);
-            createPaymentIntent( amount );
+            createPaymentIntent(amount);
         }
     }, [createPaymentIntent, data]);
 
     useEffect(() => {
-        console.log("Payment Intent Data:", paymentIntentData);
         if (paymentIntentData?.client_secret) {
             setClientSecret(paymentIntentData.client_secret);
         }
-    }, [paymentIntentData]);    
+    }, [paymentIntentData]);
 
 
     if (isLoading) return <Loader />;
@@ -66,6 +64,8 @@ const CourseDetailPage: React.FC<Props> = ({ id }) => {
                     data={data.course}
                     stripePromise={stripePromise}
                     clientSecret={clientSecret}
+                    setOpen={setOpen}
+                    setRoute={setRoute}
                 />
             )}
             <Footer />

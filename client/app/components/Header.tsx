@@ -75,7 +75,7 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, setRoute, open }) => {
 
     const logOutHandler = async () => {
         try {
-            await logOut().unwrap();
+            await logOut({}).unwrap();
             toast.success("Logged out successfully");
         } catch (error) {
             toast.error("Logout failed");
@@ -125,7 +125,6 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, setRoute, open }) => {
                                         style={{ border: activeItem === 5 ? "2px solid #37a39a" : "none" }}
                                         priority
                                     />
-
                                 </Link>
                             ) : (
                                 <HiOutlineUserCircle
