@@ -12,6 +12,8 @@ import { Elements } from "@stripe/react-stripe-js"
 import CheckoutForm from "../Payment/CheckoutForm"
 import { useLoadUserQuery } from '@/redux/features/api/apiSlice';
 import { format } from 'timeago.js';
+import Image from 'next/image';
+import { VscVerifiedFilled } from 'react-icons/vsc';
 
 type Props = {
     data: any;
@@ -126,10 +128,14 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                                     <div className="w-full pb-4" key={index}>
                                         <div className="flex">
                                             <div className="w-[50px] h-[50px]">
-                                                <div className="w-[50px] h-[50px] bg-slate-600 rounded-[50px] flex items-center justify-center cursor-pointer">
-                                                    <h1 className='uppercase text-[18px] text-black dark:text-white'>
-                                                        {item.user.name.slice(0, 2)}
-                                                    </h1>
+                                                <div className="w-[50px] h-[50px]">
+                                                    <Image
+                                                        src={item?.user?.avatar?.url || "https://randomuser.me/api/portraits/men/5.jpg"}
+                                                        alt={`${item?.user?.name || 'User'}'s avatar`}
+                                                        width={50}
+                                                        height={50}
+                                                        className="rounded-full object-cover w-[50px] h-[50px]"
+                                                    />
                                                 </div>
                                             </div>
                                             <div className="hidden md:block pl-2">
@@ -149,6 +155,25 @@ const CourseDetails = ({ data, clientSecret, stripePromise }: Props) => {
                                                 <Rating rating={item.rating} />
                                             </div>
                                         </div>
+                                        {item.commentReplies.map((reply: any, index: number) => {
+                                            <div className="w-full flex md:ml-16 my-5">
+                                                <div className="w-[50px] h-[50px]">
+                                                    <Image
+                                                        src={item?.user?.avatar?.url || "https://randomuser.me/api/portraits/men/5.jpg"}
+                                                        alt={`${item?.user?.name || 'User'}'s avatar`}
+                                                        width={50}
+                                                        height={50}
+                                                        className="rounded-full object-cover w-[50px] h-[50px]"
+                                                    />
+                                                </div>
+                                                <div className="pl-2">
+                                                    <div className="flex items-center">
+                                                        <h5 className="text-[20px]">{reply.name}</h5>{""}
+                                                        <VscVerifiedFilled className='text-[#0095F6] ml-2 text-[20px]'/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        })}
                                     </div>
                                 ))}
                             </div>

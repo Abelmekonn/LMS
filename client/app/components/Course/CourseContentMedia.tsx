@@ -96,7 +96,7 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, refetch, data, us
             refetch();
             setReply("");
         }
-        if(reviewReplyCreationError) {
+        if (reviewReplyCreationError) {
             if ("data" in reviewReplyCreationError) {
                 const errorMessage = reviewReplyCreationError.data as any;
                 toast.error(errorMessage.message);
@@ -119,10 +119,11 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, refetch, data, us
             addReview({ rating, review, courseId: id, contentId: data[activeVideo]._id });
         }
     };
-    console.log(data)
+
+    const [openReplyId, setOpenReplyId] = useState<string | null>(null);
 
     const toggleReply = (reviewId: string) => {
-        setReplyStates((prev) => ({ ...prev, [reviewId]: !prev[reviewId] }));
+        setOpenReplyId((prev) => (prev === reviewId ? null : reviewId));
     };
 
     const handelReviewReplySubmit = () => {
@@ -334,39 +335,66 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, refetch, data, us
                                             <span
                                                 className={`${styles.label} text-black dark:text-white cursor-pointer ml-16 md:pl-16`}
                                                 onClick={() => {
-                                                    toggleReply(item._id),
-                                                        setReviewId(item._id)
+                                                    toggleReply(item._id); // Open or close the current review's reply
+                                                    setReviewId(item._id); // Optional logic for handling the current review ID
                                                 }}
-
                                             >
                                                 Add Reply
                                             </span>
                                         )}
-                                        {replyStates[item._id] && (
+                                        {openReplyId === item._id && (
                                             <div className="w-full flex relative">
                                                 <input
                                                     type="text"
                                                     placeholder="Write your reply..."
                                                     value={reply}
                                                     onChange={(e) => setReply(e.target.value)}
-                                                    className={`${styles.input} !border-[0px] w-[90%] ml-[10%] rounded-none !border-b  `}
+                                                    className={`${styles.input} !border-[0px] w-[90%] ml-[10%] rounded-none !border-b`}
                                                 />
                                                 <button
-                                                    type='submit'
-                                                    className='absolute right-0 bottom-0'
+                                                    type="submit"
+                                                    className="absolute right-0 bottom-0 text-black dark:text-white"
                                                     onClick={handelReviewReplySubmit}
                                                 >
                                                     Submit
                                                 </button>
                                             </div>
                                         )}
+                                        {item.commentReplies.length > 0 &&
+                                            item.commentReplies.map((reply: any) => (
+                                                <div className="w-full flex ml-10 md:ml-16 my-5" key={reply._id}>
+                                                    <div className="w-[50px] h-[50px]">
+                                                        <Image
+                                                            src={reply?.user?.avatar?.url || "https://randomuser.me/api/portraits/men/5.jpg"}
+                                                            alt={`${reply?.user?.name || 'User'}'s avatar`}
+                                                            width={50}
+                                                            height={50}
+                                                            className="rounded-full object-cover w-[50px] h-[50px]"
+                                                        />
+                                                    </div>
+                                                    <div className="pl-2 text-black dark:text-white">
+                                                        <h5 className="text-[20px]">{reply?.user?.name}</h5>
+                                                        <div className="flex item-center">
+                                                            <h5 className="text-[20px]">{reply.user.name}</h5>
+                                                            {
+                                                                reply.user.role === "admin" && (
+                                                                    <VscVerifiedFilled size={20} className='text-[#2190ff]' />
+                                                                )
+                                                            }
+                                                        </div>
+                                                        <p className="text-[16px]">{reply?.comment}</p>
+                                                        <small className="dark:text-[#ffffff83]">
+                                                            {format(new Date(reply?.createdAt), "PPpp")}
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            ))}
                                     </div>
                                 ))
                             ) : (
                                 <p>No reviews yet</p>
                             )}
                         </div>
-
                     </>
                 )
             }
@@ -477,7 +505,12 @@ const CommentItem = ({
                                     </div>
                                     <div className="pl-2">
                                         <div className="flex item-center">
-                                            <h5 className="text-[20px]">{item.user.name}</h5><VscVerifiedFilled fill='#50c750' className='text-blue-500 bg ml-2 text-[20px]' />
+                                            <h5 className="text-[20px]">{item.user.name}</h5>
+                                            {
+                                                item.user.role === "admin" && (
+                                                    <VscVerifiedFilled size={20} className='text-[#2190ff]' />
+                                                )
+                                            }
                                         </div>
                                         <p className="text-[16px]">{item.answer}</p>
                                         <small className='text-[#ffffff83]'>{format(item.createdAt).toString()}</small>
