@@ -35,7 +35,7 @@ const UserAnalytics = ({ isDashboard }: Props) => {
                                 )
                             }
                         </div>
-                        <div className={`w-full ${isDashboard ? 'h-[30vh]' : 'h-screen'} flex items-center justify-center`}>
+                        <div className={`w-[90%] mx-auto ${isDashboard ? 'h-[30vh]' : 'h-screen'} flex items-center justify-center`}>
                             <ResponsiveContainer width={isDashboard ? '100%' : '90%' } height={!isDashboard ? "50%" : "100%"}>
                                 <AreaChart 
                                     data={analyticsData}

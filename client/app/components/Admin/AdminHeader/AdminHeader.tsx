@@ -1,9 +1,8 @@
 import React, { FC, useState, useEffect } from 'react';
-import { Box, IconButton, Typography } from '@mui/material';
-import { Notifications } from "@mui/icons-material";
-import avatarDefault from "../../../../public/assets/avatar.jpg";
+import { Box, IconButton, Typography, Badge, Avatar, useMediaQuery } from '@mui/material';
+import { Notifications } from '@mui/icons-material';
+import avatarDefault from '../../../../public/assets/avatar.jpg';
 import { useTheme } from 'next-themes';
-import Image from 'next/image';
 import { ThemeSwitcher } from '../../../utils/ThemeSwitcher';
 
 interface User {
@@ -18,7 +17,8 @@ type Props = {
 
 const AdminHeader: FC<Props> = ({ user }) => {
     const [avatar, setAvatar] = useState<string>(avatarDefault.src);
-    const { theme, setTheme } = useTheme();
+    const { theme } = useTheme();
+    const isMobile = useMediaQuery('(max-width: 768px)');
 
     useEffect(() => {
         if (user.avatar) {
@@ -27,16 +27,24 @@ const AdminHeader: FC<Props> = ({ user }) => {
     }, [user.avatar]);
 
     return (
-        <Box className="flex items-center justify-end h-20  relative   top-0 w-full  px-6 py-4">
-            {/* Logo */}
-            
-            {/* Right Icons */}
-            <Box className="flex items-center gap-3">
+        <Box className="flex items-center mr-10 z-[9999999] justify-end h-20 px-6 py-4 bg-white dark:bg-gray-800">
+            {/* Right Section */}
+            <Box className="flex items-center gap-4">
+                {/* Notifications */}
                 <IconButton>
-                    <Notifications className="text-black dark:text-white" />
+                    <Badge badgeContent={35} color="error">
+                        <Notifications className="text-black dark:text-white" />
+                    </Badge>
                 </IconButton>
-                
+                {/* Theme Switcher */}
                 <ThemeSwitcher />
+                {/* User Info */}
+                <Box className="flex items-center gap-2">
+                    <Avatar src={avatar} alt="User Avatar" />
+                    <Typography variant="body1" className="text-black dark:text-white">
+                        {user.name}
+                    </Typography>
+                </Box>
             </Box>
         </Box>
     );

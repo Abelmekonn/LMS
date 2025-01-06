@@ -6,6 +6,8 @@ type Props = {
 }
 
 const DashboardHero = ({ isDashboard }: Props) => {
+    const [open, setOpen] = React.useState(false);
+
     return (
         <>
             {
