@@ -4,9 +4,7 @@ import { Notifications } from "@mui/icons-material";
 import avatarDefault from "../../../../public/assets/avatar.jpg";
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
-import Link from 'next/link';
 import { ThemeSwitcher } from '../../../utils/ThemeSwitcher';
-import favicon from "../../../../public/favicon.png"
 
 interface User {
     name: string;

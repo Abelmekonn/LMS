@@ -17,7 +17,6 @@ type Props = {
 };
 
 const CheckoutForm = ({ setOpen, data , user }: Props) => {
-    const { user } = useSelector((state: any) => state.auth);
     const stripe = useStripe();
     const elements = useElements();
     const [message, setMessage] = useState<string | null>(null);
@@ -87,7 +86,7 @@ const CheckoutForm = ({ setOpen, data , user }: Props) => {
                 toast.error(errorMessage);
             }
         }
-    }, [orderData, error, data]);
+    }, [orderData, error, data, user._id, userData?.data?.name]);
 
     return (
         <div className="">

@@ -56,14 +56,26 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, refetch, data, us
 
     useEffect(() => {
         if (isSuccess) {
-            toast.success("Question added successfully");
-            refetch()
             setQuestion("");
+            refetch()
+            toast.success("Question added successfully");
+            socket.emit("notification", { 
+                title: "New Question Received",
+                message: `you have new question in ${data[activeVideo]?.title}`,
+                userId: user._id, 
+            });
         }
         if (answerCreationSuccess) {
-            toast.success("Answer added successfully");
-            refetch();
             setAnswer("");
+            refetch();
+            toast.success("Answer added successfully");
+            if (user.role === "admin") {
+                socket.emit("notification", {
+                    title: "New Reply Received",
+                    message: `you have new question reply in ${data[activeVideo]?.title}`,
+                    userId: user._id,
+                })
+            }
         }
         if (error) {
             if ("data" in error) {
@@ -90,10 +102,15 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, refetch, data, us
             }
         }
         if (reviewCreationSuccess) {
-            toast.success("Review added successfully");
-            courseRefetch();
             setReview("");
             setRating(1);
+            courseRefetch();
+            toast.success("Review added successfully");
+            socket.emit("notification", {
+                title: "New Review Received",
+                message: `you have new review in ${data[activeVideo]?.title}`,
+                userId: user._id,
+            });
         }
         if (reviewReplyCreationSuccess) {
             toast.success("Reply added successfully");
@@ -109,7 +126,7 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, refetch, data, us
                 toast.error("Something went wrong");
             }
         }
-    }, [isSuccess, error, answerCreationSuccess, answerCreationError, reviewCreationSuccess, reviewCreationError, reviewReplyCreationSuccess, reviewReplyCreationError, courseRefetch, refetch])
+    }, [isSuccess, error, answerCreationSuccess, answerCreationError, reviewCreationSuccess, reviewCreationError, reviewReplyCreationSuccess, reviewReplyCreationError, courseRefetch, refetch, activeVideo, data, user._id])
 
     const handleReplySubmit = () => {
         addAnswer({ answer, courseId: id, contentId: data[activeVideo]._id, questionId: questionId });
