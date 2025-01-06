@@ -4,14 +4,19 @@ import { useCreateOrderMutation } from "@/redux/features/orders/ordersApi";
 import { useLoadUserQuery } from "@/redux/features/api/apiSlice";
 import toast from "react-hot-toast";
 import { useSelector } from "react-redux";
-import { useRouter } from "next/navigation"; // Ensure correct import
+import { redirect, useRouter } from "next/navigation"; // Ensure correct import
+import socketId from "socket.io-client";
+
+const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVICE_URI || "";
+const socket = socketId(ENDPOINT, {transports: ['websocket']});
 
 type Props = {
     setOpen: (state: boolean) => void;
     data: any;
+    user: any;
 };
 
-const CheckoutForm = ({ setOpen, data }: Props) => {
+const CheckoutForm = ({ setOpen, data , user }: Props) => {
     const { user } = useSelector((state: any) => state.auth);
     const stripe = useStripe();
     const elements = useElements();
@@ -69,8 +74,11 @@ const CheckoutForm = ({ setOpen, data }: Props) => {
     useEffect(() => {
         if (orderData) {
             setLoadUser(true);
-            console.log(orderData)
-            console.log(data)
+            socket.emit("notification", { 
+                title: "New order",
+                message: `New order from ${userData?.data?.name}`,
+                userId: user._id, 
+            });
             redirect(`/course-access/${data._id}`); // Use router.push for navigation
         }
         if (error) {

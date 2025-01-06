@@ -9,6 +9,10 @@ import { AiFillStar, AiOutlineArrowLeft, AiOutlineArrowRight, AiOutlineStar } fr
 import { BiMessage } from 'react-icons/bi';
 import { VscVerifiedFilled } from 'react-icons/vsc';
 import { format } from 'timeago.js';
+import socketId from "socket.io-client";
+
+const ENDPOINT = process.env.NEXT_PUBLIC_SOCKET_SERVICE_URI || "";
+const socket = socketId(ENDPOINT, {transports: ['websocket']});
 
 type Props = {
     id: string;

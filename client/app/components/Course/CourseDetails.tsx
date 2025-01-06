@@ -248,7 +248,7 @@ const CourseDetails = ({ data, clientSecret, stripePromise , setRoute ,setOpen:o
                                 <div className="w-full">
                                     {stripePromise && (
                                         <Elements stripe={stripePromise} options={{ clientSecret }}>
-                                            <CheckoutForm setOpen={setOpen} data={data} />
+                                            <CheckoutForm setOpen={setOpen} data={data} user={user}/>
                                         </Elements>
                                     )}
                                 </div>
