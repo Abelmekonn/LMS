@@ -4,7 +4,7 @@ export const notificationApi = apiSlice.injectEndpoints({
     endpoints: (builder) => ({
         getAllNotifications: builder.query({
             query: () => ({
-                url: "get-all-notifications",
+                url: "get-all-notification",
                 method: "GET",
                 credentials: "include" as const,
             }),

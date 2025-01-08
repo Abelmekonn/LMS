@@ -23,7 +23,7 @@ const schema = Yup.object().shape({
         .required("Password Required"),
 })
 
-const Login: FC<Props> = ({setRoute,setOpen}) => {
+const Login: FC<Props> = ({setRoute,setOpen,refetch}) => {
     const [login, { isSuccess, error }] = useLoginMutation()
     const [show, setShow] = useState(false)
 
@@ -47,6 +47,7 @@ const Login: FC<Props> = ({setRoute,setOpen}) => {
             toast.success("Login successfully!");
             window.location.reload();  
             setOpen(false);
+            refetch()
         }
         if (error) {
             if ("data" in error) {

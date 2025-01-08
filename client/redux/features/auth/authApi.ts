@@ -83,21 +83,32 @@ export const authApi = apiSlice.injectEndpoints({
                 }
             },
         }),
-        logOut: builder.mutation({
+        logOut: builder.query<void, void>({
             query: () => ({
                 url: "logout",
                 method: "GET",
-                credentials: "include" as const
+                credentials: "include", // Ensures cookies are included
             }),
-            async onQueryStarted(arg, { queryFulfilled, dispatch }) {
+            async onCacheEntryAdded(arg, { cacheEntryRemoved, dispatch }) {
                 try {
-                    await queryFulfilled;
+                    // Wait for the query to resolve
+                    await cacheEntryRemoved;
+        
+                    // Dispatch the logout action
                     dispatch(userLogout());
+        
+                    // Optional: Log success or provide feedback
+                    console.log("Logout successful");
                 } catch (error: any) {
-                    console.log('Logout Error:', error);
+                    // Handle errors gracefully
+                    console.error("Logout Error:", error);
+                    // Optional: Show an error message to the user
                 }
             },
         }),
+      
+        
+        
     })
 })
 
@@ -106,5 +117,6 @@ export const {
     useRegistrationMutation, 
     useActivationMutation,
     useSocialAuthMutation,
-    useLogOutMutation 
+    useLogOutQuery,
+
 } = authApi;

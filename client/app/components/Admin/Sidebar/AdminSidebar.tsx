@@ -34,7 +34,7 @@ const AdminSidebar: React.FC = () => {
 
     const logoutHandler = () => {
         console.log('Logged out');
-        // Add logout logic here
+        // Add logoeut logic her
     };
 
 

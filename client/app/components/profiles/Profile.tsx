@@ -3,7 +3,7 @@
 import React, { FC, useState, useEffect, useRef } from 'react';
 import SideBarProfile from './SideBarProfile';
 import avatarPlaceholder from '../../../public/assets/avatar.jpg';
-import { useLogOutMutation } from '../../../redux/features/auth/authApi';
+import { useLogOutQuery } from '../../../redux/features/auth/authApi';
 import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation'; // Correct import for App Router
 import ProfileInfo from "./ProfileInfo";
@@ -23,7 +23,7 @@ const Profile: FC<Props> = ({ user }) => {
   const [scroll, setScroll] = useState(false);
   const [avatar, setAvatar] = useState<string>(avatarPlaceholder.src);
   const [active, setActive] = useState(1);
-  const [logOut] = useLogOutMutation(); // Use mutation hook
+  const { refetch: logOut } = useLogOutQuery(undefined, { skip: true });
   const inputRef = useRef<HTMLInputElement>(null);
 
   const router = useRouter(); // Correctly use useRouter for App Router

@@ -11,8 +11,9 @@ import { useSelector } from 'react-redux';
 import avatar from "../../public/assets/avatar.jpg";
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import { useLogOutMutation, useSocialAuthMutation } from '../../redux/features/auth/authApi';
+import { useLogOutQuery, useSocialAuthMutation } from '../../redux/features/auth/authApi';
 import toast from 'react-hot-toast';
+import { useLoadUserQuery } from '@/redux/features/api/apiSlice';
 
 type Props = {
     open: boolean;
@@ -30,29 +31,37 @@ interface User {
 
 const Header: FC<Props> = ({ activeItem, setOpen, route, setRoute, open }) => {
     const [active, setActive] = useState(false);
+    const [logout, setLogout] = useState(false);
     const [openSidebar, setOpenSidebar] = useState(false);
-    const { user } = useSelector((state: any) => state.auth);
+    const {data:userData , isLoading , refetch} = useLoadUserQuery(undefined, {refetchOnMountOrArgChange: true});
     const { data: sessionData } = useSession();
     const [socialAuth, { isSuccess, isError }] = useSocialAuthMutation();
-    const [logOut, { isLoading }] = useLogOutMutation();
+    const {} = useLogOutQuery(undefined, {
+        skip: !logout ? true : false,
+    })
 
     useEffect(() => {
-        if (!user && sessionData) {
+        if (!userData && sessionData) {
             socialAuth({
                 email: sessionData.user?.email,
                 name: sessionData.user?.name,
                 avatar: sessionData.user?.image
             });
+            refetch();
         }
 
         if (isSuccess) {
             toast.success("Login Successful");
         }
 
+        if(sessionData === null && !isLoading && !userData) {
+            setLogout(true)
+        }
+
         if (isError) {
             toast.error("Login Failed");
         }
-    }, [sessionData, user, socialAuth, isSuccess, isError]);
+    }, [sessionData, userData, socialAuth, isSuccess, isError, isLoading, refetch]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -70,15 +79,6 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, setRoute, open }) => {
     const handleClose = (e: React.MouseEvent) => {
         if ((e.target as HTMLElement).id === "screen") {
             setOpenSidebar(false);
-        }
-    };
-
-    const logOutHandler = async () => {
-        try {
-            await logOut({}).unwrap();
-            toast.success("Logged out successfully");
-        } catch (error) {
-            toast.error("Logout failed");
         }
     };
 
@@ -114,10 +114,10 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, setRoute, open }) => {
                                     onClick={() => setOpenSidebar(true)}
                                 />
                             </div>
-                            {user ? (
+                            {userData ? (
                                 <Link href={"/profile"}>
                                     <Image
-                                        src={user.avatar ? user.avatar.url : avatar}
+                                        src={userData.avatar ? userData.avatar.url : avatar}
                                         alt="User Avatar"
                                         className='w-[30px] h-[30px] rounded-full cursor-pointer'
                                         width={30}
@@ -181,6 +181,7 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, setRoute, open }) => {
                     setRoute={setRoute}
                     activeItem={activeItem}
                     component={SignUp}
+                    refetch={refetch}
                 />
             )}
             {route === "verification" && open && (

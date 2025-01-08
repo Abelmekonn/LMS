@@ -50,7 +50,7 @@ const OrderAnalytics = ({ isDashboard }: Props) => {
                 <div className={isDashboard ? "h-[30vh]" : "h-screen"}>
                     <div
                         className={`${
-                            isDashboard ? "mt-0 pl-[40px] mb-2" : "mt-[50px]"
+                            isDashboard ? "mt-0 mb-2" : "mt-[50px]"
                         }`}
                     >
                         <h1
@@ -80,13 +80,13 @@ const OrderAnalytics = ({ isDashboard }: Props) => {
                                 margin={{
                                     top: 5,
                                     right: 30,
-                                    left: 20,
+                                    left: 5,
                                     bottom: 5,
                                 }}
                             >
                                 <CartesianGrid strokeDasharray="4 4" stroke="#ccc" />
                                 <XAxis dataKey="name" label={{ value: "Month", position: "insideBottom", offset: -5 }} />
-                                <YAxis label={{ value: "Orders", angle: -90, position: "insideLeft" }} />
+                                <YAxis  />
                                 <Tooltip />
                                 {!isDashboard && <Legend />}
                                 <Line
@@ -94,6 +94,7 @@ const OrderAnalytics = ({ isDashboard }: Props) => {
                                     dataKey="count"
                                     stroke="#82ca9d"
                                     strokeWidth={2}
+                                    dot={false}
                                 />
                             </LineChart>
                         </ResponsiveContainer>

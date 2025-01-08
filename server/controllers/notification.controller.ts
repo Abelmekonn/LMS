@@ -6,11 +6,15 @@ import cron from "node-cron"
 // get notification -only for admin
 export const getNotification = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const notification = await NotificationModel.find().sort({ createdAt: -1 })
+        if (req.user?.role !== 'admin') {
+            return next(new ErrorHandler("You are not authorized to access this resource", 403));
+        }
+
+        const notification = await NotificationModel.find().sort({ createdAt: -1 });
         res.status(200).json({
             status: "success",
             notification
-        })
+        });
 
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 500))
