@@ -23,18 +23,47 @@ const Page = (props: Props) => {
     const [activeItem, setActiveItem] = useState(0)
     const [courses, setCourses] = useState([])
     const [category, setCategory] = useState("All")
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const debounce = (func: Function, delay: number) => {
+        let timeoutId: NodeJS.Timeout;
+        return (...args: any[]) => {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+            timeoutId = setTimeout(() => {
+                func(...args);
+            }, delay);
+        };
+    };
+
+    const handleSearch = debounce((searchTerm: string) => {
+        if (searchTerm && data?.data) {
+            setCourses(data.data.filter((course: any) => course.title && course.title.toLowerCase().includes(searchTerm.toLowerCase())));
+        } else if (category === "All") {
+            setCourses(data?.data || []);
+        } else if (category !== "All" && data?.data) {
+            setCourses(data.data.filter((course: any) => course.categories === category));
+        }
+    }, 300);
 
     useEffect(() => {
-        if (category === "All") {
-            setCourses(data?.data || [])
-        }
-        if (category !== "All" && data?.data) {
-            setCourses(data.data.filter((course: any) => course.categories === category))
-        }
-        if (search && data?.data) {
-            setCourses(data.data.filter((course: any) => course.title.toLowerCase().includes(search.toLowerCase())))
-        }
-    }, [category, data, search])
+        handleSearch(searchTerm);
+    }, [searchTerm, category, data, handleSearch]);
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Enter') {
+                handleSearch(searchTerm);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [searchTerm, handleSearch]);
 
     const categories = categoryData?.layout?.categories
 
@@ -84,7 +113,7 @@ const Page = (props: Props) => {
                             {
                                 courses && courses.length === 0 && (
                                     <p className={`${styles.label} justify-center min-h-[50vh] flex items-center`}>
-                                        {search ? `No course found with the title ${search}` : "No course found in this category . Please Try another one"}
+                                        {searchTerm ? `No course found with the title ${searchTerm}` : "No course found in this category . Please Try another one"}
                                     </p>
                                 )
                             }

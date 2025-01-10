@@ -30,7 +30,7 @@ const Profile: FC<Props> = ({ user }) => {
 
   const logOutHandler = async () => {
     try {
-      await logOut({}); // Add empty object as argument
+      await logOut(); // Remove empty object argument
       router.push('/');
     } catch (error) {
       console.error('Logout error:', error);

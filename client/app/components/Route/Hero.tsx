@@ -24,6 +24,20 @@ export const Hero: FC<Props> = (props) => {
 
     }
 
+    React.useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Enter') {
+                handleSearch();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [search]);
+
     return (
         <>
             {isLoading ? (

@@ -93,10 +93,10 @@ export const authApi = apiSlice.injectEndpoints({
                 try {
                     // Wait for the query to resolve
                     await cacheEntryRemoved;
-        
+
                     // Dispatch the logout action
                     dispatch(userLogout());
-        
+
                     // Optional: Log success or provide feedback
                     console.log("Logout successful");
                 } catch (error: any) {
@@ -106,15 +106,12 @@ export const authApi = apiSlice.injectEndpoints({
                 }
             },
         }),
-      
-        
-        
     })
 })
 
-export const { 
-    useLoginMutation, 
-    useRegistrationMutation, 
+export const {
+    useLoginMutation,
+    useRegistrationMutation,
     useActivationMutation,
     useSocialAuthMutation,
     useLogOutQuery,
