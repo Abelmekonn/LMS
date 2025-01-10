@@ -28,7 +28,7 @@ const Page: FC<Props> = () => {
     }
 
     return (
-        <div className='h-screen'>
+        <div className='min-h-screen '>
             <Protected>
                 <Heading
                     title={`${user.name} profile`}

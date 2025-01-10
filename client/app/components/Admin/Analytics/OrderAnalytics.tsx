@@ -14,6 +14,7 @@ import {
 import Loader from "../../loader";
 import { useGetOrderAnalyticsQuery } from "../../../../redux/features/analytics/analyticsApi";
 import { styles } from "@/app/styles/style";
+import ThinLoader from "../../ThinLoader";
 
 interface AnalyticsData {
     name: string;
@@ -45,7 +46,7 @@ const OrderAnalytics = ({ isDashboard }: Props) => {
     return (
         <>
             {isLoading ? (
-                <Loader />
+                <ThinLoader />
             ) : (
                 <div className={isDashboard ? "h-[30vh]" : "h-screen"}>
                     <div

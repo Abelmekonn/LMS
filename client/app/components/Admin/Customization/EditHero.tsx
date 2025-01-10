@@ -64,7 +64,7 @@ const EditHero: FC = () => {
         data?.layout?.banner?.image?.url !== image;
 
     return (
-        <div className='w-full flex flex-col justify-between md:flex-row items-center dark:bg-gradient-to-b text-black dark:text-white'>
+        <div className='w-full flex flex-col justify-between md:flex-row items-center  text-black dark:text-white'>
             <div className='mt-10 relative top-[100px] md:top-[unset] w-[400px] h-[400px] 2xl:w-[500px] 2xl:h-[500px] lg:w-[450px] lg:h-[450px] hero_animation rounded-full overflow-hidden flex items-center justify-center'>
                 <Image
                     src={image || "/placeholder-image.jpg"}
@@ -85,7 +85,6 @@ const EditHero: FC = () => {
                     <AiOutlineCamera className='dark:text-white text-black text-[18px] cursor-pointer' aria-label="Upload Hero Image" />
                 </label>
             </div>
-
             <div className="flex-col lg:w-[50%] w-[90%] justify-between items-center lg:mt-[10px] text-center lg:text-center mt-[150px]">
                 <textarea
                     className='dark:text-white resize-none text-[#000000c7] w-full text-[30px] md:text-[60px] font-Josefin leading-snug bg-transparent'

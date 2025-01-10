@@ -69,7 +69,7 @@ const Profile: FC<Props> = ({ user }) => {
   }, [user]);
 
   return (
-    <div className="w-[85%] flex mx-auto">
+    <div className="w-[85%] flex mx-auto mb-10">
       <div
         className={`w-[60px] md:w-[310px] h-[450px] dark:bg-slate-900 bg-opacity-90 border dark:border-[#0000001d] border-[#ffffff6d] rounded-[5px] shadow-xl dark:shadow-sm  sticky ${scroll ? "top-[100px]" : "top-[200px]"} left-[30px]`}
       >
@@ -94,6 +94,11 @@ const Profile: FC<Props> = ({ user }) => {
           <div className='w-full h-full bg-transparent mt-[80px]'>
             <ChangePassword />
           </div>
+        )
+      }
+      {
+        active === 3 && (
+          
         )
       }
     </div>

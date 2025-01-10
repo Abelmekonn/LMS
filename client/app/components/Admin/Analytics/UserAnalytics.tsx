@@ -4,6 +4,7 @@ import { BarChart, Bar, ResponsiveContainer, XAxis, Label, LabelList, YAxis, Are
 import Loader from '../../loader'
 import { useGetUserAnalyticsQuery } from '../../../../redux/features/analytics/analyticsApi'
 import { styles } from '@/app/styles/style'
+import ThinLoader from '../../ThinLoader'
 
 type Props = {
     isDashboard: boolean
@@ -21,7 +22,7 @@ const UserAnalytics = ({ isDashboard }: Props) => {
     return (
         <>
             {
-                isLoading ? <Loader /> : (
+                isLoading ? <ThinLoader /> : (
                     <div className={`${!isDashboard ? "mt-[50px]" : "mt-[50px] dark:bg-[#111c43] shadow-sm pb-5 rounded-sm"}`}>
                         <div className={`${isDashboard ? "!ml-8 mb-5" : ''}`}>
                             <h1 className={`${styles.title} ${isDashboard && '!text-[20px]'} pc-5 !text-start`}>

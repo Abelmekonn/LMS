@@ -8,6 +8,7 @@ import { useGetAllOrdersQuery } from "../../../../redux/features/orders/ordersAp
 import { useGetAllUsersQuery } from "../../../../redux/features/user/userApi";
 import Loader from "../../loader";
 import { AiOutlineMail } from "react-icons/ai";
+import ThinLoader from "../../ThinLoader";
 
 type Props = {
     isDashboard?: boolean;
@@ -89,7 +90,7 @@ const AllInvoices = ({ isDashboard }: Props) => {
     return (
         <div className={!isDashboard ? "mt-[120px]" : "mt-[0px]"}>
             {isLoading ? (
-                <Loader />
+                <ThinLoader />
             ) : (
                 <Box
                     m={isDashboard ? "0" : "40px"}
