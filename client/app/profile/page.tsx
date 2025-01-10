@@ -5,6 +5,7 @@ import Heading from '../utils/Heading';
 import Header from '../components/Header';
 import Profile from '../components/profiles/Profile';
 import { useSelector } from 'react-redux';
+import Footer from '../components/Footer';
 
 type Props = {};
 
@@ -32,7 +33,7 @@ const Page: FC<Props> = () => {
                 <Heading
                     title={`${user.name} profile`}
                     description="Learning platform"
-                    keywords="elearning, education"
+                    keywords="ELearning, education"
                 />
                 <Header
                     open={open}
@@ -42,6 +43,7 @@ const Page: FC<Props> = () => {
                     route={route}
                 />
                 <Profile user={user} />
+                <Footer />
             </Protected>
         </div>
     );
