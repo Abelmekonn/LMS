@@ -48,7 +48,7 @@ const OrderAnalytics = ({ isDashboard }: Props) => {
             {isLoading ? (
                 <ThinLoader />
             ) : (
-                <div className={isDashboard ? "h-[30vh]" : "h-screen"}>
+                <div className={isDashboard ? "h-[50vh]" : "h-screen"}>
                     <div
                         className={`${
                             isDashboard ? "mt-0 mb-2" : "mt-[50px]"
@@ -57,7 +57,7 @@ const OrderAnalytics = ({ isDashboard }: Props) => {
                         <h1
                             className={`${styles.title} ${
                                 isDashboard && "!text-[20px]"
-                            } px-5 !text-start`}
+                            } px-5 !text-start mt-2`}
                         >
                             Order Analytics
                         </h1>

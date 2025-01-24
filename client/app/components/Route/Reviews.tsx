@@ -79,16 +79,13 @@ export const reviews = [
 ];
 
 
-const image = "https://randomuser.me/api/portraits/men/5.jpg"
-
-
 const Reviews = (props: Props) => {
     return (
         <div className='w-[90%] 800px:w-[85%] m-auto'>
-            <div className="w-full md:flex items-center justify-center">
+            <div className="w-full md:flex items-center justify-center my-8">
                 <div className='md:w-[50%] flex justify-center w-full items-center '>
                     <Image
-                        src={"https://randomuser.me/api/portraits/men/5.jpg"}
+                        src={"https://res.cloudinary.com/detxtubji/image/upload/v1736804961/3967400-removebg-preview_azodxn.png"}
                         alt="bussiness"
                         width={500}
                         height={300}

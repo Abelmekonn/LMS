@@ -16,7 +16,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
         <div className="flex flex-row min-h-screen w-full bg-gray-50 dark:bg-gray-900">
             {/* Sidebar */}
             <aside className="flex-shrink-0 bg-white dark:bg-gray-800 shadow-md">
-                <AdminSidebar />
+                <AdminSidebar user={user}/>
             </aside>
 
             {/* Main Content Area */}

@@ -96,20 +96,20 @@ const AllInvoices = ({ isDashboard }: Props) => {
                     m={isDashboard ? "0" : "40px"}
                     sx={{
                         "& .MuiDataGrid-root": {
-                            backgroundColor: isDarkTheme ? "#1F2A40" : "#F2F0F0",
+                            backgroundColor: isDarkTheme ? "#363a89" : "#363a89",
                             border: "none",
                         },
                         "& .MuiDataGrid-row": {
                             color: isDarkTheme ? "#fff" : "#000",
                             borderBottom: isDarkTheme
-                                ? "1px solid #ffffff30"
-                                : "1px solid #ccc",
+                                ? "1px solid #363a89"
+                                : "1px solid #363a89",
                         },
                         "& .MuiDataGrid-cell": {
                             borderBottom: "none",
                         },
                         "& .MuiDataGrid-columnHeaders": {
-                            backgroundColor: "#363a89",
+                            backgroundColor: "#4A90E2", // Change this to your desired color
                             color: isDarkTheme ? "#F1F1F1" : "#000",
                             borderBottom: "none",
                         },
@@ -122,16 +122,20 @@ const AllInvoices = ({ isDashboard }: Props) => {
                             borderTop: "none",
                         },
                         "& .MuiCheckbox-root": {
-                            color: isDarkTheme ? "#b7ebde" : "#000",
+                            color: isDarkTheme ? "#363a89" : "#363a89",
                         },
                     }}
                 >
                     <DataGrid
                         rows={processedOrders}
                         columns={columns}
-                        pageSize={10}
-                        rowsPerPageOptions={[10, 20, 50]}
-                        disableSelectionOnClick
+                        initialState={{
+                            pagination: {
+                                paginationModel: { pageSize: 5 },
+                            },
+                        }}
+                        pageSizeOptions={[10, 20, 50]}
+                        disableRowSelectionOnClick
                         checkboxSelection={!isDashboard}
                     />
                 </Box>

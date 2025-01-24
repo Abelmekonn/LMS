@@ -68,6 +68,7 @@ const AdminHeader: FC<Props> = ({ user }) => {
         }
     }, [user.avatar]);
 
+
     const handleNotificationStatusChange = async (id: string) => {
         await updateNotificationStatus(id);
         refetch();
@@ -151,7 +152,7 @@ const AdminHeader: FC<Props> = ({ user }) => {
                 )}
                 <ThemeSwitcher />
                 <Box className="flex items-center gap-2">
-                    <Avatar src={avatar} alt="User Avatar" />
+                    <Avatar src={avatar.url} alt="User Avatar" />
                     <Typography variant="body1" className="text-black dark:text-white">
                         {user.name}
                     </Typography>

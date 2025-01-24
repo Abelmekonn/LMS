@@ -23,8 +23,13 @@ import {
     Analytics as AnalyticsIcon,
 } from '@mui/icons-material';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
 
-const AdminSidebar: React.FC = () => {
+type Props = {
+    user: any;
+};
+
+const AdminSidebar: React.FC<Props> = ({ user }) => {
     const [selected, setSelected] = useState('Dashboard');
     const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -32,30 +37,34 @@ const AdminSidebar: React.FC = () => {
         setSelected(title);
     }, []);
 
-    const logoutHandler = () => {
-        console.log('Logged out');
-        // Add logoeut logic her
-    };
+    console.log(user.avatar.url)
 
+    const logoutHandler = () => {
+        toast.success('Logged out')
+    };
 
 
     return (
         <div className={`h-screen scrollbar-thin scrollbar-thumb-gray-300 flex overflow-y-auto min-h-screen  transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'} bg-white dark:bg-gray-800 shadow-md  scrollbar-thin scrollbar-thumb-gray-300`}>
             <div className="flex flex-col w-full dark:text-white text-black h-full">
                 <div className='items-center flex flex-col relative'>
-                    <div className="flex flex-row items-center justify-between p-4 mb-5">
+                    <div className='relative w-full flex'>
+                        <h1 className={`text-xl font-bold ${isCollapsed ? 'hidden' : 'block'}`}>
+                            E-Learning
+                        </h1>
+                        <button onClick={() => setIsCollapsed(!isCollapsed)} className={`${!isCollapsed ? " mt-5" : ""}`}>
+                            {isCollapsed ? <ArrowForwardIosIcon /> : <ArrowBackIosIcon />}
+                        </button>
+                    </div>
+                    <div className="flex flex-col items-center justify-between p-4 mb-5">
                         <Image
-                            src={favicon.src}
+                            src={user.avatar.url}
                             alt="Admin Avatar"
                             className='w-[40px] h-[40px] rounded-lg cursor-pointer'
                             width={30}
                             height={30}
                         />
-                        <h1 className={`text-xl font-bold ${isCollapsed ? 'hidden' : 'block'}`}>
-                            E-Learning</h1>
-                        <button onClick={() => setIsCollapsed(!isCollapsed)} className={`${!isCollapsed ? "absolute  top-0 right-0 mt-5" : ""}`}>
-                            {isCollapsed ? <ArrowForwardIosIcon /> : <ArrowBackIosIcon />}
-                        </button>
+
                     </div>
                     <nav className={`flex flex-col gap-3 mt-4${isCollapsed ? 'h-full' : 'h-[calc(100vh-64px)]'}`}>
                         <Link href="/admin" passHref>
@@ -130,7 +139,7 @@ const AdminSidebar: React.FC = () => {
                                 {!isCollapsed && <span className="ml-2">Manage Team</span>}
                             </div>
                         </Link>
-                        
+
                         <Link href="/admin/settings" passHref>
                             <div onClick={() => handleSelect('Settings')} className={`flex items-center p-2 mb-2 rounded-md cursor-pointer hover:text-black hover:bg-blue-100 ${selected === 'Settings' ? 'bg-blue-200' : ''}`}>
                                 <SettingsIcon />
