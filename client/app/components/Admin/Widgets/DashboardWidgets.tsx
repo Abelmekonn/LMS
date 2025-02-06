@@ -9,7 +9,7 @@ import { useGetOrderAnalyticsQuery, useGetUserAnalyticsQuery } from '@/redux/fea
 
 
 type Props = {
-    open: boolean;
+    open?: boolean;
     value?: number
 }
 

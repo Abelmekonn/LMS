@@ -29,7 +29,7 @@ const EditFqa: FC = () => {
             const errorData = error as any;
             toast.error(errorData?.data?.message || "Something went wrong");
         }
-    }, [data, isSuccess, error]);
+    }, [data, isSuccess, error,refetch]);
 
     const toggleQuestion = (id: string) => {
         setQuestions((prevQuestions) =>
@@ -84,7 +84,7 @@ const EditFqa: FC = () => {
     }
 
     return (
-        <div className="w-[90%] md:w-[80%] m-auto mt-[80px]">
+        <div className="w-[90%] md:w-[80%] m-auto my-[80px] ">
             <div className="mt-12">
                 <dl className="space-y-8">
                     {questions.map((q: any) => (
@@ -154,7 +154,7 @@ const EditFqa: FC = () => {
             <div
                 className={`${
                     styles.button
-                } !w-[100px] !min-h-[40px] !h-[40px] dark:text-white text-black bg-[#cccccc34] ${
+                } !w-[100px] !min-h-[40px] !h-[40px] dark:text-white text-black bg-[#cccccc34] items-center py-2 ${
                     areQuestionsUnchanged(data.layout.faq, questions) ||
                     isAnyQuestionEmpty(questions)
                         ? "!cursor-not-allowed"

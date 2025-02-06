@@ -53,10 +53,9 @@ const Login: FC<Props> = ({setRoute,setOpen,refetch}) => {
             if ("data" in error) {
                 const errorData = error as any;
                 toast.error(errorData.data.message);
-                console.error("Error Details:", errorData.data);
             }
         }
-    }, [isSuccess, error, setOpen]);
+    }, [isSuccess, error, setOpen, refetch]);
 
     const { errors, touched, values, handleChange, handleSubmit } = formik
 
@@ -142,7 +141,7 @@ const Login: FC<Props> = ({setRoute,setOpen,refetch}) => {
                     />
                 </div>
                 <p className="text-white mt-4 w-full text-center">
-                    Don't have an account? <span className="text-sm text-blue-500 hover:underline cursor-pointer" onClick={() => setRoute("sign-up")}>Signup</span>
+                    Don&apos;t have an account? <span className="text-sm text-blue-500 hover:underline cursor-pointer" onClick={() => setRoute("sign-up")}>Signup</span>
                 </p>
             </form>
             <br />

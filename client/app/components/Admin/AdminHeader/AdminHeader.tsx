@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, useRef } from 'react';
+import React, { FC, useState, useEffect, useRef, useCallback } from 'react';
 import { Box, IconButton, Typography, Avatar } from '@mui/material';
 import { Notifications } from '@mui/icons-material';
 import avatarDefault from '../../../../public/assets/avatar.jpg';
@@ -32,18 +32,16 @@ const AdminHeader: FC<Props> = ({ user }) => {
     const [updateNotificationStatus] = useUpdateNotificationStatusMutation();
     const [unreadNotifications, setUnreadNotifications] = useState<any[]>([]);
 
-    const audio = new Audio(
-        "https://res.cloudinary.com/detxtubji/video/upload/v1736174433/arpeggio-467_fjbgsc.mp3"
-    );
-
-    const playNotificationSound = () => {
+    const playNotificationSound = useCallback(() => {
+        const audio = new Audio(
+            "https://res.cloudinary.com/detxtubji/video/upload/v1736174433/arpeggio-467_fjbgsc.mp3"
+        );
         try {
             audio.play();
         } catch (error) {
             console.error("Audio playback error:", error);
         }
-    };
-
+    }, []);
     useEffect(() => {
         if (data && data.notification) {
             const unread = data.notification.filter((item: any) => item.status === "unread");
@@ -56,11 +54,11 @@ const AdminHeader: FC<Props> = ({ user }) => {
             refetch();
             playNotificationSound();
         });
-
+    
         return () => {
             socket.off("notification");
         };
-    }, [refetch]);
+    }, [playNotificationSound, refetch]);
 
     useEffect(() => {
         if (user.avatar) {
@@ -151,12 +149,7 @@ const AdminHeader: FC<Props> = ({ user }) => {
                     </Box>
                 )}
                 <ThemeSwitcher />
-                <Box className="flex items-center gap-2">
-                    <Avatar src={avatar.url} alt="User Avatar" />
-                    <Typography variant="body1" className="text-black dark:text-white">
-                        {user.name}
-                    </Typography>
-                </Box>
+                
             </Box>
         </Box>
     );

@@ -126,7 +126,7 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, refetch, data, us
                 toast.error("Something went wrong");
             }
         }
-    }, [isSuccess, error, answerCreationSuccess, answerCreationError, reviewCreationSuccess, reviewCreationError, reviewReplyCreationSuccess, reviewReplyCreationError, courseRefetch, refetch, activeVideo, data, user._id])
+    }, [isSuccess, error, answerCreationSuccess, answerCreationError, reviewCreationSuccess, reviewCreationError, reviewReplyCreationSuccess, reviewReplyCreationError, courseRefetch, refetch, activeVideo, data, user._id, user.role])
 
     const handleReplySubmit = () => {
         addAnswer({ answer, courseId: id, contentId: data[activeVideo]._id, questionId: questionId });
@@ -263,6 +263,7 @@ const CourseContentMedia = ({ id, activeVideo, setActiveVideo, refetch, data, us
                                 setAnswer={setAnswer}
                                 handleReplySubmit={handleReplySubmit}
                                 answerCreationLoading={answerCreationLoading}
+                                questionId={questionId}
                             />
                         </div>
                     </>
@@ -432,7 +433,8 @@ const CommentReply = ({
     answer,
     setAnswer,
     handleReplySubmit,
-    answerCreationLoading
+    answerCreationLoading, 
+    questionId
 }: any) => {
     return (
         <>
@@ -447,6 +449,7 @@ const CommentReply = ({
                             activeVideo={activeVideo}
                             answer={answer}
                             setAnswer={setAnswer}
+                            questionId={questionId}
                             setQuestionId={setQuestionId}
                             handleReplySubmit={handleReplySubmit}
                             answerCreationLoading={answerCreationLoading}
@@ -465,16 +468,12 @@ const CommentItem = ({
     item,
     answer,
     setAnswer,
-    setQuestionId,
     handleReplySubmit,
-    answerCreationLoading
+    answerCreationLoading,
+    questionId,
+    setQuestionId
 }: any) => {
     const [replyActive, setReplyActive] = useState(false);
-
-    const handleReplyClick = () => {
-        setQuestionId(item._id);
-        setReplyActive(!replyActive);
-    };
 
     return (
         <>
@@ -501,7 +500,10 @@ const CommentItem = ({
                 </div>
                 <div className="w-full flex gap-1">
                     <span className="text-black dark:text-[#ffffff83] cursor-pointer ml-16 md:pl-16"
-                        onClick={handleReplyClick}
+                        onClick={() => {
+                            setQuestionId(item._id);
+                            setReplyActive(!replyActive);
+                        }}
                     >
                         {!replyActive ? item?.questionReplies?.length !== 0 ? "All Replies" : "Reply" : "Hide Replies"}
                     </span>
@@ -510,8 +512,7 @@ const CommentItem = ({
                         {item?.questionReplies?.length}
                     </span>
                 </div>
-                {
-                    replyActive && (
+                {replyActive && questionId === item._id && (
                         <>
                             {item.questionReplies.map((item: any) => (
                                 <div className='w-full mt-5 flex ml-16 text-black dark:text-white' key={item._id}>

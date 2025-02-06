@@ -47,48 +47,31 @@ const AllInvoices = ({ isDashboard }: Props) => {
     }, [orderData, userData, courseData]);
 
     const columns = [
-        ...(isDashboard
-            ? [{ field: "id", headerName: "ID", flex: 0.3 }]
-            : [
-                {
-                    field: "id",
-                    headerName: "ID",
-                    flex: 1,
-                },
-                {
-                    field: "Email",
-                    headerName: "Full Email",
-                    flex: 1,
-                },
-            ]),
-        { field: "userName", headerName: "Name", flex: isDashboard ? 0.6 : 0.5 },
-        ...(isDashboard
-            ? []
-            : [
-                { field: "title", headerName: "Course Title", flex: 1 },
-                {
-                    field: "emailAction",
-                    headerName: "Email",
-                    flex: 1,
-                    renderCell: (params: any) =>
-                        params.row.userEmail ? (
-                            <a href={`mailto:${params.row.userEmail}`}>
-                                <AiOutlineMail
-                                    className={isDarkTheme ? "text-white" : "text-black"}
-                                    size={20}
-                                />
-                            </a>
-                        ) : null,
-                },
-            ]),
-        { field: "price", headerName: "Price", flex: 0.5 },
-        ...(isDashboard
-            ? [{ field: "createdAt", headerName: "Created At", flex: 1 }]
-            : []),
-    ];
+    { field: "id", headerName: "ID", flex: isDashboard ? 0.3 : 0.8, minWidth: 80 },
+    { field: "userName", headerName: "Name", flex: isDashboard ? 0.6 : 1, minWidth: 120 },
+    { field: "price", headerName: "Price", flex: 0.5, minWidth: 80 },
+    ...(isDashboard
+        ? [{ field: "createdAt", headerName: "Created At", flex: 1, minWidth: 150 }]
+        : [
+            { field: "title", headerName: "Course Title", flex: 1.2, minWidth: 150 },
+            { 
+                field: "emailAction", 
+                headerName: "Email", 
+                flex: 0.7, 
+                minWidth: 120,
+                renderCell: (params) =>
+                    params.row.userEmail ? (
+                        <a href={`mailto:${params.row.userEmail}`}>
+                            <AiOutlineMail className={isDarkTheme ? "text-white" : "text-black"} size={20} />
+                        </a>
+                    ) : null,
+            },
+        ]),
+];
+
 
     return (
-        <div className={!isDashboard ? "mt-[120px]" : "mt-[0px]"}>
+        <div className={!isDashboard ? "mt-[120px]" : "mt-[0px] w-[80%]"}>
             {isLoading ? (
                 <ThinLoader />
             ) : (
@@ -98,6 +81,7 @@ const AllInvoices = ({ isDashboard }: Props) => {
                         "& .MuiDataGrid-root": {
                             backgroundColor: isDarkTheme ? "#363a89" : "#363a89",
                             border: "none",
+                            minWidth: "600px", 
                         },
                         "& .MuiDataGrid-row": {
                             color: isDarkTheme ? "#fff" : "#000",

@@ -31,7 +31,7 @@ const EditHero: FC = () => {
             const errorData = error as any;
             toast.error(errorData?.data?.message || "Something went wrong");
         }
-    }, [data, isSuccess, error]);
+    }, [data, isSuccess, error, refetch]);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];

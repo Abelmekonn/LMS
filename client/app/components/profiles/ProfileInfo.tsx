@@ -88,7 +88,7 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
             <br /><br />
             <div className="w-full pl-6 md:pl-18">
                 <form onSubmit={handleSubmit}>
-                    <div className="md:w-[50%] m-auto block pb-4">
+                    <div className="md:w-[50%] m-auto block pb-4 text-black dark:text-white">
                         <div className="w-[100%]">
                             <label className="block pb-2">Full Name</label>
                             <input

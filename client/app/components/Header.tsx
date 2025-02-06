@@ -16,8 +16,8 @@ import toast from 'react-hot-toast';
 import { useLoadUserQuery } from '@/redux/features/api/apiSlice';
 
 type Props = {
-    open: boolean;
-    setOpen: (open: boolean) => void;
+    open?: boolean;
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     activeItem: number;
     route: string;
     setRoute: (route: string) => void;
@@ -33,10 +33,10 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, setRoute, open }) => {
     const [active, setActive] = useState(false);
     const [logout, setLogout] = useState(false);
     const [openSidebar, setOpenSidebar] = useState(false);
-    const {data:userData , isLoading , refetch} = useLoadUserQuery(undefined, {refetchOnMountOrArgChange: true});
+    const { data: userData, isLoading, refetch } = useLoadUserQuery(undefined, { refetchOnMountOrArgChange: true });
     const { data: sessionData } = useSession();
     const [socialAuth, { isSuccess, isError }] = useSocialAuthMutation();
-    const {} = useLogOutQuery(undefined, {
+    const { } = useLogOutQuery(undefined, {
         skip: !logout ? true : false,
     })
 
@@ -54,7 +54,7 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, setRoute, open }) => {
             toast.success("Login Successful");
         }
 
-        if(sessionData === null && !isLoading && !userData) {
+        if (sessionData === null && !isLoading && !userData) {
             setLogout(true)
         }
 
@@ -117,12 +117,12 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, setRoute, open }) => {
                             {userData ? (
                                 <Link href={"/profile"}>
                                     <Image
-                                        src={userData.avatar ? userData.avatar.url : avatar}
+                                        src={userData.user.avatar ? userData.user.avatar.url : avatar}
                                         alt="User Avatar"
-                                        className='w-[30px] h-[30px] rounded-full cursor-pointer'
+                                        className='w-[30px] h-[30px] rounded-full cursor-pointer  border-2 border-solid border-blue-500'
                                         width={30}
                                         height={30}
-                                        style={{ border: activeItem === 5 ? "2px solid #37a39a" : "none" }}
+                                        
                                         priority
                                     />
                                 </Link>
@@ -147,15 +147,27 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, setRoute, open }) => {
                     >
                         <div className='w-[70%] fixed z-[999999999] h-screen bg-white dark:bg-slate-900 dark:bg-opacity-90 top-0 right-0'>
                             <NavItems activeItem={activeItem} isMobile={true} />
-                            <HiOutlineUserCircle
-                                size={25}
-                                className='cursor-pointer ml-3 dark:text-white text-black'
-                                onClick={() => {
-                                    setRoute("login");
-                                    setOpen(true);
-                                    setOpenSidebar(false);
-                                }}
-                            />
+                            {userData ? (
+                                <Link href={"/profile"}>
+                                    <Image
+                                        src={userData.user.avatar ? userData.user.avatar.url : avatar}
+                                        alt="User Avatar"
+                                        className='w-[30px] h-[30px] ml-3 rounded-full border-2 border-solid border-blue-500 cursor-pointer'
+                                        width={30}
+                                        height={30}
+                                        priority
+                                    />
+                                </Link>
+                            ) : (
+                                <HiOutlineUserCircle
+                                    size={25}
+                                    className='hidden md:block ml-3 cursor-pointer dark:text-white text-black'
+                                    onClick={() => {
+                                        setRoute("login");
+                                        setOpen(true);
+                                    }}
+                                />
+                            )}
                             <br />
                             <br />
                             <p className='text-[16px] px-2 text-black dark:text-white'>

@@ -1,24 +1,25 @@
 'use client';
 
 import React, { FC, useState, useEffect, useRef } from 'react';
-import SideBarProfile from './SideBarProfile';
-import avatarPlaceholder from '../../../public/assets/avatar.jpg';
-import { useLogOutQuery } from '../../../redux/features/auth/authApi';
-import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation'; // Correct import for App Router
-import ProfileInfo from "./ProfileInfo";
-import ChangePassword from "./ChangePassword";
-import CourseCard from '../Course/CourseCard';
+import { useLogOutQuery } from '@/redux/features/auth/authApi';
 import { useGetUsersAllCoursesQuery } from '@/redux/features/courses/coursesApi';
+import SideBarProfile from './SideBarProfile';
+import ProfileInfo from './ProfileInfo';
+import ChangePassword from './ChangePassword';
+import CourseCard from '../Course/CourseCard';
+import avatarPlaceholder from '../../../public/assets/avatar.jpg';
+import { useLoadUserQuery } from '@/redux/features/api/apiSlice';
+
 interface User {
   name: string;
   email: string;
   avatar?: string;
-  courses: any[]; // Add courses property to User interface
+  courses: any[];
 }
 
 type Props = {
-  user: User; // Use the User type for better type safety
+  user: User;
 };
 
 const Profile: FC<Props> = ({ user }) => {
@@ -26,106 +27,79 @@ const Profile: FC<Props> = ({ user }) => {
   const [avatar, setAvatar] = useState<string>(avatarPlaceholder.src);
   const [active, setActive] = useState(1);
   const [courses, setCourses] = useState<string[]>([]);
-  const { refetch: logOut } = useLogOutQuery(undefined, { skip: true });
+  
+  const { refetch: logOut } = useLogOutQuery(undefined, { skip: false });
   const { data, isLoading } = useGetUsersAllCoursesQuery(undefined, {});
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  const router = useRouter(); // Correctly use useRouter for App Router
+  const { data: userData, isLoading: isUserLoading, refetch } = useLoadUserQuery(undefined, { refetchOnMountOrArgChange: true });
+  
+  const router = useRouter(); // Use router for redirection
+  
+  useEffect(() => {
+    if (!isUserLoading && !userData) {
+      router.push('/'); // Redirect if userData is missing
+    }
+  }, [isUserLoading, userData, router]);
 
   const logOutHandler = async () => {
     try {
-      await logOut(); // Remove empty object argument
+      await logOut();
       router.push('/');
     } catch (error) {
       console.error('Logout error:', error);
     }
   };
 
-  // Debounce function to optimize scroll event handling
-  const debounce = (func: Function, wait: number) => {
-    let timeout: NodeJS.Timeout;
-    return (...args: any) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func(...args), wait);
-    };
-  };
-
   useEffect(() => {
-    const handleScroll = () => {
-      setScroll(window.scrollY > 80);
-    };
-
-    const debouncedHandleScroll = debounce(handleScroll, 50);
-    window.addEventListener('scroll', debouncedHandleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', debouncedHandleScroll);
-    };
-  }, []);
-
-  useEffect(() => {
-    // Set avatar based on the user's data
     if (user.avatar) {
       setAvatar(user.avatar);
     }
   }, [user]);
 
   useEffect(() => {
-    if (data && data?.data) {
+    if (data?.data) {
       const filterCourses = user.courses
         .map((userCourse: any) => data.data.find((course: any) => course._id === userCourse._id))
         .filter((course: any) => course != undefined);
       setCourses(filterCourses);
     }
-  }, [data]);
+  }, [data, user.courses]);
 
   return (
-    <div className="w-[85%] flex mx-auto my-20">
-      <div
-        className={`w-[60px] md:w-[310px] h-[450px] dark:bg-slate-900 bg-opacity-90 border dark:border-[#0000001d] border-[#ffffff6d] rounded-[5px] shadow-xl dark:shadow-sm  sticky ${scroll ? "top-[120px]" : "top-[30px]"} left-[30px]`}
-      >
-        <SideBarProfile
-          user={user}
-          active={active}
-          avatar={avatar}
-          setActive={setActive}
-          logOutHandler={logOutHandler}
-        />
-      </div>
-      {active === 1 && (
-        <div className='w-full h-full bg-transparent '>
-          <ProfileInfo
-            user={user}
-            avatar={avatar}
-          />
-        </div>
-      )}
-      {
-        active === 2 && (
-          <div className='w-full h-full bg-transparent'>
-            <ChangePassword />
+    <>
+      {userData ? (
+        <div className="w-[85%] flex mx-auto my-20">
+          <div
+            className={`w-[60px] md:w-[310px] h-[450px] dark:bg-slate-900 bg-opacity-90 border dark:border-[#0000001d] border-[#ffffff6d] rounded-[5px] shadow-xl dark:shadow-sm sticky ${scroll ? "top-[120px]" : "top-[30px]"} left-[30px]`}
+          >
+            <SideBarProfile
+              user={user}
+              active={active}
+              avatar={avatar}
+              setActive={setActive}
+              logOutHandler={logOutHandler}
+            />
           </div>
-        )
-      }
-      {
-        active === 3 && (
-          <div className='w-full pl-7 px-2 md:px-10 md:pl-8'>
-            <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[35px] lg:grid-cols-3 lg:gap-[35px] xl:grid-col-3 xl:gap-[45px] px-10">
-              {courses && 
-                courses.map((item: any, index: number) => (
-                  <CourseCard item={item} key={index} user={user} isProfile={true} />
-                ))
-              }
+
+          {active === 1 && <ProfileInfo user={user} avatar={avatar} />}
+          {active === 2 && <ChangePassword />}
+          {active === 3 && (
+            <div className="w-full pl-7 px-2 md:px-10 md:pl-8">
+              <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[35px] lg:grid-cols-3 lg:gap-[35px] xl:grid-col-3 xl:gap-[45px] px-10">
+                {courses.length > 0 ? (
+                  courses.map((item, index) => (
+                    <CourseCard item={item} key={index} user={user} isProfile={true} />
+                  ))
+                ) : (
+                  <h1 className="text-center text-[18px] font-Poppins">
+                    You don&apos;t have any purchased courses!
+                  </h1>
+                )}
+              </div>
             </div>
-            {courses.length === 0 && (
-              <h1 className="text-center text-[18px] font-Poppins">
-                You don&apos;t have any purchased courses!
-              </h1>
-            )}
-          </div>
-        )
-      }
-    </div>
+          )}
+        </div>
+      ) : null}
+    </>
   );
 };
 

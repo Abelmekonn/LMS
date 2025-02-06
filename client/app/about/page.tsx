@@ -6,8 +6,8 @@ import About from './About';
 import Footer from '../components/Footer';
 
 type Props = {
-    open: boolean;
-    setOpen: (open: boolean) => void;
+    open?: boolean;
+    setOpen: (open?: boolean) => void;
     activeItem: number;
     route: string;
     setRoute: (route: string) => void;

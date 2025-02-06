@@ -29,7 +29,7 @@ const EditCategories: FC<Props> = () => {
             const errorData = error as any;
             toast.error(errorData?.data?.message || "Something went wrong");
         }
-    }, [data, isSuccess, error]);
+    }, [data, isSuccess, error, refetch]);
 
     const handleCategoriesAdd = (id: any, value: string) => {
         setCategories((prevCategories) =>
@@ -80,9 +80,9 @@ const EditCategories: FC<Props> = () => {
                     <h1 className={`${styles.title}`}>All Categories</h1>
                     {categories.map((item, index) => (
                         <div className="p-3" key={item._id || index}>
-                            <div className="flex items-center w-full justify-center">
+                            <div className="flex items-center w-full justify-center gap-2">
                                 <input
-                                    className={`${styles.input} !w-[unset] !border-none !text-[20px]`}
+                                    className={`${styles.input} !w-[unset] !border-none !text-[20px] shadow-lg dark:shadow-slate-800 px-2`}
                                     value={item.title}
                                     onChange={(e) =>
                                         handleCategoriesAdd(item._id, e.target.value)
@@ -101,22 +101,23 @@ const EditCategories: FC<Props> = () => {
                         </div>
                     ))}
                     <br />
-                    <IoMdAddCircleOutline
-                        className="dark:text-white text-black text-[25px] cursor-pointer"
-                        onClick={newCategoriesHandler}
-                    />
+                    <div className="flex justify-center">
+                        <IoMdAddCircleOutline
+                            className="dark:text-white text-black text-[25px] cursor-pointer self-center"
+                            onClick={newCategoriesHandler}
+                        />
+                    </div>
                     <div
                         className={`${styles.button} !w-[100px] !min-h-[40px] dark:text-white text-black bg-[#cccccc34]
-                            ${
-                                !areCategoriesChanged(data.layout.categories, categories) ||
+                            ${!areCategoriesChanged(data.layout.categories, categories) ||
                                 isAnyCategoriesTitleEmpty(categories)
-                                    ? "!cursor-not-allowed"
-                                    : "!cursor-pointer !bg-[#42d383]"
+                                ? "!cursor-not-allowed"
+                                : "!cursor-pointer !bg-[#42d383]"
                             }
                             !rounded absolute bottom-12 right-12`}
                         onClick={
                             !areCategoriesChanged(data.layout.categories, categories) ||
-                            isAnyCategoriesTitleEmpty(categories)
+                                isAnyCategoriesTitleEmpty(categories)
                                 ? () => null
                                 : editCategoriesHandler
                         }

@@ -51,7 +51,7 @@ const AllUsers: FC<Props> = ({ isTeam }) => {
             toast.success("User deleted successfully");
             setOpen(false);
         }
-    }, [updateError, updateSuccess, deleteSuccess]);
+    }, [updateError, updateSuccess, deleteSuccess, refetch]);
 
     const columns = [
         { field: 'id', headerName: 'ID', flex: 0.5 },

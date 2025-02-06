@@ -27,7 +27,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
                 </header>
 
                 {/* Main Content */}
-                <main className="flex-1 overflow-auto p-4">
+                <main className="flex-1 overflow-auto ml-10 md:ml-0 p-4">
                     {children}
                 </main>
             </div>

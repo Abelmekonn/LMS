@@ -10,7 +10,6 @@ type Props = {}
 const CourseAnalytics = (props: Props) => {
   const { data, isLoading, isError } = useGetCourseAnalyticsQuery({})
 
-  console.log(data)
 
   const analyticsData : any = [];
   
@@ -35,7 +34,7 @@ const CourseAnalytics = (props: Props) => {
                 Last 12 months analytics data{""}
               </p>
             </div>
-            <div className='w-full h-[90%] flex items-center justify-center'>
+            <div className='w-full h-auto mt-10 flex items-center justify-center'>
               <ResponsiveContainer width="90%" height="50%" >
                 <BarChart width={150} height={300} data={analyticsData}>
                   <XAxis dataKey="name">

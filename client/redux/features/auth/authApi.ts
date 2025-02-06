@@ -89,20 +89,13 @@ export const authApi = apiSlice.injectEndpoints({
                 method: "GET",
                 credentials: "include", // Ensures cookies are included
             }),
-            async onCacheEntryAdded(arg, { cacheEntryRemoved, dispatch }) {
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
                 try {
-                    // Wait for the query to resolve
-                    await cacheEntryRemoved;
-
-                    // Dispatch the logout action
-                    dispatch(userLogout());
-
-                    // Optional: Log success or provide feedback
+                    await queryFulfilled;
+                    dispatch(userLogout()); // Clear user state on success
                     console.log("Logout successful");
-                } catch (error: any) {
-                    // Handle errors gracefully
+                } catch (error) {
                     console.error("Logout Error:", error);
-                    // Optional: Show an error message to the user
                 }
             },
         }),

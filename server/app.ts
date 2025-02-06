@@ -10,6 +10,7 @@ import orderRouter from "./routes/order.route";
 import notificationRouter from "./routes/notification.route";
 import analyticsRouter from "./routes/analytic.route";
 import layoutRoute from "./routes/layout.route";
+import rateLimit from "express-rate-limit";
 
 dotenv.config();
 
@@ -51,6 +52,15 @@ app.all("*", (req: Request, res: Response, next: NextFunction) => {
     err.statusCode = 404;
     next(err);
 });
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, 
+	limit: 100, 
+	standardHeaders: 'draft-8', 
+	legacyHeaders: false, 
+})
+
+// Apply the rate limiting middleware to all requests.
+app.use(limiter)
 
 // Error middleware
 app.use(ErrorMiddleware);
