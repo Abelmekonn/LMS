@@ -8,11 +8,11 @@ import { useLoadUserQuery } from '../../../redux/features/api/apiSlice';
 import toast from 'react-hot-toast';
 
 type Props = {
-    avatar: string | null;
+    avatar: string ;
     user: {
         name: string;
         email: string;
-        avatar?: string;
+        avatar?: { url: string }; // Change this line to reflect the correct structure
     };
 };
 
@@ -64,7 +64,7 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
             <div className='w-full flex justify-center'>
                 <div className="relative">
                     <Image
-                        src={user.avatar ? user.avatar.url : avatarDefault}
+                        src={user.avatar ? user.avatar?.url : avatarDefault}
                         alt='User Avatar'
                         className='w-[120px] h-[120px] cursor-pointer border-[3px] border-[#37a39a] rounded-full'
                         width={120}

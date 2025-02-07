@@ -5,18 +5,10 @@ import Header from '../components/Header'
 import About from './About';
 import Footer from '../components/Footer';
 
-type Props = {
-    open?: boolean;
-    setOpen: (open?: boolean) => void;
-    activeItem: number;
-    route: string;
-    setRoute: (route: string) => void;
-};
-
-const Page = (props: Props) => {
+const Page = () => {
     const [open, setOpen] = useState(false);
     const [activeItem, setActiveItem] = useState(5);
-    const [route, setRoute] = useState("Login")
+    const [route, setRoute] = useState("Login");
 
     return (
         <div>
@@ -35,7 +27,7 @@ const Page = (props: Props) => {
             <About />
             <Footer />
         </div> 
-    )
-}
+    );
+};
 
-export default Page
+export default Page;

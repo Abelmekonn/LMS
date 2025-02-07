@@ -59,7 +59,7 @@ const AllInvoices = ({ isDashboard }: Props) => {
                 headerName: "Email", 
                 flex: 0.7, 
                 minWidth: 120,
-                renderCell: (params) =>
+                renderCell: (params: { row: { userEmail: any; }; }) =>
                     params.row.userEmail ? (
                         <a href={`mailto:${params.row.userEmail}`}>
                             <AiOutlineMail className={isDarkTheme ? "text-white" : "text-black"} size={20} />

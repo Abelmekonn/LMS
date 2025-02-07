@@ -22,6 +22,11 @@ type Props = {
     isTeam: boolean;
 };
 
+type ErrorResponse = {
+    message: string;
+    // Add other properties if needed
+};
+
 const AllUsers: FC<Props> = ({ isTeam }) => {
     const [active, setActive] = useState(false);
     const [open, setOpen] = useState(false);
@@ -36,19 +41,25 @@ const AllUsers: FC<Props> = ({ isTeam }) => {
 
     useEffect(() => {
         if (updateError) {
-            toast.error(updateError.data?.message || "Failed to update user role");
+            // Check if updateError is of type FetchBaseQueryError
+            if ('data' in updateError) {
+                const errorData = updateError.data as ErrorResponse; // Type assertion
+                toast.error(errorData.message || "Failed to update user role");
+            } else {
+                toast.error("Failed to update user role");
+            }
         }
-
+    
         if (updateSuccess) {
             refetch();
-            toast.success("User role updated successfully");
+            toast.success("User  role updated successfully");
             setActive(false);
             resetForm();
         }
-
+    
         if (deleteSuccess) {
             refetch();
-            toast.success("User deleted successfully");
+            toast.success("User  deleted successfully");
             setOpen(false);
         }
     }, [updateError, updateSuccess, deleteSuccess, refetch]);

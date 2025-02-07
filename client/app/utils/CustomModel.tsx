@@ -5,11 +5,10 @@ type Props = {
     open: boolean;
     setOpen: (open: boolean) => void;
     activeItem: number | string; // Replace with a more specific type if needed
-    component: React.ComponentType<{ setOpen: (open: boolean) => void; setRoute: (route: string) => void; refetch?: any }>;
+    component: React.ComponentType<{ setOpen: (open: boolean) => void; setRoute: (route: string) => void; refetch?: () => void }>; // Make refetch optional
     setRoute: (route: string) => void;
-    refetch?: any; // Optional refetch function
+    refetch?: () => void; // Optional refetch function
 };
-
 const CustomModel: FC<Props> = ({ open, setOpen, setRoute, component: Component, activeItem,refetch }) => {
     return (
         <Modal

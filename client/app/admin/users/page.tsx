@@ -16,7 +16,7 @@ const page = (props:Props) => {
                 keywords="ELearning, education"
             />
             <AdminLayout >
-                <AllUsers />
+                <AllUsers isTeam={true}/>
             </AdminLayout>
         </AdminProtected>
     )

@@ -8,15 +8,18 @@ type CourseInfoType = {
     price: string;
     estimatePrice: string;
     tags: string;
-    categories: string
+    categories: string;
     level: string;
     demoUrl: string;
-    thumbnail: string | null;
-}
+    thumbnail: string;
+    videoLength: number; // Add this line
+};
+
+
 
 type Props = {
     courseInfo: CourseInfoType;
-    setCourseInfo: (CourseInfoType: CourseInfoType) => void;  // Use React's Dispatch typing for state setter
+    setCourseInfo: Dispatch<SetStateAction<CourseInfoType>>;
     active: number;
     setActive: (active: number) => void;
 }

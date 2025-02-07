@@ -14,8 +14,8 @@ type Props = {}
 const Page = (props: Props) => {
     const searchParams = useSearchParams()
     const search = searchParams?.get('title')
-    const { data, isLoading } = useGetUsersAllCoursesQuery({})
-    const { data: categoryData, isLoading: categoryLoading } = useGetHeroDataQuery("categories", {
+    const { data, isLoading, error } = useGetUsersAllCoursesQuery({})
+    const { data: categoryData, isLoading: categoryLoading, error: categoryError } = useGetHeroDataQuery("categories", {
             refetchOnMountOrArgChange: true,
         });
     const [route, setRoute ] = useState("Login")
@@ -67,72 +67,71 @@ const Page = (props: Props) => {
 
     const categories = categoryData?.layout?.categories
 
+    if (isLoading || categoryLoading) {
+        return <Loader />
+    }
+
+    if (error || categoryError) {
+        return <div>Error: {error.message || categoryError.message}</div>
+    }
 
     return (
         <div className="min-h-screen">
-            {
-                isLoading ? (
-                    <Loader />
-                ):(
-                    <>
-                        <Header 
-                            route={route}
-                            open={open}
-                            setOpen={setOpen}
-                            activeItem={activeItem}
-                            setRoute={setRoute}
-                        />
-                        <div className="w-[95%] md:w-[85%] m-auto min-h-[70vh]">
-                            <Heading 
-                                title={"All courses -ELearning"}
-                                description={"ELearning is a platform for students to learn and get help from teachers"}
-                                keywords={"Programming,MERN,Redux,Machine Learning"}
-                            />
-                            <br />
-                            <div className="w-full flex items-center flex-wrap">
+            <Header 
+                route={route}
+                open={open}
+                setOpen={setOpen}
+                activeItem={activeItem}
+                setRoute={setRoute}
+            />
+            <div className="w-[95%] md:w-[85%] m-auto min-h-[70vh]">
+                <Heading 
+                    title={"All courses -ELearning"}
+                    description={"ELearning is a platform for students to learn and get help from teachers"}
+                    keywords={"Programming,MERN,Redux,Machine Learning"}
+                />
+                <br />
+                <div className="w-full flex items-center flex-wrap">
+                    <div
+                        className={`h-[35px] m-3 px-3 rounded-[30px] flex items-center justify-center font-Poppins cursor-pointer ${category === "All" ? "bg-[crimson]" : "bg-[#5050cb] "}`}
+                        onClick={() => setCategory("All")}
+                    >
+                        All
+                    </div>
+                    {
+                        categories?.map((item: any, index: number) => (
+                            <div key={index}>
                                 <div
-                                    className={`h-[35px] m-3 px-3 rounded-[30px] flex items-center justify-center font-Poppins cursor-pointer ${category === "All" ? "bg-[crimson]" : "bg-[#5050cb] "}`}
-                                    onClick={() => setCategory("All")}
+                                    className={`h-[35px] ${
+                                        category === item.title ? "bg-[crimson]" : "bg-[#5050cb]"
+                                    } m-3 px-3 rounded-[30px] flex items-center justify-center font-Poppins cursor-pointer`}
+                                    onClick={() => setCategory(item.title)}
                                 >
-                                    All
+                                    {item.title}
                                 </div>
-                                {
-                                    categories?.map((item: any, index: number) => (
-                                        <div key={index}>
-                                            <div
-                                                className={`h-[35px] ${
-                                                    category === item.title ? "bg-[crimson]" : "bg-[#5050cb]"
-                                                } m-3 px-3 rounded-[30px] flex items-center justify-center font-Poppins cursor-pointer`}
-                                                onClick={() => setCategory(item.title)}
-                                            >
-                                                {item.title}
-                                            </div>
-                                        </div>
-                                    ))}
                             </div>
-                            {
-                                courses && courses.length === 0 && (
-                                    <p className={`${styles.label} justify-center min-h-[50vh] flex items-center`}>
-                                        {searchTerm ? `No course found with the title ${searchTerm}` : "No course found in this category . Please Try another one"}
-                                    </p>
-                                )
-                            }
-                            <br /><br />
-                            <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] 2xl:grid-cols-4 2xl:gap-[30px]">
-                                {courses && 
-                                    courses.map((item : any , index : number) => (
-                                        <CourseCard 
-                                            key={index}
-                                            item={item}
-                                            isProfile={false}
-                                        />
-                                    ))
-                                }
-                            </div>
-                        </div>
-                    </>
-                )
-            }
+                        ))}
+                </div>
+                {
+                    courses && courses.length === 0 && (
+                        <p className={`${styles.label} justify-center min-h-[50vh] flex items-center`}>
+                            {searchTerm ? `No course found with the title ${searchTerm}` : "No course found in this category . Please Try another one"}
+                        </p>
+                    )
+                }
+                <br /><br />
+                <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[25px] lg:grid-cols-3 lg:gap-[25px] 2xl:grid-cols-4 2xl:gap-[30px]">
+                    {courses && 
+                        courses.map((item : any , index : number) => (
+                            <CourseCard 
+                                key={index}
+                                item={item}
+                                isProfile={false}
+                            />
+                        ))
+                    }
+                </div>
+            </div>
         </div>
     )
 }

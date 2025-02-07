@@ -17,8 +17,9 @@ type CourseInfo = {
     tags: string;
     level: string;
     demoUrl: string;
-    thumbnail: string | null;
+    thumbnail: string ; // Allow thumbnail to be null
     categories: string;
+    videoLength: number; // Add this line
 };
 
 type CourseContentData = {
@@ -75,8 +76,9 @@ const EditCourse: React.FC<Props> = ({ id }) => {
         tags: "",
         level: "",
         demoUrl: "",
-        thumbnail: null,
-        categories:""
+        thumbnail: "",
+        categories:"",
+        videoLength:0
     });
 
     const [benefits, setBenefits] = useState([{ title: "" }]);
@@ -109,6 +111,7 @@ const EditCourse: React.FC<Props> = ({ id }) => {
                     demoUrl: editCourseData.demoUrl,
                     thumbnail: editCourseData?.thumbnail?.url,
                     categories:editCourseData?.categories,
+                    videoLength:editCourseData?.videoLength
                 });
                 setBenefits(editCourseData.benefits);
                 setPrerequisites(editCourseData.prerequisites);

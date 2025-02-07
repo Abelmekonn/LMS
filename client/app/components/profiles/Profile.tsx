@@ -14,7 +14,7 @@ import { useLoadUserQuery } from '@/redux/features/api/apiSlice';
 interface User {
   name: string;
   email: string;
-  avatar?: string;
+  avatar?: { url: string };
   courses: any[];
 }
 
@@ -51,7 +51,7 @@ const Profile: FC<Props> = ({ user }) => {
 
   useEffect(() => {
     if (user.avatar) {
-      setAvatar(user.avatar);
+      setAvatar(user.avatar.url);
     }
   }, [user]);
 
@@ -87,7 +87,7 @@ const Profile: FC<Props> = ({ user }) => {
               <div className="grid grid-cols-1 gap-[20px] md:grid-cols-2 md:gap-[35px] lg:grid-cols-3 lg:gap-[35px] xl:grid-col-3 xl:gap-[45px] px-10">
                 {courses.length > 0 ? (
                   courses.map((item, index) => (
-                    <CourseCard item={item} key={index} user={user} isProfile={true} />
+                    <CourseCard item={item} key={index}  isProfile={true} />
                   ))
                 ) : (
                   <h1 className="text-center text-[18px] font-Poppins">
