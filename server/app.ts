@@ -44,8 +44,7 @@ app.use("/api/v1",
     notificationRouter,
     analyticsRouter,
     layoutRoute);
-
-
+    
 // Handle unknown routes
 app.all("*", (req: Request, res: Response, next: NextFunction) => {
     const err = new Error(`Route ${req.originalUrl} not found`) as any;
