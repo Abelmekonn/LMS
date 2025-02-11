@@ -1,11 +1,6 @@
-import NextAuth, { NextAuthOptions, Session, User as NextAuthUser  } from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
-
-// Extend the NextAuth User type
-interface User extends NextAuthUser  {
-    accessToken?: string; // Add accessToken property
-}
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -19,30 +14,30 @@ export const authOptions: NextAuthOptions = {
         }),
     ],
     secret: process.env.SECRET,
-    debug: process.env.NODE_ENV === 'development',
+    debug: process.env.NODE_ENV === "development",
 
     callbacks: {
         async jwt({ token, user }) {
-            // Add user information to the token
             if (user) {
-                token.accessToken = user.accessToken; // Now TypeScript recognizes accessToken
+                token.accessToken = user.accessToken ?? ""; // Ensure accessToken is a string
             }
             return token;
         },
         async session({ session, token }) {
-            // Add token information to the session
-            if (token) {
-                session.accessToken = token.accessToken; // Now TypeScript recognizes accessToken
+            if (typeof token.accessToken === "string") {
+                session.accessToken = token.accessToken; // Assign only if it's a string
+            } else {
+                session.accessToken = ""; // Default to empty string to prevent errors
             }
             return session;
         },
     },
 
     pages: {
-        signIn: '/auth/signin',
-        signOut: '/auth/signout',
-        error: '/auth/error',
-        verifyRequest: '/auth/verify-request',
+        signIn: "/auth/signin",
+        signOut: "/auth/signout",
+        error: "/auth/error",
+        verifyRequest: "/auth/verify-request",
     },
 };
 
