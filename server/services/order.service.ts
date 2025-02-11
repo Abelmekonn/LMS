@@ -12,11 +12,12 @@ export const newOrder = CatchAsyncError(async (data:any,res:Response, next:NextF
     });
 })
 
-// get all orders
-// Get all orders
-export const getAllOrdersService = async (req: Request, res: Response, next: NextFunction) => {
+export const getAllOrdersService = async ( // Ensure this matches getOrders
+    res: Response,
+    next: NextFunction
+) => {
     try {
-        const orders = await OrderModel.find().sort({ created: -1 });
+        const orders = await OrderModel.find().sort({ createdAt: -1 });
         res.status(200).json({
             success: true,
             orders

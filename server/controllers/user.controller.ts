@@ -117,7 +117,7 @@ export const loginUser = CatchAsyncError(async (req: Request, res: Response, nex
     }
 
     // Remove the password field before sending the token or response
-    user.password = undefined;
+    user.password = "";
 
     sendToken(user, 200, res);
 });

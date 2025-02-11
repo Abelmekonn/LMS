@@ -13,7 +13,7 @@ require("dotenv").config();
 
 // Initialize Stripe
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-export interface IOrder {
+export interface IOrderInput {
     userId: Types.ObjectId;
     courseId: string;
     payment_info?: {
@@ -55,7 +55,7 @@ export const createOrder = CatchAsyncError(async (req: Request, res: Response, n
         userId: user._id,
         courseId,
         payment_info,
-    } as IOrder;
+    } as IOrderInput;
 
     // console.log("data", data);
 
@@ -122,7 +122,7 @@ export const createOrder = CatchAsyncError(async (req: Request, res: Response, n
 // Get All Orders
 export const getOrders = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
     try {
-        await getAllOrdersService(req, res, next);
+        await getAllOrdersService(res, next);
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 400));
     }
