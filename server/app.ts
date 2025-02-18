@@ -24,9 +24,14 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use(cors({
-    origin: ["http://localhost:3000"], // Update with your client's URL
-    credentials: true, // Allow credentials (cookies)
+    origin: [
+        "http://localhost:3000",  // ✅ Local frontend
+        "https://your-deployed-frontend.com" // ✅ Hosted frontend
+    ],
+    credentials: true,  // ✅ Required for cookies
+    methods: ["GET", "POST", "PUT", "DELETE"],
 }));
+
 
 // Test route
 app.get("/test", (req: Request, res: Response, next: NextFunction) => {

@@ -185,8 +185,8 @@ export const updateAccessToken = CatchAsyncError(async (req: Request, res: Respo
     req.user = user;
 
     // Set new tokens
-    res.cookie("access_token", accessToken, { httpOnly: true, sameSite: 'strict', maxAge: 3600000 }); // Example: 1 hour
-    res.cookie("refresh_token", newRefreshToken, { httpOnly: true, sameSite: 'strict', maxAge: 604800000 }); // Example: 7 days
+    res.cookie("access_token", accessToken, { httpOnly: true, sameSite: 'none', secure: true, maxAge: 3600000 }); // Example: 1 hour
+    res.cookie("refresh_token", newRefreshToken, { httpOnly: true, sameSite: 'none', maxAge: 604800000 }); // Example: 7 days
 
     await redis.set(user._id, JSON.stringify(user), "EX", 604800); // 7 days
 
