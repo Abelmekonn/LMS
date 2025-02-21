@@ -10,7 +10,6 @@ interface ProtectedProps {
 export default function Protected({ children }: ProtectedProps) {
     const isAuthenticated = useAuth();
 
-
     // If not authenticated, redirect to the home page
     if (!isAuthenticated) {
         toast.error("Login To Access!")

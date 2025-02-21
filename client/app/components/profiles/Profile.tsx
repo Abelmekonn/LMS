@@ -2,7 +2,7 @@
 
 import React, { FC, useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation'; // Correct import for App Router
-import { useLogOutQuery } from '@/redux/features/auth/authApi';
+import { useLogOutMutation } from '@/redux/features/auth/authApi';
 import { useGetUsersAllCoursesQuery } from '@/redux/features/courses/coursesApi';
 import SideBarProfile from './SideBarProfile';
 import ProfileInfo from './ProfileInfo';
@@ -28,7 +28,7 @@ const Profile: FC<Props> = ({ user }) => {
   const [active, setActive] = useState(1);
   const [courses, setCourses] = useState<string[]>([]);
   
-  const { refetch: logOut } = useLogOutQuery(undefined, { skip: false });
+  const [logOut] = useLogOutMutation({});
   const { data, isLoading } = useGetUsersAllCoursesQuery(undefined, {});
   const { data: userData, isLoading: isUserLoading, refetch } = useLoadUserQuery(undefined, { refetchOnMountOrArgChange: true });
   

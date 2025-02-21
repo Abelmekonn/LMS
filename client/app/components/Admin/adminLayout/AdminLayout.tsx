@@ -20,7 +20,7 @@ const AdminLayout: FC<AdminLayoutProps> = ({ children }) => {
             </aside>
 
             {/* Main Content Area */}
-            <div className="flex flex-col flex-1 h-screen">
+            <div className="flex flex-col flex-1 h-screen w-fit overflow-x-hidden">
                 {/* Header */}
                 <header className="sticky top-0 z-10 bg-white dark:bg-gray-800 shadow-md">
                     <AdminHeader user={user} />

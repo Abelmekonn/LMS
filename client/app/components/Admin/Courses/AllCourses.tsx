@@ -1,91 +1,32 @@
-'use client'; // Indicates that this component will use client-side rendering
-
+'use client';
 import React, { useEffect, useState } from 'react';
-import { DataGrid } from "@mui/x-data-grid";
-import { Box, Button } from '@mui/material';
-import { AiOutlineDelete } from 'react-icons/ai';
-import { useTheme } from 'next-themes'; // Importing useTheme hook for theme management
-import { FiEdit2 } from 'react-icons/fi';
-import Loader from '../../loader';
+import { useTheme } from 'next-themes'; 
+import { Button } from '@/components/ui/button'; // ShadCN Button component
 import { useDeleteCourseMutation, useGetAllCoursesQuery } from '../../../../redux/features/courses/coursesApi';
 import moment from 'moment';
 import toast from 'react-hot-toast';
-import Link from 'next/link';
+import { AiOutlineDelete } from 'react-icons/ai';
+import { FiEdit2 } from 'react-icons/fi';
+import Loader from '../../loader'; // Assuming Loader is a separate component
+import Link from 'next/link'; // For edit course link
 
 type Props = {};
 
 const AllCourses = (props: Props) => {
-    const { theme } = useTheme(); // Get current theme
+    const { theme } = useTheme(); 
     const { isLoading, data, refetch } = useGetAllCoursesQuery({}, { refetchOnMountOrArgChange: true });
     const [deleteCourse, { isSuccess, error }] = useDeleteCourseMutation();
     const [open, setOpen] = useState(false);
     const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null);
 
-
-    // Defining the columns for the DataGrid
-    const columns = [
-        {
-            field: 'id',
-            headerName: 'ID',
-            flex: 0.5,
-            renderCell: (params: any) => <span className='dark:text-white'>{params.value}</span>,
-        },
-        {
-            field: 'title',
-            headerName: 'Course Title',
-            flex: 1,
-            renderCell: (params: any) => <span className='dark:text-white'>{params.value}</span>,
-        },
-        {
-            field: 'ratings',
-            headerName: 'Rating',
-            flex: 0.5,
-            renderCell: (params: any) => <span className='dark:text-white'>{params.value}</span>,
-        },
-        {
-            field: 'purchase',
-            headerName: 'Purchase',
-            flex: 0.5,
-            renderCell: (params: any) => <span className='dark:text-white'>{params.value}</span>,
-        },
-        {
-            field: 'created_at',
-            headerName: 'Created At',
-            flex: 0.5,
-            renderCell: (params: any) => <span className='dark:text-white'>{moment(params.value).format('LL')}</span>,
-        },
-        {
-            field: 'edit',
-            headerName: 'Edit',
-            flex: 0.2,
-            renderCell: (params: any) => (
-                <a href={`/admin/edit-course/${params.row.id}`} className='flex h-full'>
-                    <FiEdit2 className={theme === 'dark' ? 'text-white self-center' : 'text-black self-center '} size={20} />
-                </a>
-            ),
-        },
-        {
-            field: 'actions',
-            headerName: 'Delete',
-            flex: 0.2,
-            renderCell: (params: any) => (
-                <Button onClick={() => handleOpenDeleteModal(params.id)}>
-                    <AiOutlineDelete className="text-black dark:text-white" size={20} />
-                </Button>
-            ),
-        }
-    ];
-
-
-
     const handleOpenDeleteModal = (id: number) => {
-        setSelectedCourseId(id); // Set the selected course ID for deletion
-        setOpen(true); // Open the confirmation modal
+        setSelectedCourseId(id); 
+        setOpen(true); 
     };
 
     const handleDelete = async () => {
         if (selectedCourseId) {
-            await deleteCourse(selectedCourseId); // Trigger the delete mutation with selected course ID
+            await deleteCourse(selectedCourseId);
         }
     };
 
@@ -93,7 +34,7 @@ const AllCourses = (props: Props) => {
         if (isSuccess) {
             refetch();
             toast.success("Course deleted successfully");
-            setOpen(false); // Close the modal after deletion
+            setOpen(false); 
         }
 
         if (error) {
@@ -107,7 +48,7 @@ const AllCourses = (props: Props) => {
     const rows = Array.isArray(data?.courses)
         ? data.courses.map((item: any) => ({
             id: item._id,
-            title: item.name, // Field mappings according to your data
+            title: item.name,
             ratings: item.ratings,
             purchase: item.purchased,
             created_at: item.createdAt,
@@ -119,67 +60,55 @@ const AllCourses = (props: Props) => {
             {isLoading ? (
                 <Loader />
             ) : (
-                <Box m="20px">
-                    <Box
-                        m="40px 0 0"
-                        height="80vh"
-                        className="dark:text-white text-black"
-                    >
-                        <DataGrid
-                            checkboxSelection
-                            rows={rows}
-                            columns={columns}
-                            sx={{
-                                "& .MuiDataGrid-root": {
-                                    backgroundColor: theme === 'dark' ? "#1F2A40" : "#F2F0F0",
-                                    border: "none",
-                                },
-                                "& .MuiDataGrid-row": {
-                                    color: theme === 'dark' ? '#fff' : '#000',
-                                    borderBottom: theme === 'dark' ? "1px solid #ffffff30" : "1px solid #ccc",
-                                },
-                                "& .MuiDataGrid-cell": {
-                                    borderBottom: "none",
-                                },
-                                "& .MuiDataGrid-columnHeaders": {
-                                    backgroundColor: "#363a89",
-                                    color: theme === 'dark' ? "#000" : "#000",
-                                    borderBottom: "none",
-                                },
-                                "& .MuiDataGrid-virtualScroller": {
-                                    backgroundColor: theme === 'dark' ? "#1F2A40" : "#F2F0F0",
-                                },
-                                "& .MuiDataGrid-footerContainer": {
-                                    backgroundColor: "#363a89",
-                                    color: "#F1F1F1",
-                                    borderTop: "none",
-                                },
-                                "& .MuiCheckbox-root": {
-                                    color: theme === 'dark' ? '#b7ebde' : '#000',
-                                },
-                                "& .MuiTablePagination-root": {
-                                    color: "#F1F1F1",
-                                },
-                                "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-                                    color: theme === 'dark' ? "#fff" : "#000",
-                                },
-                            }}
-                        />
-                    </Box>
+                <div className="overflow-x-auto mt-5">
+                    <table className="w-full table-auto border-collapse dark:text-white">
+                        <thead>
+                            <tr className='border-b-[1px] border-gray-300'>
+                                <th className="px-4 py-2 text-left">ID</th>
+                                <th className="px-4 py-2 text-left">Course Title</th>
+                                <th className="px-4 py-2 text-left">Rating</th>
+                                <th className="px-4 py-2 text-left">Purchase</th>
+                                <th className="px-4 py-2 text-left">Created At</th>
+                                <th className="px-4 py-2 text-left">Edit</th>
+                                <th className="px-4 py-2 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {rows.map((row : any) => (
+                                <tr key={row.id} className='border-b-[1px] border-gray-300'>
+                                    <td className="px-4 py-2">{row.id}</td>
+                                    <td className="px-4 py-2">{row.title}</td>
+                                    <td className="px-4 py-2">{row.ratings}</td>
+                                    <td className="px-4 py-2">{row.purchase}</td>
+                                    <td className="px-4 py-2">{moment(row.created_at).format('LL')}</td>
+                                    <td className="px-4 py-2">
+                                        <Link href={`/admin/edit-course/${row.id}`} passHref>
+                                            <FiEdit2 className={theme === 'dark' ? 'text-white' : 'text-black'} size={20} />
+                                        </Link>
+                                    </td>
+                                    <td className="px-4 py-2">
+                                        <Button onClick={() => handleOpenDeleteModal(row.id)} variant="outline" color="red">
+                                            <AiOutlineDelete size={20} />
+                                        </Button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                     {open && (
                         <div className='dark:bg-[#575ba7] bg-[#575ba7] rounded-lg z-50 absolute top-[40%] w-[60%] md:w-[30%] left-1/2 translate-x-[-50%] p-5'>
                             <h2 className='text-lg text-white text-center'>Are you sure you want to delete this course?</h2>
                             <div className='flex justify-around mt-4'>
-                                <Button onClick={handleDelete} variant="contained" color="error">
+                                <Button onClick={handleDelete} variant="destructive" className="mr-2">
                                     Delete
                                 </Button>
-                                <Button onClick={() => setOpen(false)} variant="contained" className="ml-2">
+                                <Button onClick={() => setOpen(false)} variant="outline">
                                     Cancel
                                 </Button>
                             </div>
                         </div>
                     )}
-                </Box>
+                </div>
             )}
         </div>
     );

@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useCallback } from 'react';
 import Image from 'next/image';
-import favicon from "../../../../public/favicon.png"
 import { FaUsers } from "react-icons/fa";
 import { LiaFileInvoiceSolid } from "react-icons/lia";
 import { LiaPagerSolid } from "react-icons/lia";
@@ -38,14 +37,12 @@ const AdminSidebar: React.FC<Props> = ({ user }) => {
         setSelected(title);
     }, []);
 
-
     const logoutHandler = () => {
         toast.success('Logged out')
     };
 
-
     return (
-        <div className={`h-screen scrollbar-thin absolute z-50 md:relative scrollbar-thumb-gray-300 flex overflow-y-auto min-h-screen  transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-64'} bg-white dark:bg-gray-800 shadow-md  scrollbar-thin scrollbar-thumb-gray-300`}>
+        <div className={`h-screen scrollbar-thin absolute z-50 md:relative scrollbar-thumb-gray-300 flex overflow-y-auto min-h-screen  transition-all duration-300 ${isCollapsed ? 'w-20' : 'w-[210px]'} bg-white dark:bg-gray-800 shadow-md  scrollbar-thin scrollbar-thumb-gray-300`}>
             <div className="flex flex-col w-full dark:text-white text-black h-full">
                 <div className='items-center flex flex-col  '>
                     <div className={`mt-5 w-full flex items-center gap-5  mb-5 ${isCollapsed ? 'justify-center ' : 'justify-center'}`}>

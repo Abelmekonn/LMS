@@ -60,7 +60,7 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
     };
 
     return (
-        <>
+        <div className='flex flex-col w-full'>
             <div className='w-full flex justify-center'>
                 <div className="relative">
                     <Image
@@ -79,7 +79,7 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
                         accept='image/png,image/jpg,image/jpeg,image/webp'
                     />
                     <label htmlFor="avatar">
-                        <div className="w-[30px] h-[30px] bg-slate-900 rounded-full absolute bottom-2 right-2 flex items-center justify-center cursor-pointer">
+                        <div className="w-[30px] h-[30px] dark:bg-slate-900 bg-slate-400  rounded-full absolute bottom-2 right-2 flex items-center justify-center cursor-pointer">
                             <AiOutlineCamera size={20} className='z-1' />
                         </div>
                     </label>
@@ -110,14 +110,14 @@ const ProfileInfo: FC<Props> = ({ avatar, user }) => {
                         </div>
                         <input 
                             type="submit" 
-                            className={`w-[50%] md:w-[250px] h-[40px] border border-[#37a39a] text-center dark:text-[#fff] text-black rounded-[3px] mt-8 cursor-pointer`}
+                            className={`w-[50%] md:w-[250px] h-[40px] border border-[#37a39a] hover:bg-[#37a39a] transition-all ease-in duration-200 text-center dark:text-[#fff] text-black rounded-[3px] mt-8 cursor-pointer`}
                             value="Update Profile"
                         />
                     </div>
                 </form>
                 <br />
             </div>
-        </>
+        </div>
     );
 }
 

@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { userLogin } from "../auth/authSlice";
 
-const BASE_URL = process.env.NEXT_PUBLIC_SERVICE_URI || "https://lms-z94k.onrender.com/api/v1/";
+const BASE_URL = process.env.NEXT_PUBLIC_SERVICE_URI ;
 
 if (!BASE_URL) {
     console.error("Error: NEXT_PUBLIC_SERVICE_URI is not defined!");
@@ -18,14 +18,6 @@ export const apiSlice = createApi({
         },
     }),
     endpoints: (builder) => ({
-        refreshToken: builder.query({
-            query: () => ({
-                url: "refresh",
-                method: "GET",
-                credentials: "include",
-            }),
-        }),
-
         loadUser: builder.query({
             query: () => ({
                 url: "me",
@@ -59,4 +51,4 @@ export const apiSlice = createApi({
     }),
 });
 
-export const { useRefreshTokenQuery, useLoadUserQuery } = apiSlice;
+export const { useLoadUserQuery } = apiSlice;

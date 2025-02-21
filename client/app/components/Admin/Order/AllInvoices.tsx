@@ -1,14 +1,18 @@
-"use client";
+"use client"
 import React, { useEffect, useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import { Box } from "@mui/material";
 import { useTheme } from "next-themes";
 import { useGetAllCoursesQuery } from "../../../../redux/features/courses/coursesApi";
 import { useGetAllOrdersQuery } from "../../../../redux/features/orders/ordersApi";
 import { useGetAllUsersQuery } from "../../../../redux/features/user/userApi";
-import Loader from "../../loader";
 import { AiOutlineMail } from "react-icons/ai";
 import ThinLoader from "../../ThinLoader";
+
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
 
 type Props = {
     isDashboard?: boolean;
@@ -23,6 +27,8 @@ const AllInvoices = ({ isDashboard }: Props) => {
     const { data: courseData } = useGetAllCoursesQuery({});
 
     const [processedOrders, setProcessedOrders] = useState<any[]>([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(isDashboard ? 5 : 10);
 
     useEffect(() => {
         if (orderData && userData && courseData) {
@@ -46,83 +52,114 @@ const AllInvoices = ({ isDashboard }: Props) => {
         }
     }, [orderData, userData, courseData]);
 
-    const columns = [
-    { field: "id", headerName: "ID", flex: isDashboard ? 0.3 : 0.8, minWidth: 80 },
-    { field: "userName", headerName: "Name", flex: isDashboard ? 0.6 : 1, minWidth: 120 },
-    { field: "price", headerName: "Price", flex: 0.5, minWidth: 80 },
-    ...(isDashboard
-        ? [{ field: "createdAt", headerName: "Created At", flex: 1, minWidth: 150 }]
-        : [
-            { field: "title", headerName: "Course Title", flex: 1.2, minWidth: 150 },
-            { 
-                field: "emailAction", 
-                headerName: "Email", 
-                flex: 0.7, 
-                minWidth: 120,
-                renderCell: (params: { row: { userEmail: any; }; }) =>
-                    params.row.userEmail ? (
-                        <a href={`mailto:${params.row.userEmail}`}>
-                            <AiOutlineMail className={isDarkTheme ? "text-white" : "text-black"} size={20} />
-                        </a>
-                    ) : null,
-            },
-        ]),
-];
+    // Calculate the current page's data
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const currentData = processedOrders.slice(startIndex, startIndex + itemsPerPage);
 
+    // Handle page change
+    const handlePageChange = (page: number) => {
+        if (page < 1 || page > totalPages) return;
+        setCurrentPage(page);
+    };
+
+    // Total pages
+    const totalPages = Math.ceil(processedOrders.length / itemsPerPage);
 
     return (
-        <div className={!isDashboard ? "mt-[120px]" : "mt-[0px] w-[80%]"}>
+        <div className={!isDashboard ? "mt-[20px]" : "mt-[0px] w-full"}>
             {isLoading ? (
                 <ThinLoader />
             ) : (
-                <Box
-                    m={isDashboard ? "0" : "40px"}
-                    sx={{
-                        "& .MuiDataGrid-root": {
-                            backgroundColor: isDarkTheme ? "#363a89" : "#363a89",
-                            border: "none",
-                            minWidth: "600px", 
-                        },
-                        "& .MuiDataGrid-row": {
-                            color: isDarkTheme ? "#fff" : "#000",
-                            borderBottom: isDarkTheme
-                                ? "1px solid #363a89"
-                                : "1px solid #363a89",
-                        },
-                        "& .MuiDataGrid-cell": {
-                            borderBottom: "none",
-                        },
-                        "& .MuiDataGrid-columnHeaders": {
-                            backgroundColor: "#4A90E2", // Change this to your desired color
-                            color: isDarkTheme ? "#F1F1F1" : "#000",
-                            borderBottom: "none",
-                        },
-                        "& .MuiDataGrid-virtualScroller": {
-                            backgroundColor: isDarkTheme ? "#1F2A40" : "#F2F0F0",
-                        },
-                        "& .MuiDataGrid-footerContainer": {
-                            backgroundColor: "#363a89",
-                            color: "#F1F1F1",
-                            borderTop: "none",
-                        },
-                        "& .MuiCheckbox-root": {
-                            color: isDarkTheme ? "#363a89" : "#363a89",
-                        },
-                    }}
-                >
-                    <DataGrid
-                        rows={processedOrders}
-                        columns={columns}
-                        initialState={{
-                            pagination: {
-                                paginationModel: { pageSize: 5 },
-                            },
-                        }}
-                        pageSizeOptions={[10, 20, 50]}
-                        disableRowSelectionOnClick
-                        checkboxSelection={!isDashboard}
-                    />
-                </Box>
+                <div className="w-full">
+                    <div className="flex items-center py-4">
+                        <Input placeholder="Filter emails..." className="max-w-sm" />
+                    </div>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>ID</TableHead>
+                                <TableHead>Name</TableHead>
+                                <TableHead>Price</TableHead>
+                                {isDashboard ? (
+                                    <TableHead>Created At</TableHead>
+                                ) : (
+                                    <TableHead>Course Title</TableHead>
+                                )}
+                                {!isDashboard && <TableHead>Email</TableHead>}
+                                {!isDashboard && <TableHead>Actions</TableHead>}
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {currentData.length > 0 ? (
+                                currentData.map((order) => (
+                                    <TableRow key={order.id}>
+                                        <TableCell>{order.id}</TableCell>
+                                        <TableCell>{order.userName}</TableCell>
+                                        <TableCell>{order.price}</TableCell>
+                                        {isDashboard ? (
+                                            <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
+                                        ) : (
+                                            <TableCell>{order.title}</TableCell>
+                                        )}
+                                        {!isDashboard && (
+                                            <TableCell>
+                                                <a href={`mailto:${order.userEmail}`}>
+                                                    <AiOutlineMail className={isDarkTheme ? "text-white" : "text-black"} size={20} />
+                                                </a>
+                                            </TableCell>
+                                        )}
+                                        {!isDashboard && (
+                                            <TableCell>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button variant="ghost" className="h-8 w-8 p-0">
+                                                            <span className="sr-only">Open menu</span>
+                                                            <MoreHorizontal />
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                        <DropdownMenuItem onClick={() => navigator.clipboard.writeText(order.id)}>
+                                                            Copy payment ID
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuSeparator />
+                                                        <DropdownMenuItem>View customer</DropdownMenuItem>
+                                                        <DropdownMenuItem>View payment details</DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        )}
+                                    </TableRow>
+                                ))
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={6} className="h-24 text-center">
+                                        No results.
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+
+                    {/* Pagination Controls */}
+                    <div className="flex justify-between items-center mt-4">
+                        <Button
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                        >
+                            Previous
+                        </Button>
+                        <div>
+                            Page {currentPage} of {totalPages}
+                        </div>
+                        <Button
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                        >
+                            Next
+                        </Button>
+                    </div>
+                </div>
             )}
         </div>
     );

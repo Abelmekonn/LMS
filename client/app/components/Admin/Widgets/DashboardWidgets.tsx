@@ -91,10 +91,10 @@ const DashboardWidgets: FC<DashboardWidgetsProps> = ({ open }) => {
     return (
         <div className="mt-[30px] min-h-screen">
             <div className="grid grid-cols-1 md:grid-cols-[65%,35%]">
-                <div className="md:p-8">
+                <div className="md:w-[94%] mt-[30px] h-[60vh] ">
                     <UserAnalytics isDashboard={true} />
                 </div>
-                <div className="pt-[80px] pr-8">
+                <div className="pt-[60px] pr-8">
                     <div className="w-full dark:bg-[#111c43] rounded-sm shadow">
                         <div className="flex items-center p-5 justify-between">
                             <div>
@@ -151,11 +151,11 @@ const DashboardWidgets: FC<DashboardWidgetsProps> = ({ open }) => {
                     </div>
                 </div>
             </div>
-            <div className='grid grid-cols-1 md:grid-cols-[65%,35%] '>
-                <div className="dark:bg-[#111c43] w-full md:w-[94%] mt-[30px] h-[60vh] shadow-sm m-auto">
+            <div className='grid grid-cols-1 md:grid-cols-[65%,35%]'>
+                <div className=" md:w-[94%] mt-[30px] h-[60vh] ">
                     <OrderAnalytics isDashboard={true} />
                 </div>
-                <div className="mt-[30px]">
+                <div className="mt-[30px] ">
                     <h5 className='dark:text-[#fff]  text-black text-[20px] font-[400] font-Poppins pb-3'>
                         Recent Transaction
                     </h5>

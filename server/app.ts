@@ -25,10 +25,10 @@ app.use(cookieParser());
 
 app.use(cors({
     origin: [
-        "http://localhost:3000",  // ✅ Local frontend
-        "https://your-deployed-frontend.com" // ✅ Hosted frontend
+        "http://localhost:3000",  
+        "https://your-deployed-frontend.com" 
     ],
-    credentials: true,  // ✅ Required for cookies
+    credentials: true,  
     methods: ["GET", "POST", "PUT", "DELETE"],
 }));
 

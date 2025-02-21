@@ -11,10 +11,11 @@ import {
     Legend,
     Line,
 } from "recharts";
-import Loader from "../../loader";
-import { useGetOrderAnalyticsQuery } from "../../../../redux/features/analytics/analyticsApi";
-import { styles } from "@/app/styles/style";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import ThinLoader from "../../ThinLoader";
+import { useGetOrderAnalyticsQuery } from "../../../../redux/features/analytics/analyticsApi";
+import { TrendingUp } from "lucide-react";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 interface AnalyticsData {
     name: string;
@@ -31,7 +32,7 @@ const OrderAnalytics = ({ isDashboard }: Props) => {
     // Transform data immutably
     const analyticsData: AnalyticsData[] =
         data?.orders?.last12Month?.map((item: any) => ({
-            name: item.month,
+            name: new Date(item.month).toLocaleString("en-US", { month: "short" }),
             count: item.count,
         })) || [];
 
@@ -42,67 +43,61 @@ const OrderAnalytics = ({ isDashboard }: Props) => {
             </div>
         );
     }
+    const chartConfig = {
+            count: {
+                label: "Orders",
+                color: "hsl(var(--chart-2))",
+            },
+        } satisfies ChartConfig;
 
     return (
-        <>
+        <Card className={`${isDashboard ? "h-[400px]" : "h-[500px]"} w-full bg-[#F9FAFB] dark:bg-[#111827] shadow-lg`}>
             {isLoading ? (
                 <ThinLoader />
             ) : (
-                <div className={isDashboard ? "h-[50vh]" : "h-screen"}>
-                    <div
-                        className={`${
-                            isDashboard ? "mt-0 mb-2" : "mt-[50px]"
-                        }`}
-                    >
-                        <h1
-                            className={`${styles.title} ${
-                                isDashboard && "!text-[20px]"
-                            } px-5 !text-start mt-2`}
-                        >
-                            Order Analytics
-                        </h1>
-                        {isDashboard && (
-                            <p className={`${styles.label} px-5`}>
-                                Last 12 months analytics data
-                            </p>
-                        )}
-                    </div>
-                    <div
-                        className={`w-full ${
-                            isDashboard ? "h-[90%]" : "h-full"
-                        } flex items-center justify-center`}
-                    >
-                        <ResponsiveContainer
-                            width={isDashboard ? "100%" : "90%"}
-                            height={!isDashboard ? "50%" : "100%"}
-                        >
-                            <LineChart
-                                data={analyticsData}
-                                margin={{
-                                    top: 5,
-                                    right: 30,
-                                    left: 5,
-                                    bottom: 5,
-                                }}
-                            >
-                                <CartesianGrid strokeDasharray="4 4" stroke="#ccc" />
-                                <XAxis dataKey="name" label={{ value: "Month", position: "insideBottom", offset: -5 }} />
-                                <YAxis  />
-                                <Tooltip />
-                                {!isDashboard && <Legend />}
-                                <Line
-                                    type="monotone"
-                                    dataKey="count"
-                                    stroke="#82ca9d"
-                                    strokeWidth={2}
-                                    dot={false}
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
-                    </div>
-                </div>
+                <>
+                    <CardHeader className={isDashboard ? "px-4 py-3" : "p-5"}>
+                        <CardTitle className={isDashboard ? "text-lg" : "text-xl"}>Order Analytics</CardTitle>
+                        {isDashboard && <CardDescription>Last 12 months analytics data</CardDescription>}
+                    </CardHeader>
+                    <CardContent>
+                        <ChartContainer config={chartConfig} className={`${isDashboard ? "h-[230px]" : "h-[350px]"} w-full`}>
+                            <ResponsiveContainer width={isDashboard ? "100%" : "90%"} height={!isDashboard ? "50%" : "100%"}>
+                                <LineChart
+                                    data={analyticsData}
+                                    margin={{
+                                        top: 5,
+                                        right: 30,
+                                        left: 5,
+                                        bottom: 5,
+                                    }}
+                                >
+                                    <CartesianGrid stroke="transparent" />
+                                    <XAxis dataKey="name" label={{ value: "Month", position: "insideBottom", offset: -5 }} />
+                                    <YAxis />
+                                    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                                    <Line
+                                        type="monotone"
+                                        dataKey="count"
+                                        stroke="hsl(var(--chart-2))"
+                                        strokeWidth={2}
+                                        dot={false}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </ChartContainer>
+                    </CardContent>
+                    <CardFooter className="flex-col items-start gap-2 text-sm">
+                        <div className="flex gap-2 font-medium leading-none">
+                            Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+                        </div>
+                        <div className="leading-none text-muted-foreground">
+                            Showing total user engagement for the last 12 months
+                        </div>
+                    </CardFooter>
+                </>
             )}
-        </>
+        </Card>
     );
 };
 

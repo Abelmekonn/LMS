@@ -7,11 +7,10 @@ import CustomModel from "../utils/CustomModel";
 import Login from "../components/Auth/Login";
 import SignUp from "../components/Auth/SignUp";
 import Verification from "../components/Auth/Verification";
-import { useSelector } from 'react-redux';
 import avatar from "../../public/assets/avatar.jpg";
 import Image from 'next/image';
 import { useSession } from 'next-auth/react';
-import { useLogOutQuery, useSocialAuthMutation } from '../../redux/features/auth/authApi';
+import { useLogOutMutation, useSocialAuthMutation } from '../../redux/features/auth/authApi';
 import toast from 'react-hot-toast';
 import { useLoadUserQuery } from '@/redux/features/api/apiSlice';
 
@@ -36,10 +35,8 @@ const Header: FC<Props> = ({ activeItem, setOpen, route, setRoute, open }) => {
     const { data: userData, isLoading, refetch } = useLoadUserQuery(undefined, { refetchOnMountOrArgChange: true });
     const { data: sessionData } = useSession();
     const [socialAuth, { isSuccess, isError }] = useSocialAuthMutation();
-    const { } = useLogOutQuery(undefined, {
-        skip: !logout ? true : false,
-    })
-
+    const [logOut] = useLogOutMutation();
+    
     useEffect(() => {
         if (!userData && sessionData) {
             socialAuth({

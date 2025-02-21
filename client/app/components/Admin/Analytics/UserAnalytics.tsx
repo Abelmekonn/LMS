@@ -1,69 +1,71 @@
-"use client"
-import React from 'react'
-import { BarChart, Bar, ResponsiveContainer, XAxis, Label, LabelList, YAxis, AreaChart, Tooltip, Area } from "recharts"
-import Loader from '../../loader'
-import { useGetUserAnalyticsQuery } from '../../../../redux/features/analytics/analyticsApi'
-import { styles } from '@/app/styles/style'
-import ThinLoader from '../../ThinLoader'
+"use client";
+
+import { Area, AreaChart, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import ThinLoader from "../../ThinLoader";
+import { useGetUserAnalyticsQuery } from "../../../../redux/features/analytics/analyticsApi";
+import { TrendingUp } from "lucide-react";
 
 type Props = {
-    isDashboard: boolean
-}
+    isDashboard: boolean;
+};
 
 const UserAnalytics = ({ isDashboard }: Props) => {
-    const { data, isLoading, error } = useGetUserAnalyticsQuery({})
-    const analyticsData : any = []
-    console.log(data)
-    data && 
-        data.users.last12Month.forEach((items : any) => {
-            analyticsData.push({ name: items.month, count: items.count })
-        })
+    const { data, isLoading } = useGetUserAnalyticsQuery({});
+
+    // Process analytics data
+    const analyticsData =
+        data?.users?.last12Month?.map((item: any) => ({
+            name: item.month.split(" ")[0], // Extract only the month name
+            count: item.count,
+        })) || [];
+
+    // Chart Configuration
+    const chartConfig = {
+        count: {
+            label: "Users",
+            color: "hsl(var(--chart-2))",
+        },
+    } satisfies ChartConfig;
 
     return (
-        <>
-            {
-                isLoading ? <ThinLoader /> : (
-                    <div className={`${!isDashboard ? "mt-[50px]" : "mt-[50px] dark:bg-[#111c43] shadow-sm pb-5 rounded-sm"}`}>
-                        <div className={`${isDashboard ? "!ml-8 mb-5" : ''}`}>
-                            <h1 className={`${styles.title} ${isDashboard && '!text-[20px]'} pc-5 !text-start`}>
-                                User Analytics
-                            </h1>
-                            {
-                                isDashboard && (
-                                    <p className={`${styles.label} px-5`}>
-                                        Last 12 month analytics data{" "}
-                                    </p>
-                                )
-                            }
-                        </div>
-                        <div className={`w-[90%] mx-auto ${isDashboard ? 'h-[30vh]' : 'h-auto mt-10'} flex items-center justify-center`}>
-                            <ResponsiveContainer width={isDashboard ? '100%' : '90%' } height={!isDashboard ? "50%" : "100%"}>
-                                <AreaChart 
-                                    data={analyticsData}
-                                    margin={{ 
-                                        top: 5, 
-                                        right: 30, 
-                                        left: 5, 
-                                        bottom:0
-                                    }}
-                                >
-                                    <XAxis dataKey="name"/>
+        <Card className={`${isDashboard ? "h-[400px]" : "h-[500px]"} w-full bg-[#F9FAFB] dark:bg-[#111827]`}>
+            {isLoading ? (
+                <ThinLoader />
+            ) : (
+                <>
+                    <CardHeader className={`${isDashboard ? "px-4 py-3" : "p-5"}`}>
+                        <CardTitle className={isDashboard ? "text-lg" : "text-xl"}>User Analytics</CardTitle>
+                        {isDashboard && <CardDescription>Last 12 months analytics data</CardDescription>}
+                    </CardHeader>
+                    <CardContent>
+                        {analyticsData.every((item: any) => item.count === 0) ? (
+                            <p className="text-center text-gray-400">No user activity in the last 12 months.</p>
+                        ) : (
+                            <ChartContainer config={chartConfig} className={`${isDashboard ? "h-[230px]" : "h-[350px]"}  w-full`}>
+                                <AreaChart data={analyticsData} margin={{ top: 5, right: 30, left: 5, bottom: 0 }}>
+                                    <CartesianGrid stroke="transparent" /> {/* Removes grid lines */}
+                                    <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} />
                                     <YAxis />
-                                    <Tooltip />
-                                    <Area 
-                                        type="monotone"
-                                        dataKey="count"
-                                        stroke="#4d62d9"
-                                        fill="#4d62d9"
-                                    />
+                                    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
+                                    <Area type="monotone" dataKey="count" stroke="hsl(var(--chart-2))" fill="hsl(var(--chart-2))" />
                                 </AreaChart>
-                            </ResponsiveContainer>
+                            </ChartContainer>
+                        )}
+                    </CardContent>
+                    <CardFooter className="flex-col items-start gap-2 text-sm">
+                        <div className="flex gap-2 font-medium leading-none">
+                            Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
                         </div>
-                    </div>
-                )
-            }
-        </>
-    )
-}
+                        <div className="leading-none text-muted-foreground">
+                            Showing total user engagment for the last 12 months
+                        </div>
+                    </CardFooter>
+                </>
+            )}
+        </Card>
+    );
+};
 
-export default UserAnalytics
+export default UserAnalytics;

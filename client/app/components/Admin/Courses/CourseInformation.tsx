@@ -151,20 +151,20 @@ const CourseInformation: FC<Props> = ({ courseInfo, setCourseInfo, setActive, ac
                             className={`${styles.input}`}
                         />
                     </div>
-                    <div className="w-[45%] dark:bg-black">
+                    <div className="w-[45%]">
                         <label className={`${styles.label} w-[50%]`}>Course Categories</label>
                         <select
                             name="categories"
                             id="categories"
-                            className={`${styles.input} dark:bg-black`}
+                            className={`${styles.input} `}
                             value={courseInfo.categories} // Bind the value to courseInfo.categories
                             onChange={(e: ChangeEvent<HTMLSelectElement>) =>
                                 setCourseInfo({ ...courseInfo, categories: e.target.value })
                             }
                         >
-                            <option value="" className="dark:bg-black">Select a category</option>
+                            <option value="" className="dark:bg-[#111827]">Select a category</option>
                             {categories.map((item: any) => (
-                                <option value={item.value} key={item._id} className="dark:bg-black">
+                                <option value={item.value} key={item._id} className="dark:bg-[#111827]">
                                     {item.title}
                                 </option>
                             ))}

@@ -1,57 +1,92 @@
-"use client"
-import React from 'react'
-import {BarChart,Bar,ResponsiveContainer,XAxis,Label,LabelList, YAxis} from "recharts"
-import Loader from '../../loader'
-import { useGetCourseAnalyticsQuery } from '../../../../redux/features/analytics/analyticsApi'
-import { styles } from '@/app/styles/style'
+"use client";
 
-type Props = {}
+import { TrendingUp } from "lucide-react";
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart";
+import { useGetCourseAnalyticsQuery } from "../../../../redux/features/analytics/analyticsApi";
+import ThinLoader from "../../ThinLoader";
+
+type Props = {};
 
 const CourseAnalytics = (props: Props) => {
-  const { data, isLoading, isError } = useGetCourseAnalyticsQuery({})
+  const { data, isLoading } = useGetCourseAnalyticsQuery({});
 
+  // Process analytics data
+  const analyticsData =
+    data?.courses?.last12Month?.map((item: any) => ({
+      month: item.month.split(" ")[0], // Extract only month name (e.g., "Apr", "May")
+      count: item.count,
+    })) || [];
 
-  const analyticsData : any = [];
-  
-  data && 
-    data.courses.last12Month.forEach((item : any) => {
-      analyticsData.push({name:item.month , uv : item.count})
-    });
+  // Chart Configuration
+  const chartConfig = {
+    count: {
+      label: "Courses",
+      color: "hsl(var(--chart-2))",
+    },
+  } satisfies ChartConfig;
 
-  const minValue = 0;
   return (
-    <>
-      {
-        isLoading ? (
-          <Loader />
-        ):(
-          <div className='h-screen'>
-            <div className="mt-[30px]">
-              <h1 className={`${styles.title} py-5 !text-start`}>
-                Course Analytics
-              </h1>
-              <p className={`${styles.label} py-5`}>
-                Last 12 months analytics data{""}
+    <Card className="bg-[#F9FAFB] dark:bg-[#111827]">
+      {isLoading ? (
+        <ThinLoader />
+      ) : (
+        <>
+          <CardHeader>
+            <CardTitle>Course Analytics</CardTitle>
+            <CardDescription>Last 12 months analytics data</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {analyticsData.every((item : any ) => item.count === 0) ? (
+              <p className="text-center text-gray-500">
+                No course activity in the last 12 months.
               </p>
-            </div>
-            <div className='w-full h-auto mt-10 flex items-center justify-center'>
-              <ResponsiveContainer width="90%" height="50%" >
-                <BarChart width={150} height={300} data={analyticsData}>
-                  <XAxis dataKey="name">
-                    <Label offset={0} position="insideBottom" />
-                  </XAxis>
-                  <YAxis domain={[minValue, 'auto']} />
-                  <Bar dataKey="uv" fill="#3faf82">
-                    <LabelList dataKey="uv" position="top"/>
-                  </Bar>
+            ) : (
+              <ChartContainer config={chartConfig} className="h-[450px]">
+                <BarChart data={analyticsData}>
+                  <CartesianGrid vertical={false} strokeDasharray="3 3" />
+                  <XAxis
+                    dataKey="month"
+                    tickLine={false}
+                    tickMargin={10}
+                    axisLine={false}
+                    tickFormatter={(value) => value.slice(0, 3)}
+                  />
+                  <YAxis />
+                  <ChartTooltip
+                    cursor={false}
+                    content={<ChartTooltipContent hideLabel />}
+                  />
+                  <Bar dataKey="count" fill="var(--color-count)" radius={8} />
                 </BarChart>
-              </ResponsiveContainer>
+              </ChartContainer>
+            )}
+          </CardContent>
+          <CardFooter className="flex-col items-start gap-2 text-sm">
+            <div className="flex gap-2 font-medium leading-none">
+              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
             </div>
-          </div>
-        )
-      }
-    </>
-  )
-}
+            <div className="leading-none text-muted-foreground">
+              Showing total course enrollments for the last 12 months
+            </div>
+          </CardFooter>
+        </>
+      )}
+    </Card>
+  );
+};
 
-export default CourseAnalytics
+export default CourseAnalytics;
