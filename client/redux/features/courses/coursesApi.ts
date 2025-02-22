@@ -38,6 +38,8 @@ export const courseApi = apiSlice.injectEndpoints({
                 method: "GET",
                 credentials: "include" as const,
             }),
+            providesTags: [{ type: "AllCourses" }],
+            keepUnusedDataFor: 1000, // Cache data for 5 minutes
         }),
         getCourseDetail: builder.query({
             query: ({ id }: { id: string }) => ({

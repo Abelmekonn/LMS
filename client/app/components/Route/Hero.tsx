@@ -43,7 +43,7 @@ export const Hero: FC<Props> = (props) => {
             {isLoading ? (
                 <Loader />
             ) : (
-                <div className="w-full flex flex-col justify-evenly md:flex-row items-center dark:bg-gradient-to-b text-black dark:text-white">
+                <div className="w-full mt-10 flex flex-col justify-evenly md:flex-row items-center dark:bg-gradient-to-b text-black dark:text-white">
                     {/* Image Container */}
                     <div className="mt-10 mx-[5%] relative top-[100px] md:top-[unset] w-[400px] h-[400px] 2xl:w-[500px] 2xl:h-[500px] lg:w-[450px] lg:h-[450px] hero_animation  rounded-full overflow-hidden flex items-center justify-center">
                         <Image

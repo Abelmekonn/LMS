@@ -86,7 +86,7 @@ const AllUsers: FC = () => {
         {
             id: "actions",
             header: "Actions",
-            cell: (row : any) => (
+            cell: (row: any) => (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="h-8 w-8 p-0">
@@ -157,7 +157,7 @@ const AllUsers: FC = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {rows.map((row:any) => (
+                                {rows.map((row: any) => (
                                     <TableRow key={row.id}>
                                         {columns.map((column) => (
                                             <TableCell key={column.id} className="dark:text-white ">
@@ -170,23 +170,26 @@ const AllUsers: FC = () => {
                         </Table>
                     </div>
                     {active && (
-                        <div className="absolute top-[40%] w-[60%] md:w-[30%] left-1/2 z-50 transform -translate-x-1/2 p-5 bg-[#F9FAFB] dark:bg-[#111827] rounded-lg">
-                            <h2 className="text-white text-lg font-semibold">Add New Member</h2>
+                        <div className="absolute top-[40%] w-[60%] md:w-[30%] left-1/2 z-50 transform -translate-x-1/2 p-5 bg-[#F9FAFB] dark:bg-[#212e4b] rounded-lg gap-3 shadow-xl">
+                            <h2 className="dark:text-white text-lg font-semibold mb-3">Add New Member</h2>
                             <form onSubmit={handleSubmit} className="flex flex-col gap-3">
                                 <Input
                                     type="email"
                                     placeholder="Enter email"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
+                                    className="dark:border-white"
                                 />
-                                <select value={role} onChange={(e) => setRole(e.target.value)} className="p-2 border rounded">
+                                <select value={role} onChange={(e) => setRole(e.target.value)} className="p-2 border rounded bg-white mb-2">
                                     <option value="admin">Admin</option>
                                     <option value="user">User</option>
                                 </select>
-                                <Button type="submit">Submit</Button>
-                                <Button type="button" color="error" onClick={() => setActive(false)}>
-                                    Close
-                                </Button>
+                                <div className="flex justify-evenly w-full">
+                                    <Button type="submit">Submit</Button>
+                                    <Button type="button" className="bg-red-500 hover:bg-red-600" onClick={() => setActive(false)}>
+                                        Close
+                                    </Button>
+                                </div>
                             </form>
                         </div>
                     )}

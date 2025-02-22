@@ -34,6 +34,7 @@ interface ICourseData extends Document {
 
 export interface ICourse extends Document {
     name: string;
+    author:string;
     description: string;
     categories: string;
     price: number;
@@ -86,6 +87,10 @@ const courseDataSchema = new Schema<ICourseData>({
 
 const courseSchema = new Schema<ICourse>({
     name: {
+        type: String,
+        required: true,
+    },
+    author: {
         type: String,
         required: true,
     },
