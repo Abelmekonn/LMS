@@ -61,7 +61,7 @@ const OrderAnalytics = ({ isDashboard }: Props) => {
                         {isDashboard && <CardDescription>Last 12 months analytics data</CardDescription>}
                     </CardHeader>
                     <CardContent>
-                        <ChartContainer config={chartConfig} className={`${isDashboard ? "h-[230px]" : "h-[350px]"} w-full`}>
+                        <ChartContainer config={chartConfig} className={`${isDashboard ? "h-[270px]" : "h-[350px]"} w-full`}>
                             <ResponsiveContainer width={isDashboard ? "100%" : "90%"} height={!isDashboard ? "50%" : "100%"}>
                                 <LineChart
                                     data={analyticsData}
@@ -87,14 +87,6 @@ const OrderAnalytics = ({ isDashboard }: Props) => {
                             </ResponsiveContainer>
                         </ChartContainer>
                     </CardContent>
-                    <CardFooter className="flex-col items-start gap-2 text-sm">
-                        <div className="flex gap-2 font-medium leading-none">
-                            Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-                        </div>
-                        <div className="leading-none text-muted-foreground">
-                            Showing total user engagement for the last 12 months
-                        </div>
-                    </CardFooter>
                 </>
             )}
         </Card>

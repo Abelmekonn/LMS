@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 type Props = {
     isDashboard?: boolean;
@@ -66,12 +67,15 @@ const AllInvoices = ({ isDashboard }: Props) => {
     const totalPages = Math.ceil(processedOrders.length / itemsPerPage);
 
     return (
-        <div className={!isDashboard ? "mt-[20px]" : "mt-[0px] w-full"}>
+        <div className={!isDashboard ? "mt-[20px] h-full" : "mt-[0px] w-full"}>
             {isLoading ? (
                 <ThinLoader />
             ) : (
-                <div className="w-full">
-                    <div className="flex items-center py-4">
+                <Card className="w-full px-3 py-3 dark:bg-[#111C43] ">
+                    <div className="flex-col py-4">
+                        <h5 className='dark:text-[#fff]  text-black text-[20px] font-[400] font-Poppins pb-3'>
+                            Recent Transaction
+                        </h5>
                         <Input placeholder="Filter emails..." className="max-w-sm" />
                     </div>
                     <Table>
@@ -94,7 +98,7 @@ const AllInvoices = ({ isDashboard }: Props) => {
                                 currentData.map((order) => (
                                     <TableRow key={order.id}>
                                         <TableCell>{order.id}</TableCell>
-                                        <TableCell>{order.userName}</TableCell>
+                                        <TableCell  className="line-clamp-1">{order.userName}</TableCell>
                                         <TableCell>{order.price}</TableCell>
                                         {isDashboard ? (
                                             <TableCell>{new Date(order.createdAt).toLocaleDateString()}</TableCell>
@@ -102,7 +106,7 @@ const AllInvoices = ({ isDashboard }: Props) => {
                                             <TableCell>{order.title}</TableCell>
                                         )}
                                         {!isDashboard && (
-                                            <TableCell>
+                                            <TableCell >
                                                 <a href={`mailto:${order.userEmail}`}>
                                                     <AiOutlineMail className={isDarkTheme ? "text-white" : "text-black"} size={20} />
                                                 </a>
@@ -159,7 +163,7 @@ const AllInvoices = ({ isDashboard }: Props) => {
                             Next
                         </Button>
                     </div>
-                </div>
+                </Card>
             )}
         </div>
     );

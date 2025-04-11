@@ -5,7 +5,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import ThinLoader from "../../ThinLoader";
 import { useGetUserAnalyticsQuery } from "../../../../redux/features/analytics/analyticsApi";
-import { TrendingUp } from "lucide-react";
 
 type Props = {
     isDashboard: boolean;
@@ -39,29 +38,28 @@ const UserAnalytics = ({ isDashboard }: Props) => {
                         <CardTitle className={isDashboard ? "text-lg" : "text-xl"}>User Analytics</CardTitle>
                         {isDashboard && <CardDescription>Last 12 months analytics data</CardDescription>}
                     </CardHeader>
-                    <CardContent>
+                    <div>
                         {analyticsData.every((item: any) => item.count === 0) ? (
                             <p className="text-center text-gray-400">No user activity in the last 12 months.</p>
                         ) : (
-                            <ChartContainer config={chartConfig} className={`${isDashboard ? "h-[230px]" : "h-[350px]"}  w-full`}>
-                                <AreaChart data={analyticsData} margin={{ top: 5, right: 30, left: 5, bottom: 0 }}>
+                            <ChartContainer config={chartConfig} className={`${isDashboard ? "h-[270px]" : "h-[350px]"}  w-full`}>
+                                <AreaChart data={analyticsData} margin={{ top: 5, right: 30, bottom: 0 }}>
                                     <CartesianGrid stroke="transparent" /> {/* Removes grid lines */}
-                                    <XAxis dataKey="name" tickLine={false} tickMargin={10} axisLine={false} />
-                                    <YAxis />
+                                    {/* <XAxis width={20} dataKey="name" tickLine={false} tickMargin={10} axisLine={false} /> */}
+                                    <XAxis
+                                        dataKey="name"
+                                        tickLine={false}
+                                        axisLine={false}
+                                        tickMargin={8}
+                                        tickFormatter={(value) => value.slice(0, 3)}
+                                    />
+                                    <YAxis tickMargin={10} />
                                     <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
                                     <Area type="monotone" dataKey="count" stroke="hsl(var(--chart-2))" fill="hsl(var(--chart-2))" />
                                 </AreaChart>
                             </ChartContainer>
                         )}
-                    </CardContent>
-                    <CardFooter className="flex-col items-start gap-2 text-sm">
-                        <div className="flex gap-2 font-medium leading-none">
-                            Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-                        </div>
-                        <div className="leading-none text-muted-foreground">
-                            Showing total user engagment for the last 12 months
-                        </div>
-                    </CardFooter>
+                    </div>
                 </>
             )}
         </Card>

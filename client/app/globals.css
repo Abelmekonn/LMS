@@ -399,3 +399,7 @@ body {
     --chart-5: 340 75% 55%;
   }
 }
+.card-bg {
+  background: rgb(0, 128, 128);
+  background: linear-gradient(159deg, rgba(0, 128, 128, 1) 0%, rgba(0, 153, 144, 1) 100%);
+}

@@ -55,7 +55,7 @@ const CourseAnalytics = (props: Props) => {
                 No course activity in the last 12 months.
               </p>
             ) : (
-              <ChartContainer config={chartConfig} className="h-[450px]">
+              <ChartContainer config={chartConfig} className="min-h-[450px]">
                 <BarChart data={analyticsData}>
                   <CartesianGrid vertical={false} strokeDasharray="3 3" />
                   <XAxis
@@ -75,14 +75,6 @@ const CourseAnalytics = (props: Props) => {
               </ChartContainer>
             )}
           </CardContent>
-          <CardFooter className="flex-col items-start gap-2 text-sm">
-            <div className="flex gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="leading-none text-muted-foreground">
-              Showing total course enrollments for the last 12 months
-            </div>
-          </CardFooter>
         </>
       )}
     </Card>

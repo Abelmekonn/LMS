@@ -35,8 +35,7 @@ export const apiSlice = createApi({
                         })
                     );
                 } catch (error: any) {
-                    const errorMessage = error?.message || "An unknown error occurred";
-                    throw new Error(errorMessage);
+                    throw error;
                 }
             },
         }),
