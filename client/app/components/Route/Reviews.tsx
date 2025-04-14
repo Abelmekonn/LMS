@@ -33,55 +33,13 @@ export const reviews = [
         profession: "Digital Marketer",
         comment: "I've seen significant improvement in my team's productivity. Thank you!",
         rating: 1
-    },
-    {
-        name: "Emily Davis",
-        avatar: "https://randomuser.me/api/portraits/women/3.jpg",
-        profession: "Content Creator",
-        comment: "A must-have tool for anyone looking to streamline their workflow.",
-        rating: 4.5
-    },
-    {
-        name: "Chris Wilson",
-        avatar: "https://randomuser.me/api/portraits/men/3.jpg",
-        profession: "Entrepreneur",
-        comment: "This is the best platform I have used for my business.",
-        rating: 5
-    },
-    {
-        name: "Sophia Martinez",
-        avatar: "https://randomuser.me/api/portraits/women/4.jpg",
-        profession: "Web Developer",
-        comment: "The tools and features are incredibly intuitive. Great job!",
-        rating: 2
-    },
-    {
-        name: "James Anderson",
-        avatar: "https://randomuser.me/api/portraits/men/4.jpg",
-        profession: "Teacher",
-        comment: "I use this every day, and it has been a game-changer for my work.",
-        rating: 4
-    },
-    {
-        name: "Isabella Taylor",
-        avatar: "https://randomuser.me/api/portraits/women/5.jpg",
-        profession: "Photographer",
-        comment: "Superb functionality and easy to use. Highly satisfied!",
-        rating: 5
-    },
-    {
-        name: "David Lee",
-        avatar: "https://randomuser.me/api/portraits/men/5.jpg",
-        profession: "Consultant",
-        comment: "I've recommended this to my colleagues. Exceptional value!",
-        rating: 4.5
     }
 ];
 
 
 const Reviews = (props: Props) => {
     return (
-        <div className='w-[90%] 800px:w-[85%] m-auto'>
+        <div className='w-[90%] 800px:w-[85%] mx-auto my-10'>
             <div className="w-full md:flex items-center justify-center my-8">
                 <div className='md:w-[50%] flex justify-center w-full items-center '>
                     <Image
@@ -98,19 +56,23 @@ const Reviews = (props: Props) => {
                     </h3>
                     <br />
                     <p className={styles.label}>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Exercitationem unde maiores quos eos! Laboriosam beatae praesentium soluta,
-                        assumenda distinctio quos officiis obcaecati numquam,
-                        voluptatem mollitia accusamus facilis, non repellat neque?
+                        We build a platform that helps students to learn and get help from teachers.
+                        We are a team of 50+ people who are passionate about education and technology.
+                        Helping students to learn and get help from teachers.
+
                     </p>
                 </div>
                 <br />
                 <br />
 
             </div>
-            <div className='grid mt-4 grid-cols-1 gap-[25px] md:grid-cols-2 lg:gap-[25px] xl:grid-cols-2 xl-gap-[35px] mb-12 border-0 md:[&>*nth-child(6)]:!mt-[-40px]'>
+            <div className='flex gap-4 h-full items-stretch'>
                 {reviews &&
-                    reviews.map((i, index) => <ReviewCard item={i} key={index} />)
+                    reviews.map((i, index) => (
+                        <div key={index} className="w-full ">
+                            <ReviewCard item={i} />
+                        </div>
+                    ))
                 }
             </div>
         </div>

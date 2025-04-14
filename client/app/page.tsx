@@ -7,6 +7,7 @@ import Courses from "./components/Routes/Courses"
 import Reviews from "./components/Route/Reviews"
 import FAQ from "./components/Route/FAQ"
 import Footer from "./components/Footer"
+import LiveClassCard from "./components/Route/LiveClassCard";
 
 interface Props { }
 
@@ -31,6 +32,7 @@ const Page: FC<Props> = (Props) => {
       />
       <Hero />
       <Courses />
+      <LiveClassCard />
       <Reviews />
       <FAQ />
       <Footer />

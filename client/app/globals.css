@@ -403,3 +403,55 @@ body {
   background: rgb(0, 128, 128);
   background: linear-gradient(159deg, rgba(0, 128, 128, 1) 0%, rgba(0, 153, 144, 1) 100%);
 }
+
+:root {
+  --gap: 20px;
+}
+
+.course-ticker {
+  font-size: 16px;
+  padding-block: 12px;
+  overflow: hidden;
+  user-select: none;
+  display: flex;
+  gap: var(--gap);
+  border-radius: 1rem;
+}
+
+.course-ticker ul {
+  list-style: none;
+  flex-shrink: 0;
+  min-width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--gap);
+  animation: scroll 30s linear infinite;
+  padding-inline: 1.5rem;
+}
+
+.course-ticker:hover ul {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+.course-ticker .badge {
+  white-space: nowrap;
+  padding: 0.5rem 1.25rem;
+  font-weight: 600;
+  border-radius: 9999px;
+}
+
+.left-round{
+  border-bottom-right-radius: 70px;
+  border-top-left-radius: 70px;
+}
+.right-round{
+  border-bottom-right-radius: 70px;
+  border-top-left-radius: 70px;
+}
