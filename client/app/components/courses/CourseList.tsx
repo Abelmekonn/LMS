@@ -102,7 +102,11 @@ const CourseListContent = () => {
             <br />
             <div className="w-full flex items-center flex-wrap">
                 <div
-                    className={`h-[35px] m-3 px-3 rounded-[30px] flex items-center justify-center font-Poppins cursor-pointer ${category === "All" ? "bg-[crimson]" : "bg-[#5050cb]"}`}
+                    className={`h-[35px] m-3 px-3 rounded-[30px] flex items-center justify-center font-Poppins cursor-pointer ${
+                        category === "All" 
+                        ? "bg-black text-white dark:bg-white dark:text-black" 
+                        : "bg-white text-black dark:bg-black dark:text-white border border-gray-300 dark:border-gray-700"
+                    }`}
                     onClick={() => setCategory("All")}
                 >
                     All
@@ -110,7 +114,11 @@ const CourseListContent = () => {
                 {categories?.map((item: any, index: number) => (
                     <div key={index}>
                         <div
-                            className={`h-[35px] ${category === item.title ? "bg-[crimson]" : "bg-[#5050cb]"} m-3 px-3 rounded-[30px] flex items-center justify-center font-Poppins cursor-pointer`}
+                            className={`h-[35px] m-3 px-3 rounded-[30px] flex items-center justify-center font-Poppins cursor-pointer ${
+                                category === item.title 
+                                ? "bg-black text-white dark:bg-white dark:text-black" 
+                                : "bg-white text-black dark:bg-black dark:text-white border border-gray-300 dark:border-gray-700"
+                            }`}
                             onClick={() => setCategory(item.title)}
                         >
                             {item.title}

@@ -6,11 +6,9 @@ import { useGetAllOrdersQuery } from "../../../../redux/features/orders/ordersAp
 import { useGetAllUsersQuery } from "../../../../redux/features/user/userApi";
 import { AiOutlineMail } from "react-icons/ai";
 import ThinLoader from "../../ThinLoader";
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -71,7 +69,7 @@ const AllInvoices = ({ isDashboard }: Props) => {
             {isLoading ? (
                 <ThinLoader />
             ) : (
-                <Card className="w-full px-3 py-3 dark:bg-[#111C43] ">
+                <Card className="w-full px-3 py-3 dark:bg-[#111827] ">
                     <div className="flex-col py-4">
                         <h5 className='dark:text-[#fff]  text-black text-[20px] font-[400] font-Poppins pb-3'>
                             Recent Transaction

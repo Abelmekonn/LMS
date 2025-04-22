@@ -210,7 +210,7 @@ const CourseDetails = ({ data, clientSecret, stripePromise , setRoute ,setOpen:o
                             <div className="flex items-center">
                                 {isPurchased ? (
                                     <Link
-                                        className={`flex flex-row justify-content-center item-center py-3 px-6 rounded-full  min-h min-h-[45px]  text-[26px]  font-semibold  my-3 font-Poppins cursor-pointer !bg-[crimson]`}
+                                        className={`flex flex-row justify-content-center item-center text-white py-3 px-6 rounded-full  min-h min-h-[45px]  text-[26px]  font-semibold  my-3 font-Poppins cursor-pointer !bg-[crimson]`}
                                         href={`/course-access/${data._id}`}
                                     >
                                         Enter to course

@@ -6,10 +6,10 @@ import {
     XAxis,
     YAxis,
     Tooltip,
-    LineChart,
+    BarChart,
     CartesianGrid,
     Legend,
-    Line,
+    Bar,
 } from "recharts";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import ThinLoader from "../../ThinLoader";
@@ -44,11 +44,11 @@ const OrderAnalytics = ({ isDashboard }: Props) => {
         );
     }
     const chartConfig = {
-            count: {
-                label: "Orders",
-                color: "hsl(var(--chart-2))",
-            },
-        } satisfies ChartConfig;
+        count: {
+            label: "Orders",
+            color: "hsl(var(--chart-2))",
+        },
+    } satisfies ChartConfig;
 
     return (
         <Card className={`${isDashboard ? "h-[400px]" : "h-[500px]"} w-full bg-[#F9FAFB] dark:bg-[#111827] shadow-lg`}>
@@ -63,7 +63,7 @@ const OrderAnalytics = ({ isDashboard }: Props) => {
                     <CardContent>
                         <ChartContainer config={chartConfig} className={`${isDashboard ? "h-[270px]" : "h-[350px]"} w-full`}>
                             <ResponsiveContainer width={isDashboard ? "100%" : "90%"} height={!isDashboard ? "50%" : "100%"}>
-                                <LineChart
+                                <BarChart
                                     data={analyticsData}
                                     margin={{
                                         top: 5,
@@ -72,18 +72,24 @@ const OrderAnalytics = ({ isDashboard }: Props) => {
                                         bottom: 5,
                                     }}
                                 >
-                                    <CartesianGrid stroke="transparent" />
-                                    <XAxis dataKey="name" label={{ value: "Month", position: "insideBottom", offset: -5 }} />
-                                    <YAxis />
-                                    <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-                                    <Line
-                                        type="monotone"
-                                        dataKey="count"
-                                        stroke="hsl(var(--chart-2))"
-                                        strokeWidth={2}
-                                        dot={false}
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                                    <XAxis 
+                                        dataKey="name" 
+                                        label={{ value: "Month", position: "insideBottom", offset: -5 }}
+                                        axisLine={false}
+                                        tickLine={false}
                                     />
-                                </LineChart>
+                                    <YAxis 
+                                        axisLine={false}
+                                        tickLine={false}
+                                    />
+                                    <ChartTooltip cursor={{ fill: 'rgba(0, 0, 0, 0.1)' }} content={<ChartTooltipContent />} />
+                                    <Bar
+                                        dataKey="count"
+                                        fill="hsl(var(--chart-2))"
+                                        radius={[4, 4, 0, 0]}
+                                    />
+                                </BarChart>
                             </ResponsiveContainer>
                         </ChartContainer>
                     </CardContent>
